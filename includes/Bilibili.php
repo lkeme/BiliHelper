@@ -66,6 +66,8 @@ class Bilibili
             'eggMoney' => $this->start,
             //瓜子换硬币
             'silver2coin' => $this->start,
+            //客户端心跳
+            'appHeart' => $this->start,
         );
     }
 
@@ -192,6 +194,7 @@ class Bilibili
         $this->log("获得 " . $data['data']['text'] . $data['data']['specialText'], 'green', '签到');
         return true;
     }
+
     //PC心跳
     private function heart()
     {
@@ -377,6 +380,9 @@ class Bilibili
 
         //解析参数
         $data = $this->liveGlobalStart($resp);
+
+        //发送客户端心跳
+        $this->appHeart();
         //礼物相关
         if (!is_array($data)) {
             $this->log($data, 'green', 'SOCKET');

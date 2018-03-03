@@ -35,6 +35,42 @@ trait liveGlobal
         return $this->parseRespJson($resp);
     }
 
+    //客户端心跳
+    public function appHeart()
+    {
+        if (time() < $this->lock['appHeart']) {
+            return true;
+        }
+
+        $data = [
+            'access_key' => $this->_accessToken,
+            'actionKey' => 'appkey',
+            'appkey' => $this->_appKey,
+            'build' => '414000',
+            'device' => 'android',
+            'mobi_app' => 'android',
+            'platform' => 'android',
+            'ts' => time(),
+        ];
+        ksort($data);
+        $data['sign'] = $this->createSign($data);
+        $url = $this->prefix . 'mobile/userOnlineHeart?' . http_build_query($data);
+        $payload = [
+            'roomid' => $this->_roomRealId,
+            'scale' => 'xhdpi'
+        ];
+        $raw = $this->curl($url,$payload);
+        $data = json_decode($raw, true);
+        if ($data['code'] != 0) {
+            $this->log($data['msg'], 'bg_red', '心跳');
+            return false;
+        }
+        $this->lock['heart'] += 5 * 60;
+
+        $this->log('appHeart: OK!', 'magenta', '心跳');
+        return true;
+    }
+
     //中奖查询
     public function winningRecord()
     {

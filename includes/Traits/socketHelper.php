@@ -11,6 +11,7 @@ trait socketHelper
     public $_actionHeartBeat = 2;
     public $_socket = '';
     public $_uid = 18466419;
+    public $_roomRealId = '';
 
     public function socketHelperStart()
     {
@@ -18,12 +19,12 @@ trait socketHelper
         if (!$this->_socket) {
             $this->log("查找弹幕服务器中", 'green', 'SOCKET');
             //检查状态，返回真实roomid
-            $roomRealId = $this->liveRoomStatus($this->_defaultRoomId) ?: $this->liveCheck();
+            $this->_roomRealId = $this->liveRoomStatus($this->_defaultRoomId) ?: $this->liveCheck();
             //$roomRealId = $this->getRealRoomID($roomId);
-            $serverInfo = $this->getServer($roomRealId);
+            $serverInfo = $this->getServer($this->_roomRealId);
 
             $this->log("连接弹幕服务器中", 'green', 'SOCKET');
-            $socketRes = $this->connectServer($serverInfo['ip'], $serverInfo['port'], $roomRealId);
+            $socketRes = $this->connectServer($serverInfo['ip'], $serverInfo['port'], $this->_roomRealId);
 
             $this->log("连接弹幕服务器成功", 'green', 'SOCKET');
             $this->_socket = $socketRes;
