@@ -59,15 +59,23 @@ trait liveGlobal
             'roomid' => $this->_roomRealId,
             'scale' => 'xhdpi'
         ];
-        $raw = $this->curl($url,$payload);
+        $raw = $this->curl($url, $payload);
         $data = json_decode($raw, true);
         if ($data['code'] != 0) {
             $this->log($data['msg'], 'bg_red', '心跳');
             return false;
         }
-        $this->lock['heart'] += 5 * 60;
+        $this->lock['appHeart'] += 5 * 60;
 
-        $this->log('appHeart: OK!', 'magenta', '心跳');
+        $this->log('AppHeart: OK!', 'magenta', '心跳');
+
+        $info = '昵称: ' . $this->_userDataInfo['name'] . '|等级: ' . $this->_userDataInfo['level'] . '|';
+        $info .= '银瓜子: ' . $this->_userDataInfo['silver'] . '|金瓜子: ' . $this->_userDataInfo['gold'] . '|';
+        $info .= '硬币: ' . $this->_userDataInfo['billCoin'] . '|经验值: ';
+        $info .= $this->_userDataInfo['user_intimacy'] . '/' . $this->_userDataInfo['user_next_intimacy'];
+
+        $this->log($info, 'magenta', '心跳');
+
         return true;
     }
 

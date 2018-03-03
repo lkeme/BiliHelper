@@ -37,6 +37,16 @@ class Bilibili
 
     private $prefix = 'https://api.live.bilibili.com/';
     private $temp = array();
+    //个人全局信息
+    private $_userDataInfo = [
+        'name' => '',
+        'level' => '',
+        'silver' => '',
+        'billCoin ' => '',
+        'user_intimacy' => '',
+        'user_next_intimacy' => '',
+        'gold' => '',
+    ];
 
     /**
      * 初始化，设定时间锁
@@ -220,10 +230,22 @@ class Bilibili
             $this->_userName = $data['data']['uname'];
         }
 
+        //全局个人信息
+        $this->_userDataInfo = [
+            'name' => $data['data']['uname'],
+            'level' => $data['data']['user_level'],
+            'silver' => $data['data']['silver'],
+            'billCoin' => $data['data']['billCoin'],
+            'user_intimacy' => $data['data']['user_intimacy'],
+            'user_next_intimacy' => $data['data']['user_next_intimacy'],
+            'gold' => $data['data']['gold'],
+        ];
+
         $level = $data['data']['user_level'];
         $a = $data['data']['user_intimacy'];
         $b = $data['data']['user_next_intimacy'];
         $per = round($a / $b * 100, 3);
+        $this->log('PcHeart: OK!', 'magenta', '心跳');
         $this->log("level:$level exp:$a/$b ($per%)", 'magenta', '心跳');
         return true;
     }
