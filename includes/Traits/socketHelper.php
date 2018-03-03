@@ -25,9 +25,8 @@ trait socketHelper
 
             $this->log("连接弹幕服务器中", 'green', 'SOCKET');
             $socketRes = $this->connectServer($serverInfo['ip'], $serverInfo['port'], $this->_roomRealId);
-
-            $this->log("连接弹幕服务器成功", 'green', 'SOCKET');
             $this->_socket = $socketRes;
+            $this->log("连接弹幕服务器成功", 'green', 'SOCKET');
         } else {
             $socketRes = $this->_socket;
         }

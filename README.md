@@ -1,6 +1,8 @@
 # BilibiliHelper
 B 站直播实用脚本
 
+## 运行环境
+ php推荐7.*+,开启php-gd、php-curl、php_sockets等模块
 
 ## 功能
  - 每日签到
@@ -76,9 +78,12 @@ WantedBy=multi-user.target
 
 ## 注意事项
  1. 虽然脚本为 PHP，但由于需要保持长时间运行，因此不能通过直接访问网页来使用
- 2. 需要额外安装 php-gd、php-curl 组件
+ 2. 需要额外安装 php-gd、php-curl、php_sockets 组件
+ > 重要: `php_sockets` 必须开启，不然socket不能连接
 
 ## FAQ
+Q: 程序一直刷屏连接socket?
+A: 查看你的`php_sockets`模块是否开启
 
 Q: 如何同时挂多个帐号？
 A: 可以复制 `index.php` 为 `index1.php`, 同样修改 cookie 后在 `crontab` 添加记录
