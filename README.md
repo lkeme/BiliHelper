@@ -1,6 +1,12 @@
 # BilibiliHelper
 B 站直播实用脚本
 
+## 相关
+[BilibiliHelper](https://github.com/metowolf/BilibiliHelper)
+[bilibili-live-crawler](https://github.com/wuYinBest/bilibili-live-crawler)
+[bilibili-api](https://github.com/czp3009/bilibili-api)
+
+
 ## 功能
  - 每日签到
  - 发送心跳包领经验
