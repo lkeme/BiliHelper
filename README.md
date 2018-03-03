@@ -86,7 +86,7 @@ A: 需要点开一个直播间，按 F12 选 Network 选项卡，稍等大约 5 
 ## 相关
  >本项目基于[BilibiliHelper](https://github.com/metowolf/BilibiliHelper)
  
- >另外欢迎重构，一切不必要的原有信息都么有删除，保持原有状态
+ >前项目一切不必要的原有信息都么有删除，保持原有状态，另外欢迎重构(Haha)
 
 [BilibiliHelper](https://github.com/metowolf/BilibiliHelper)
 
