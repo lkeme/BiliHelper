@@ -82,4 +82,24 @@ trait otherGift
         $this->log('每日任務: 完成!', 'blue', 'DAILY');
         return true;
     }
+
+    //每日背包奖励
+    public function dailyBag()
+    {
+        if (time() < $this->lock['dailyBag']) {
+            return true;
+        }
+        $url = $this->prefix . 'gift/v2/live/receive_daily_bag';
+        $raw = $this->curl($url);
+        $raw = json_decode($raw, true);
+        //TODO 沒有判斷
+        if (empty($raw['data']['bag_list'])){
+            $this->lock['dailyBag'] += 24 * 60 * 60;
+            $this->log('每日背包: 完成!' , 'blue', 'DAILY');
+            return true;
+        }
+        $this->log('每日背包: '.$raw['data']['bag_list'][0]['bag_name'].'完成!' , 'blue', 'DAILY');
+        $this->lock['dailyBag'] += 24 * 60 * 60;
+        return true;
+    }
 }

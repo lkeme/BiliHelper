@@ -80,6 +80,8 @@ class Bilibili
             'appHeart' => $this->start,
             //每日任務
             'dailyTask'=>$this->start,
+            //每日背包奖励
+            'dailyBag'=>$this->start,
         );
     }
 
@@ -155,6 +157,9 @@ class Bilibili
                     break;
                 }
                 if (!$this->dailyTask()) {
+                    break;
+                }
+                if (!$this->dailyBag()) {
                     break;
                 }
 

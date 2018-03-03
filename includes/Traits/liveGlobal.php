@@ -14,6 +14,8 @@ trait liveGlobal
     public $_defaultRoomId = 3;
     //全局用户名
     public $_userName = '';
+    //全局uid
+    public $_userUid = '';
 
     public function liveGlobalStart($resp)
     {
@@ -392,5 +394,25 @@ trait liveGlobal
                 ];
                 break;
         }
+    }
+
+    //分享sign生成
+    public function shareSign()
+    {
+        $this->_userUid = $this->getUserInfo();
+        $temp = md5($this->_userUid . $this->_roomRealId . 'bilibili');
+        $temp .= 'bilibili';
+        $temp = sha1($temp);
+        return $temp;
+    }
+
+    //获取用户UID
+    public function getUserInfo()
+    {
+        $url = $this->prefix . 'i/api/liveinfo';
+        $raw = $this->curl($url);
+        $raw = json_decode($raw, true);
+        //TODO 暂时返回uid
+        return $raw['data']['userInfo']['uid'];
     }
 }
