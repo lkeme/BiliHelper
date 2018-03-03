@@ -78,6 +78,8 @@ class Bilibili
             'silver2coin' => $this->start,
             //客户端心跳
             'appHeart' => $this->start,
+            //每日任務
+            'dailyTask'=>$this->start,
         );
     }
 
@@ -150,6 +152,9 @@ class Bilibili
                     break;
                 }
                 if (!$this->smallTvWin()) {
+                    break;
+                }
+                if (!$this->dailyTask()) {
                     break;
                 }
 
@@ -245,7 +250,7 @@ class Bilibili
         $a = $data['data']['user_intimacy'];
         $b = $data['data']['user_next_intimacy'];
         $per = round($a / $b * 100, 3);
-        $this->log('PcHeart: OK!', 'magenta', '心跳');
+        $this->log('PCHeart: OK!', 'magenta', '心跳');
         $this->log("level:$level exp:$a/$b ($per%)", 'magenta', '心跳');
         return true;
     }

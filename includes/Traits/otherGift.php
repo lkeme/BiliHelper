@@ -64,4 +64,22 @@ trait otherGift
         }
     }
 
+    //領取每日任務獎勵
+    public function dailyTask()
+    {
+        if (time() < $this->lock['dailyTask']) {
+            return true;
+        }
+        $url = $this->prefix . 'activity/v1/task/receive_award';
+        $payload1 = ['task_id' => 'single_watch_task'];
+        $this->curl($url, $payload1);
+        $payload2 = ['task_id' => 'double_watch_task'];
+        $this->curl($url, $payload2);
+        $payload3 = ['task_id' => 'share_task'];
+        $this->curl($url, $payload3);
+        //TODO 沒有判斷
+        $this->lock['dailyTask'] += 24 * 60 * 60;
+        $this->log('每日任務: 完成!', 'blue', 'DAILY');
+        return true;
+    }
 }
