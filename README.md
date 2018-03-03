@@ -1,13 +1,6 @@
 # BilibiliHelper
 B 站直播实用脚本
 
-## 相关
-[BilibiliHelper](https://github.com/metowolf/BilibiliHelper)
-
-[bilibili-live-crawler](https://github.com/wuYinBest/bilibili-live-crawler)
-
-[bilibili-api](https://github.com/czp3009/bilibili-api)
-
 
 ## 功能
  - 每日签到
@@ -88,6 +81,19 @@ $api->roomid='3746256'; // 主播房间号
 
 Q: 更可靠的获取 cookie 方法?
 A: 需要点开一个直播间，按 F12 选 Network 选项卡，稍等大约 5 分钟后拿到 https://api.live.bilibili.com/ 开头的数据包，复制里面的 cookie 即可。
+
+
+## 相关
+ >本项目基于[BilibiliHelper](https://github.com/metowolf/BilibiliHelper)
+ 
+ >另外欢迎重构，一切不必要的原有信息都么有删除，保持原有状态
+
+[BilibiliHelper](https://github.com/metowolf/BilibiliHelper)
+
+[bilibili-live-crawler](https://github.com/wuYinBest/bilibili-live-crawler)
+
+[bilibili-api](https://github.com/czp3009/bilibili-api)
+
 
 ## License
 BilibiliHelper is under the MIT license.
