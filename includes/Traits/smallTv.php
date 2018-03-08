@@ -53,7 +53,11 @@ trait smallTv
     //小电视抽奖查询
     public function smallTvWin()
     {
+        if (time() < $this->lock['smallTvWin']) {
+            return true;
+        }
         if (!empty($this->_smallTvLdList)) {
+            $this->lock['smallTvWin'] += 20;
             $url = $this->_smallTvFbApi . 'roomid=' . $this->_smallTvLdList[0]['roomid'] . '&raffleId=' . $this->_smallTvLdList[0]['raffleId'];
             $raw = $this->curl($url);
             $raw = json_decode($raw, true);

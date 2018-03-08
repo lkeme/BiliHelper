@@ -82,6 +82,8 @@ class Bilibili
             'dailyTask' => $this->start,
             //每日背包奖励
             'dailyBag' => $this->start,
+            //小电视中奖查询
+            'smallTvWin' => $this->start,
         );
     }
 
