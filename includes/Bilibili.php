@@ -79,9 +79,9 @@ class Bilibili
             //客户端心跳
             'appHeart' => $this->start,
             //每日任務
-            'dailyTask'=>$this->start,
+            'dailyTask' => $this->start,
             //每日背包奖励
-            'dailyBag'=>$this->start,
+            'dailyBag' => $this->start,
         );
     }
 
@@ -444,10 +444,13 @@ class Bilibili
     private function captcha()
     {
         $this->log("开始做小学生算术", "blue", '宝箱');
-
-        $api = $this->prefix . 'freeSilver/getCaptcha?ts=' . time();
+        //$api = $this->prefix . 'freeSilver/getCaptcha?ts=' . time();
+        $api = $this->prefix . 'lottery/v1/SilverBox/getCaptcha?ts' . time();
         $raw = $this->curl($api, null, false);
-        $image = imagecreatefromstring($raw);
+        $raw = json_decode($raw, true);
+        $captcha = explode(',', $raw['data']['img']);
+        $newcaptcha = base64_decode($captcha[1]);
+        $image = imagecreatefromstring($newcaptcha);
         $width = imagesx($image);
         $height = imagesy($image);
         for ($i = 0; $i < $height; $i++) {
