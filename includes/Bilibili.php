@@ -357,7 +357,7 @@ class Bilibili
 
         if (!isset($this->temp['task'])) {
             // 查询宝箱数量
-            $api = $this->prefix . 'FreeSilver/getCurrentTask';
+            $api = $this->prefix . 'lottery/v1/SilverBox/getCurrentTask';
             $raw = $this->curl($api);
             $data = json_decode($raw, true);
             // 今日已经领完
@@ -387,7 +387,7 @@ class Bilibili
 
         $captcha = $this->captcha();
 
-        $api = $this->prefix . sprintf('freeSilver/getAward?time_start=%s&time_end=%s&captcha=%s',
+        $api = $this->prefix . sprintf('lottery/v1/SilverBox/getAward?time_start=%s&time_end=%s&captcha=%s',
                 $this->temp['task']['start'],
                 $this->temp['task']['end'],
                 $captcha
