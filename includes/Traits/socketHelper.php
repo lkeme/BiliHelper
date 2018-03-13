@@ -6,6 +6,8 @@ trait socketHelper
     public $_roomTureIdApi = 'https://api.live.bilibili.com/room/v1/Room/room_init?id=';
     //获取弹幕服务器
     public $_roomServerApi = 'https://api.live.bilibili.com/api/player?id=cid:';
+    //获取第一个直播间
+    public $_getUserRecommend = 'http://api.live.bilibili.com/room/v1/room/get_user_recommend?page=1';
     //socket数据包
     public $_actionEntry = 7;
     public $_actionHeartBeat = 2;
@@ -18,8 +20,11 @@ trait socketHelper
         //保存socket到全局
         if (!$this->_socket) {
             $this->log("查找弹幕服务器中", 'green', 'SOCKET');
+
             //检查状态，返回真实roomid
-            $this->_roomRealId = $this->liveRoomStatus($this->_defaultRoomId) ?: $this->liveCheck();
+            $this->_roomRealId = $this->getUserRecommend();
+            $this->_roomRealId = $this->_roomRealId ? $this->liveRoomStatus($this->_defaultRoomId) : $this->liveCheck();
+
             //$roomRealId = $this->getRealRoomID($roomId);
             $serverInfo = $this->getServer($this->_roomRealId);
 
@@ -89,7 +94,7 @@ trait socketHelper
     // 获取弹幕服务器的 ip 和端口号
     public function getServer($roomID)
     {
-        $xmlResp = '<xml>' . file_get_contents($this->_roomServerApi . $roomID) . '</xml>';
+        $xmlResp = '<xml>' . $this->curl($this->_roomServerApi . $roomID) . '</xml>';
         $parser = xml_parser_create();
 
         xml_parse_into_struct($parser, $xmlResp, $resp, $index);
@@ -103,7 +108,7 @@ trait socketHelper
     // 获取直播间真实房间号
     public function getRealRoomID($shortID)
     {
-        $resp = json_decode(file_get_contents($this->_roomTureIdApi . $shortID), true);
+        $resp = json_decode($this->curl($this->_roomTureIdApi . $shortID), true);
         if ($resp['code']) {
             exit($shortID . ' : ' . $resp['msg']);
         }
@@ -128,5 +133,16 @@ trait socketHelper
         } else {
             return false;
         }
+    }
+
+    //获取第二个直播间
+    public function getUserRecommend()
+    {
+        $raw = $this->curl($this->_getUserRecommend);
+        $de_raw = json_decode($raw, true);
+        if ($de_raw['code'] != '0' || $de_raw['msg'] != 'ok') {
+            return false;
+        }
+        return $de_raw['data'][1]['roomid'];
     }
 }

@@ -11,6 +11,7 @@ require "Traits/liveGlobal.php";
 require "Traits/rhythmStorm.php";
 require "Traits/userHelper.php";
 require "Traits/otherGift.php";
+require "Traits/activityLottery.php";
 
 class Bilibili
 {
@@ -20,6 +21,7 @@ class Bilibili
     use rhythmStorm;
     use userHelper;
     use otherGift;
+    use activityLottery;
 
     // 主播房间 id
     public $roomid = '3746256';
@@ -36,6 +38,8 @@ class Bilibili
     public $_setProxy = ['ip' => '127.0.0.1', 'port' => '8888'];
 
     private $prefix = 'https://api.live.bilibili.com/';
+
+    private $referer = 'http://live.bilibili.com/';
     private $temp = array();
     //个人全局信息
     private $_userDataInfo = [
@@ -54,6 +58,11 @@ class Bilibili
     public function __construct($cookie)
     {
         date_default_timezone_set('Asia/Shanghai');
+        //csrf_token
+        $temp = explode('bili_jct=', $cookie);
+        $temp = explode(';', $temp[1]);
+        $this->_csrfToken = $temp[0];
+
         $this->cookie = $cookie;
         $this->start = time();
 
@@ -84,6 +93,8 @@ class Bilibili
             'dailyBag' => $this->start,
             //小电视中奖查询
             'smallTvWin' => $this->start,
+            //活动中奖查询
+            'activeWin' => $this->start,
         );
     }
 
@@ -156,6 +167,9 @@ class Bilibili
                     break;
                 }
                 if (!$this->smallTvWin()) {
+                    break;
+                }
+                if (!$this->activeWin()) {
                     break;
                 }
                 if (!$this->dailyTask()) {
@@ -418,7 +432,7 @@ class Bilibili
         //发送客户端心跳
         $this->appHeart();
         //礼物相关
-        if (!is_array($data)) {
+        if (!is_array($data) && !$data) {
             $this->log($data, 'green', 'SOCKET');
         } else {
             switch ($data['type']) {
@@ -428,7 +442,11 @@ class Bilibili
                     break;
                 case 'storm':
                     //TODO 节奏风暴暂时搁置
-                    //$this->rhythmStormStart($data);
+                    $this->rhythmStormStart($data);
+                    break;
+                case 'active':
+                    //TODO 活动抽奖
+                    $this->activeStart($data);
                     break;
                 case 'unkown':
                     //返回新未知类型
@@ -556,7 +574,7 @@ class Bilibili
         echo sprintf($colors[$color], $date . $type . $message) . PHP_EOL;
     }
 
-    public function curl($url, $data = null, $log = true, $headers = null)
+    public function curl($url, $data = null, $log = true, $headers = null, $referer = null)
     {
         if ($this->debug) {
             $this->log('>>> ' . $url, 'lightgray');
@@ -573,7 +591,12 @@ class Bilibili
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 10);
         curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_REFERER, $this->prefix . $this->roomid);
+        if (!$referer) {
+            curl_setopt($curl, CURLOPT_REFERER, $this->prefix . $this->roomid);
+        } else {
+            curl_setopt($curl, CURLOPT_REFERER, $this->referer . $referer);
+        }
+
         curl_setopt($curl, CURLOPT_COOKIE, $this->cookie);
         curl_setopt($curl, CURLOPT_USERAGENT, $this->useragent);
         if ($this->_issetProxy) {

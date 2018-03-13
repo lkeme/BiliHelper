@@ -16,6 +16,14 @@ trait liveGlobal
     public $_userName = '';
     //全局uid
     public $_userUid = '';
+    //当前活动关键字
+    public $_activeKeyWord = '漫天花雨';
+    //小电视关键字
+    public $_smallTvKeyWord = '小电视';
+    //节奏风暴关键字
+    public $_stormKeyWord = '节奏风暴';
+    //弹幕flag
+    public $_danmuFlag = 0;
 
     public function liveGlobalStart($resp)
     {
@@ -161,8 +169,14 @@ trait liveGlobal
                  * 弹幕消息
                  * {"info":[[0,5,25,16738408,1517306023,1405289835,0,"c23b254e",0],"好想抱回家",[37089851,"Dark2笑",0,1,1,10000,1,"#7c1482"],[17,"言叶","枫言w",367,16752445,"union"],[35,0,10512625,">50000"],["title-140-2","title-140-2"],0,1,{"uname_color":"#7c1482"}],"cmd":"DANMU_MSG","_roomid":1175880}
                  */
-                $info = strlen($resp['info'][1]) > 10 ? substr($resp['info'][1], 0, 9) : $resp['info'][1];
-                return 'DANMU_MSG: ' . $resp['info'][2][1] . " : " . $info;
+                //弹幕暂时么有用，10条输出一条
+                if ($this->_danmuFlag > 10) {
+                    $info = strlen($resp['info'][1]) > 10 ? substr($resp['info'][1], 0, 9) : $resp['info'][1];
+                    $this->_danmuFlag = 0;
+                    return 'DANMU_MSG: ' . $resp['info'][2][1] . " : " . $info;
+                }
+                $this->_danmuFlag += 1;
+                return false;
                 break;
             case 'SEND_GIFT':
                 /**
@@ -224,11 +238,23 @@ trait liveGlobal
                  * {"cmd":"SYS_GIFT","msg":"亚瑟不懂我心在直播间26057开启了新春抽奖，红包大派送啦！一起来沾沾喜气吧！","msg_text":"亚瑟不懂我心在直播间26057开启了新春抽奖，红包大派送啦！一起来沾沾喜气吧！","tips":"亚瑟不懂我心在直播间26057开启了新春抽奖，红包大派送啦！一起来沾沾喜气吧！","url":"http://live.bilibili.com/26057","roomid":26057,"real_roomid":26057,"giftId":110,"msgTips":0,"_roomid":23058}
                  */
                 //TODO 节奏风暴暂时搁置
-                $flag = '节奏风暴';
-                if (strpos($resp['msg'], $flag) !== false) {
-                    //file_put_contents('./tmp/storm.txt', json_encode($resp), FILE_APPEND);
-
+                if (strpos($resp['msg'], $this->_stormKeyWord) !== false) {
+                    file_put_contents('./tmp/storm.txt', json_encode($resp), FILE_APPEND);
+                    return [
+                        'type' => 'storm',
+                        'roomid' => $resp['roomid'],
+                        'msg' => $resp['msg'],
+                    ];
                 }
+                //TODO 活动抽奖 暂定每期修改
+                if (strpos($resp['msg'], $this->_activeKeyWord) !== false) {
+                    return [
+                        'type' => 'active',
+                        'real_roomid' => $resp['real_roomid'],
+                        'msg' => $resp['msg'],
+                    ];
+                }
+
                 return 'SYS_GIFT: ' . $resp['msg'];
                 break;
             case 'SYS_MSG':
@@ -237,10 +263,10 @@ trait liveGlobal
                  * {"cmd":"SYS_MSG","msg":"亚军主播【赤瞳不是翅桶是赤瞳】开播啦，一起去围观！","msg_text":"亚军主播【赤瞳不是翅桶是赤瞳】开播啦，一起去围观！","url":"http://live.bilibili.com/5198","_roomid":23058}
                  * {"cmd":"SYS_MSG","msg":"【国民六妹】:?在直播间:?【896056】:?赠送 小电视一个，请前往抽奖","msg_text":"【国民六妹】:?在直播间:?【896056】:?赠送 小电视一个，请前往抽奖","rep":1,"styleType":2,"url":"http://live.bilibili.com/896056","roomid":896056,"real_roomid":896056,"rnd":1517304134,"tv_id":"36676","_roomid":1199214}
                  */
-                $flag = '小电视';
-                if (strpos($resp['msg'], $flag) === false) {
+
+                if (strpos($resp['msg'], $this->_smallTvKeyWord) === false) {
                     var_dump($resp);
-                    return 'SYS_MSG: [房间]' . $resp['_roomid'] . '|' . isset($resp['msg']) ? $resp['msg'] : '不知道是什么消息';
+                    return 'SYS_MSG: ' . isset($resp['msg']) ? $resp['msg'] : '不知道是什么消息';
                 }
                 return [
                     'type' => 'smalltv',
@@ -260,20 +286,14 @@ trait liveGlobal
                     if ($resp['data']['39']['action'] == 'end') {
                         return 'SPECIAL_GIFT: [房间]' . $resp['_roomid'] . '|节奏风暴结束';
                     }
-
+                    //TODO
                     if ($resp['data']['39']['action'] == 'start') {
                         return [
                             'type' => 'storm',
-                            'msg' => 'SPECIAL_GIFT: [房间]' . $resp['_roomid'] . '|节奏风暴开始',
                             'id' => $resp['data']['39']['id'],
-                            'time' => $resp['data']['39']['time'],
-                            'hadJoin' => $resp['data']['39']['hadJoin'],
-                            'num' => $resp['data']['39']['num'],
-                            'content' => $resp['data']['39']['content'],
-                            'roomid' => $resp['_roomid'],
+                            'msg' => $resp['data']['39']['content'],
                         ];
                     }
-
                 }
                 var_dump($resp['data']);
                 return 'SPECIAL_GIFT: [房间]' . $resp['_roomid'] . '|不知道是什么东西';

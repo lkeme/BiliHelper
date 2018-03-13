@@ -17,7 +17,7 @@ trait smallTv
     {
         $this->log("SmallTv:" . $data['msg'], 'blue', 'SOCKET');
         $checkdata = $this->tcraCheck($data['real_roomid']);
-        $this->log("SmallTv:检查状态", 'blue', 'SOCKET');
+        $this->log("SmallTv: 检查状态", 'blue', 'SOCKET');
         switch ($checkdata['code']) {
             case '-1':
                 $this->log("SmallTv:" . $checkdata['msg'], 'red', 'SOCKET');
