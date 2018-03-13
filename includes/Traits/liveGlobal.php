@@ -170,13 +170,8 @@ trait liveGlobal
                  * {"info":[[0,5,25,16738408,1517306023,1405289835,0,"c23b254e",0],"好想抱回家",[37089851,"Dark2笑",0,1,1,10000,1,"#7c1482"],[17,"言叶","枫言w",367,16752445,"union"],[35,0,10512625,">50000"],["title-140-2","title-140-2"],0,1,{"uname_color":"#7c1482"}],"cmd":"DANMU_MSG","_roomid":1175880}
                  */
                 //弹幕暂时么有用，10条输出一条
-                if ($this->_danmuFlag > 10) {
-                    $info = strlen($resp['info'][1]) > 10 ? substr($resp['info'][1], 0, 9) : $resp['info'][1];
-                    $this->_danmuFlag = 0;
-                    return 'DANMU_MSG: ' . $resp['info'][2][1] . " : " . $info;
-                }
-                $this->_danmuFlag += 1;
-                return false;
+                $info = strlen($resp['info'][1]) > 10 ? substr($resp['info'][1], 0, 9) : $resp['info'][1];
+                return 'DANMU_MSG: ' . $resp['info'][2][1] . " : " . $info;
                 break;
             case 'SEND_GIFT':
                 /**

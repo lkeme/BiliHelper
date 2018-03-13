@@ -432,7 +432,7 @@ class Bilibili
         //发送客户端心跳
         $this->appHeart();
         //礼物相关
-        if (!is_array($data) && !$data) {
+        if (!is_array($data)) {
             $this->log($data, 'green', 'SOCKET');
         } else {
             switch ($data['type']) {
