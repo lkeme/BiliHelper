@@ -5,11 +5,12 @@ B 站直播实用脚本
  php版本推荐7.*+
 
 |extension  |
-|:---------:|
+| --------- |
 |php-gd     |
 |php-curl   |
 |php_sockets|
 |php-xml    |
+|php-openssl|
 |add...     |
 
 
