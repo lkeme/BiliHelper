@@ -17,7 +17,10 @@ trait liveGlobal
     //全局uid
     public $_userUid = '';
     //当前活动关键字
-    public $_activeKeyWord = '漫天花雨';
+    public $_activeKeyWord = [
+        '漫天花雨',
+        '怦然心动',
+    ];
     //小电视关键字
     public $_smallTvKeyWord = '小电视';
     //节奏风暴关键字
@@ -242,12 +245,14 @@ trait liveGlobal
                     ];
                 }
                 //TODO 活动抽奖 暂定每期修改
-                if (strpos($resp['msg'], $this->_activeKeyWord) !== false) {
-                    return [
-                        'type' => 'active',
-                        'real_roomid' => $resp['real_roomid'],
-                        'msg' => $resp['msg'],
-                    ];
+                foreach ($this->_activeKeyWord as $value) {
+                    if (strpos($resp['msg'], $value) !== false) {
+                        return [
+                            'type' => 'active',
+                            'real_roomid' => $resp['real_roomid'],
+                            'msg' => $resp['msg'],
+                        ];
+                    }
                 }
 
                 return 'SYS_GIFT: ' . $resp['msg'];
