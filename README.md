@@ -100,21 +100,32 @@ WantedBy=multi-user.target
 
 ## FAQ
 Q: 程序一直刷屏连接socket?
+
 A: 查看你的`php_sockets`模块是否开启
 
+
 Q: 需要定时发送自定义弹幕?
+
 A: 修改`includes/Traits/customConfig.php`里面的配置项，一定要看完配置说明
 
+
 Q: 怎么跳过一些任务，不执行
+
 A：同上面的配置，暂时只添加了3个可以有必要跳过的任务，待添加
 
+
 Q: 如何同时挂多个帐号？
+
 A: 可以复制 `index.php` 为 `index1.php`, 同样修改 cookie 后在 `crontab` 添加记录
 
+
 Q: 为什么会有 `PHP Parse error: syntax error, unexpected '[' ` 报错？
+
 A: 这是因为 PHP 低版本不支持数组中括号写法，建议升级到 PHP5.6+，脚本现已兼容。
 
+
 Q: 自动清理（投喂）过期礼物给谁？
+
 A: 默认投喂给我的直播间，如果需要的话，可以在 index.php 添加一行
 ```
 $api->roomid='3746256'; // 主播房间号
