@@ -36,7 +36,7 @@ class Bilibili
     // 脚本最长运行时间
     public $break = 24 * 60 * 60;
     //自定义代理
-    public $_issetProxy = true;
+    public $_issetProxy = false;
     public $_setProxy = ['ip' => '127.0.0.1', 'port' => '8888'];
 
     private $prefix = 'https://api.live.bilibili.com/';
