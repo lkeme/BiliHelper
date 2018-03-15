@@ -17,6 +17,11 @@ trait socketHelper
 
     public function socketHelperStart()
     {
+        socketRestart:
+
+//        $data1 = '进入socket时内存:' . round(memory_get_usage() / 1024 / 1024, 2) . 'MB' . PHP_EOL;
+//        file_put_contents('./tmp/memory.log', $data1, FILE_APPEND);
+
         //保存socket到全局
         if (!$this->_socket) {
             $this->log("查找弹幕服务器中", 'green', 'SOCKET');
@@ -46,13 +51,24 @@ trait socketHelper
         if (!$resp) {
             $errorcode = socket_last_error();
             $errormsg = socket_strerror($errorcode);
-            $this->log("读取推送流错误,3秒后尝试第一次重连...", 'red', 'SOCKET');
-            sleep(3);
             if ($errormsg) {
                 socket_close($socketRes);
+                unset($socketRes);
+                unset($resp);
                 $this->_socket = '';
-                return $this->socketHelperStart();
+
+                $this->log("读取推送流错误,5秒后尝试重连...", 'red', 'SOCKET');
+                sleep(5);
+
+//                $data1 = '重连socket时内存:' . round(memory_get_usage() / 1024 / 1024, 2) . 'MB' . PHP_EOL;
+//                file_put_contents('./tmp/memory.log', $data1, FILE_APPEND);
+
+                //return $this->socketHelperStart();
+                //TODO 尝试用一下goto语句
+                goto socketRestart;
             }
+            //尝试打印错误
+            print_r($errormsg);
         }
         return $resp;
     }
@@ -129,6 +145,10 @@ trait socketHelper
         //TODO
         //没做详细的错误判断，一律判断为断开失效
         if (isset($res[1])) {
+
+//            $data1 = '读取socket时内存:' . round(memory_get_usage() / 1024 / 1024, 2) . 'MB' . PHP_EOL;
+//            file_put_contents('./tmp/memory.log', $data1, FILE_APPEND);
+
             return socket_read($socket, $res[1] - 16);
         } else {
             return false;
@@ -143,6 +163,7 @@ trait socketHelper
         if ($de_raw['code'] != '0' || $de_raw['msg'] != 'ok') {
             return false;
         }
-        return $de_raw['data'][1]['roomid'];
+        $rand_num = rand(1,29);
+        return $de_raw['data'][$rand_num]['roomid'];
     }
 }

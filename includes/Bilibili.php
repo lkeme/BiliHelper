@@ -28,7 +28,7 @@ class Bilibili
     // 主播房间 id
     public $roomid = '3746256';
     // UA
-    public $useragent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.108 Safari/537.36';
+    public $useragent = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36';
     // 调试信息开关
     public $debug = false;
     // 调试信息上色
@@ -36,7 +36,7 @@ class Bilibili
     // 脚本最长运行时间
     public $break = 24 * 60 * 60;
     //自定义代理
-    public $_issetProxy = false;
+    public $_issetProxy = true;
     public $_setProxy = ['ip' => '127.0.0.1', 'port' => '8888'];
 
     private $prefix = 'https://api.live.bilibili.com/';
@@ -138,16 +138,33 @@ class Bilibili
         $this->init();
         for ($idx = 0; $idx < 3; $idx++) {
             while (true) {
+
+//                $data1 = '1-3任务内存:' . round(memory_get_usage() / 1024 / 1024, 2) . 'MB' . PHP_EOL;
+//                file_put_contents('./tmp/memory.log', $data1, FILE_APPEND);
+
                 if (!$this->sign()) break;
                 if (!$this->heart()) break;
                 if (!$this->silver()) break;
+
+//                $data1 = '4-6任务内存:' . round(memory_get_usage() / 1024 / 1024, 2) . 'MB' . PHP_EOL;
+//                file_put_contents('./tmp/memory.log', $data1, FILE_APPEND);
+
                 if (!$this->giftheart()) break;
                 if (!$this->eggMoney()) break;
                 if (!$this->customerAction()) break;
+
+
+//                $data1 = '7-10任务内存:' . round(memory_get_usage() / 1024 / 1024, 2) . 'MB' . PHP_EOL;
+//                file_put_contents('./tmp/memory.log', $data1, FILE_APPEND);
+
                 if (!$this->smallTvWin()) break;
                 if (!$this->activeWin()) break;
                 if (!$this->dailyTask()) break;
                 if (!$this->dailyBag()) break;
+
+//                $data1 = '自定义任务内存:' . round(memory_get_usage() / 1024 / 1024, 2) . 'MB' . PHP_EOL;
+//                file_put_contents('./tmp/memory.log', $data1, FILE_APPEND);
+
                 foreach ($this->_biliTaskskip as $key => $value)
                 {
                     if ($value)
@@ -538,7 +555,7 @@ class Bilibili
         echo sprintf($colors[$color], $date . $type . $message) . PHP_EOL;
     }
 
-    public function curl($url, $data = null, $log = true, $headers = null, $referer = null)
+    public function curl($url, $data = null, $log = true, $headers = null, $referer = null,$useragent=false)
     {
         if ($this->debug) {
             $this->log('>>> ' . $url, 'lightgray');
@@ -562,7 +579,9 @@ class Bilibili
         }
 
         curl_setopt($curl, CURLOPT_COOKIE, $this->cookie);
-        curl_setopt($curl, CURLOPT_USERAGENT, $this->useragent);
+        if ($useragent){
+            curl_setopt($curl, CURLOPT_USERAGENT, $this->useragent);
+        }
         if ($this->_issetProxy) {
             curl_setopt($curl, CURLOPT_PROXY, $this->_setProxy['ip']);
         }

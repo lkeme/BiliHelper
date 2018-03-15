@@ -18,6 +18,8 @@ trait otherGift
             $this->lock['eggMoney'] += 24 * 60 * 60;
             $this->log('EggMoney:' . $raw['msg'], 'blue', '扭蛋币');
         } else {
+            //6小时重试
+            $this->lock['eggMoney'] += 6 * 60 * 60;
             $this->log('EggMoney:' . $raw['msg'], 'red', '扭蛋币');
         }
         return true;
@@ -46,8 +48,7 @@ trait otherGift
             'ts' => time()
         ];
         $data['sign'] = $this->createSign($data);
-
-        $raw = $this->curl($url, $data);
+        $raw = $this->curl($url, $data,true,null,null,false);
         $raw = json_decode($raw, true);
 
         if ($raw['code'] == '0' && $raw['msg'] == '兑换成功') {
@@ -59,6 +60,8 @@ trait otherGift
             $this->log('硬币兑换: ' . $raw['msg'], 'blue', 'COIN');
             return true;
         } else {
+            //6小时重试
+            $this->lock['silver2coin'] += 6 * 60 * 60;
             $this->log('硬币兑换: 兑换失败', 'red', 'COIN');
             return false;
         }
