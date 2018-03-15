@@ -2,9 +2,10 @@
 /**
  *  Website: https://i-meto.com/
  *  Author: METO
- *  Version: 0.6.1
+ *  Version: 0.6.2
  */
 
+require "Traits/customConfig.php";
 require "Traits/smallTv.php";
 require "Traits/socketHelper.php";
 require "Traits/liveGlobal.php";
@@ -15,6 +16,7 @@ require "Traits/activityLottery.php";
 
 class Bilibili
 {
+    use customConfig;
     use smallTv;
     use socketHelper;
     use liveGlobal;
@@ -58,11 +60,6 @@ class Bilibili
     public function __construct($cookie)
     {
         date_default_timezone_set('Asia/Shanghai');
-        //csrf_token
-        $temp = explode('bili_jct=', $cookie);
-        $temp = explode(';', $temp[1]);
-        $this->_csrfToken = $temp[0];
-
         $this->cookie = $cookie;
         $this->start = time();
 
@@ -95,6 +92,9 @@ class Bilibili
             'smallTvWin' => $this->start,
             //活动中奖查询
             'activeWin' => $this->start,
+            //私人发送弹幕
+            'privateSendMsg' => $this->start,
+
         );
     }
 
@@ -138,45 +138,20 @@ class Bilibili
         $this->init();
         for ($idx = 0; $idx < 3; $idx++) {
             while (true) {
-                if (!$this->sign()) {
-                    break;
-                }
-
-                if (!$this->heart()) {
-                    break;
-                }
-
-                if (!$this->silver()) {
-                    break;
-                }
-
-                if (!$this->giftsend()) {
-                    break;
-                }
-
-                if (!$this->giftheart()) {
-                    break;
-                }
-                if (!$this->eggMoney()) {
-                    break;
-                }
-                if (!$this->silver2coin()) {
-                    break;
-                }
-                if (!$this->customerAction()) {
-                    break;
-                }
-                if (!$this->smallTvWin()) {
-                    break;
-                }
-                if (!$this->activeWin()) {
-                    break;
-                }
-                if (!$this->dailyTask()) {
-                    break;
-                }
-                if (!$this->dailyBag()) {
-                    break;
+                if (!$this->sign()) break;
+                if (!$this->heart()) break;
+                if (!$this->silver()) break;
+                if (!$this->giftheart()) break;
+                if (!$this->eggMoney()) break;
+                if (!$this->customerAction()) break;
+                if (!$this->smallTvWin()) break;
+                if (!$this->activeWin()) break;
+                if (!$this->dailyTask()) break;
+                if (!$this->dailyBag()) break;
+                foreach ($this->_biliTaskskip as $key => $value)
+                {
+                    if ($value)
+                        if (!$this->$key()) break;
                 }
 
                 sleep(1);
@@ -251,11 +226,6 @@ class Bilibili
         $raw = $this->curl($api);
         $data = json_decode($raw, true);
 
-        //全局用户名
-        if ($this->_userName == '') {
-            $this->_userName = $data['data']['uname'];
-        }
-
         //全局个人信息
         $this->_userDataInfo = [
             'name' => $data['data']['uname'],
@@ -297,7 +267,6 @@ class Bilibili
             if (abs($vo['expire_at'] - time()) > 3600) {
                 continue;
             }
-
             $payload = array(
                 'uid' => $this->uid,
                 'gift_id' => $vo['gift_id'],
@@ -311,7 +280,7 @@ class Bilibili
                 'storm_beat_id' => 0,
                 'metadata' => '',
                 'token' => '',
-                'csrf_token' => $this->token,
+                'csrf_token' => $this->token
             );
 
             $api = $this->prefix . 'gift/v2/live/bag_send';
@@ -323,7 +292,6 @@ class Bilibili
             } else {
                 $this->log("成功向 https://live.bilibili.com/{$this->roomid} 投喂了 {$vo['gift_num']} 个 {$vo['gift_name']}", 'green', '投喂');
             }
-
         }
         return true;
     }
@@ -392,7 +360,8 @@ class Bilibili
                 'end' => $data['data']['time_end'],
             );
             $this->lock['silver'] = $data['data']['time_end'] + 5;
-            $this->log(sprintf("等待 %s 领取",
+            $this->log(sprintf(
+                "等待 %s 领取",
                 date('H:i:s', $this->lock['silver'])
             ), 'blue', '宝箱');
 
@@ -401,7 +370,8 @@ class Bilibili
 
         $captcha = $this->captcha();
 
-        $api = $this->prefix . sprintf('lottery/v1/SilverBox/getAward?time_start=%s&time_end=%s&captcha=%s',
+        $api = $this->prefix . sprintf(
+                'lottery/v1/SilverBox/getAward?time_start=%s&end_time=%s&captcha=%s',
                 $this->temp['task']['start'],
                 $this->temp['task']['end'],
                 $captcha
@@ -461,16 +431,18 @@ class Bilibili
         return true;
     }
 
-    private function captcha()
+    public function captcha()
     {
-        $this->log("开始做小学生算术", "blue", '宝箱');
-        //$api = $this->prefix . 'freeSilver/getCaptcha?ts=' . time();
-        $api = $this->prefix . 'lottery/v1/SilverBox/getCaptcha?ts' . time();
-        $raw = $this->curl($api, null, false);
-        $raw = json_decode($raw, true);
-        $captcha = explode(',', $raw['data']['img']);
-        $newcaptcha = base64_decode($captcha[1]);
-        $image = imagecreatefromstring($newcaptcha);
+        $this->log("开始做幼儿算术", "blue", '宝箱');
+
+        $api = $this->prefix . 'lottery/v1/SilverBox/getCaptcha?ts=' . time();
+        $raw = $this->curl($api);
+        $data = json_decode($raw, true);
+        $exploded = explode(',', $data['data']['img'], 2);
+        $encoded = $exploded[1];
+        $decoded = base64_decode($encoded);
+
+        $image = imagecreatefromstring($decoded);
         $width = imagesx($image);
         $height = imagesy($image);
         for ($i = 0; $i < $height; $i++) {
@@ -478,22 +450,18 @@ class Bilibili
                 $grey[$i][$j] = (imagecolorat($image, $j, $i) >> 16) & 0xFF;
             }
         }
-
         for ($i = 0; $i < $width; $i++) {
             $vis[$i] = 0;
         }
-
         for ($i = 0; $i < $height; $i++) {
             for ($j = 0; $j < $width; $j++) {
                 $vis[$j] |= $grey[$i][$j] < 220;
             }
         }
-
         for ($i = 0; $i < $height; $i += 2) {
             for ($j = 0; $j < $width; $j += 2) {
                 echo $grey[$i][$j] < 220 ? '■' : '□';
             }
-
             echo "\n";
         }
 
@@ -519,14 +487,12 @@ class Bilibili
                 while ($vis[$R] == 1) {
                     $R++;
                 }
-
                 $str = '';
                 for ($j = $L; $j < $R; $j++) {
                     for ($i = 4; $i <= 34; $i++) {
                         $str .= $grey[$i][$j] < 220 ? '1' : '0';
                     }
                 }
-
                 $max = 0;
                 foreach ($OCR as $key => $vo) {
                     similar_text($str, $vo, $per);
@@ -566,11 +532,9 @@ class Bilibili
         if (!empty($type)) {
             $type = "[$type] ";
         }
-
         if (!$this->color) {
             $color = 'none';
         }
-
         echo sprintf($colors[$color], $date . $type . $message) . PHP_EOL;
     }
 

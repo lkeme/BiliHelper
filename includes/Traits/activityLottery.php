@@ -28,7 +28,7 @@ trait activityLottery
                 if (is_array($checkdata['msg'])) {
                     foreach ($checkdata['msg'] as $value) {
                         $this->log("ActiveLottery: 编号-" . $value, 'cyan', 'SOCKET');
-                        $path = './record/' . $this->_userName . '-activeLotteryRecord.txt';
+                        $path = './record/' . $this->_userDataInfo['name'] . '-activeLotteryRecord.txt';
                         file_put_contents($path, date("Y-m-d H:i:s") . '|' . 'RoomId:' . $data["real_roomid"] . '|RaffleId:' . $value . "\r\n", FILE_APPEND);
                         //加入查询数组
                         $raffleid = explode("|", $value);
@@ -56,7 +56,7 @@ trait activityLottery
             return true;
         }
         if (!empty($this->_activeLotteryList)) {
-            $this->lock['activeWin'] += 20;
+            $this->lock['activeWin'] += 35;
             $url = $this->_noticeActiveApi . 'roomid=' . $this->_activeLotteryList[0]['roomid'] . '&raffleId=' . $this->_activeLotteryList[0]['raffleId'];
 
             $raw = $this->curl($url);
@@ -68,7 +68,7 @@ trait activityLottery
 
             } elseif ($raw['code'] == '0') {
                 $this->log("ActiveLottery: " . $this->_activeLotteryList[0]['raffleId'] . '获得' . $raw['data']['gift_num'] . $raw['data']['gift_name'], 'yellow', 'SOCKET');
-                $path = './record/' . $this->_userName . '-activeLotteryFb.txt';
+                $path = './record/' . $this->_userDataInfo['name'] . '-activeLotteryFb.txt';
                 $data = "RoomId: " . $this->_activeLotteryList[0]['roomid'] . '|' . $this->_activeLotteryList[0]['raffleId'] . '获得' . $raw['data']['gift_num'] . $raw['data']['gift_name'];
 
                 file_put_contents($path, date("Y-m-d H:i:s") . '|' . $data . "\r\n", FILE_APPEND);

@@ -2,7 +2,6 @@
 
 trait rhythmStorm
 {
-    public $_csrfToken = '';
     //{roomid}
     public $_checkStormApi = 'http://api.live.bilibili.com/lottery/v1/Storm/check?roomid=';
     //
@@ -52,7 +51,7 @@ trait rhythmStorm
             'captcha_token' => '',
             'captcha_phrase' => '',
             'token' => '',
-            'csrf_token' => $this->_csrfToken,
+            'csrf_token' => $this->token,
             'data_source_id' => '',
         ];
 

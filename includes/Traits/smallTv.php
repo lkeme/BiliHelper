@@ -29,7 +29,7 @@ trait smallTv
                 if (is_array($checkdata['msg'])) {
                     foreach ($checkdata['msg'] as $value) {
                         $this->log("SmallTv: 编号-" . $value, 'cyan', 'SOCKET');
-                        $path = './record/' . $this->_userName . '-smallTvRecord.txt';
+                        $path = './record/' . $this->_userDataInfo['name'] . '-smallTvRecord.txt';
                         file_put_contents($path, date("Y-m-d H:i:s") . '|' . 'RoomId:' . $data["real_roomid"] . '|RaffleId:' . $value . "\r\n", FILE_APPEND);
                         //加入查询数组
                         $raffleid = explode("|", $value);
@@ -57,7 +57,7 @@ trait smallTv
             return true;
         }
         if (!empty($this->_smallTvLdList)) {
-            $this->lock['smallTvWin'] += 20;
+            $this->lock['smallTvWin'] += 35;
             $url = $this->_smallTvFbApi . 'roomid=' . $this->_smallTvLdList[0]['roomid'] . '&raffleId=' . $this->_smallTvLdList[0]['raffleId'];
             $raw = $this->curl($url);
             $raw = json_decode($raw, true);
@@ -66,7 +66,7 @@ trait smallTv
                 return true;
             } elseif ($raw['data']['status'] == '2') {
                 $this->log("SmallTv: " . $this->_smallTvLdList[0]['raffleId'] . '获得' . $raw['data']['gift_num'] . $raw['data']['gift_name'], 'yellow', 'SOCKET');
-                $path = './record/' . $this->_userName . '-smallTvFb.txt';
+                $path = './record/' . $this->_userDataInfo['name'] . '-smallTvFb.txt';
                 $data = "SmallTv: " . $this->_smallTvLdList[0]['roomid'] . '|' . $this->_smallTvLdList[0]['raffleId'] . '获得' . $raw['data']['gift_num'] . $raw['data']['gift_name'];
                 file_put_contents($path, date("Y-m-d H:i:s") . '|' . $data . "\r\n", FILE_APPEND);
                 unset($this->_smallTvLdList[0]);

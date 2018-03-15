@@ -3,7 +3,7 @@
 trait liveGlobal
 {
     //发送弹幕
-    public $_liveSendMsg = 'https://live.bilibili.com/msg/send';
+    public $_liveSendMsg = 'https://api.live.bilibili.com/msg/send';
     //直播状态查询
     public $_liveStatusApi = 'http://api.live.bilibili.com/room/v1/Room/room_init?id=';
     //查询中奖信息
@@ -12,10 +12,6 @@ trait liveGlobal
     public $_getUserInfoApi = 'http://live.bilibili.com/user/getuserinfo';
     //默认房间id
     public $_defaultRoomId = 3;
-    //全局用户名
-    public $_userName = '';
-    //全局uid
-    public $_userUid = '';
     //当前活动关键字
     public $_activeKeyWord = [
         '漫天花雨',
@@ -37,7 +33,7 @@ trait liveGlobal
             if ($data['list'] == '') {
                 $this->log("WIN: " . $data['month'] . '|No Winning ~', 'blue', 'LIVE');
             } else {
-                $path = './record/' . $this->_userName . '-Winning.txt';
+                $path = './record/' . $this->_userDataInfo['name'] . '-Winning.txt';
                 file_put_contents($path, date("Y-m-d H:i:s") . '|' . $data['list'] . "\r\n", FILE_APPEND);
                 //TODO 详细写入信息没做
                 $this->log("Win:" . $data['month'] . '有中奖记录 ~', 'cyan', 'LIVE');
@@ -83,11 +79,13 @@ trait liveGlobal
         $this->log('AppHeart: OK!', 'magenta', '心跳');
 
         $info = '昵称: ' . $this->_userDataInfo['name'] . '|等级: ' . $this->_userDataInfo['level'] . '|';
-        $info .= '银瓜子: ' . $this->_userDataInfo['silver'] . '|金瓜子: ' . $this->_userDataInfo['gold'] . '|';
-        $info .= '硬币: ' . $this->_userDataInfo['billCoin'] . '|经验值: ';
-        $info .= $this->_userDataInfo['user_intimacy'] . '/' . $this->_userDataInfo['user_next_intimacy'];
+        $info .= '银瓜子: ' . $this->_userDataInfo['silver'];
+        $info1 = '金瓜子: ' . $this->_userDataInfo['gold'] . '|';
+        $info1 .= '硬币: ' . $this->_userDataInfo['billCoin'] . '|经验值: ';
+        $info1 .= $this->_userDataInfo['user_intimacy'] . '/' . $this->_userDataInfo['user_next_intimacy'];
 
         $this->log($info, 'magenta', '心跳');
+        $this->log($info1, 'magenta', '心跳');
 
         return true;
     }
@@ -117,21 +115,62 @@ trait liveGlobal
         }
     }
 
-    //发送弹幕
+    //发送弹幕通用模块
     public function sendMsg($info)
     {
+        $url = $this->_liveStatusApi . $info['roomid'];
+        $raw = $this->curl($url);
+        $de_raw = json_decode($raw, true);
+
         $headers = array(
+            'Accept: application/json, text/javascript, */*; q=0.01',
             'Content-Type: application/x-form-urlencoded',
+            'Accept-Encoding: gzip, deflate, br',
+            'Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2',
+            'Connection: keep-alive',
+            'Content-Type: application/x-www-form-urlencoded; charset=UTF-8',
+            'Host: api.live.bilibili.com',
+            'Origin: http://live.bilibili.com',
+            'Referer: http://live.bilibili.com/' . $de_raw['data']['room_id'],
         );
+
         $data = [
-            'color' => '#7c1482',
+            'color' => '16777215',
             'fontsize' => '25',
             'mode' => '1',
             'msg' => $info['content'],
             'rnd' => time(),
-            'roomid' => $info['roomid'],
+            'roomid' => $de_raw['data']['room_id'],
+            'csrf_token' => $this->token,
         ];
+
         return $this->curl($this->_liveSendMsg, $data, true, $headers);
+
+    }
+
+    //使用发送弹幕模块
+    public function privateSendMsg()
+    {
+        //TODO 暂时性功能 有需求就修改
+        if (time() < $this->lock['privateSendMsg']) {
+            return true;
+        }
+        foreach ($this->_privateSendMsgInfo as $value) {
+            if ($value == '') {
+                return true;
+            }
+        }
+        $raw = $this->sendMsg($this->_privateSendMsgInfo);
+        $de_raw = json_decode($raw, true);
+        if ($de_raw['code'] == '0') {
+            $this->log('Danmu: 自定义弹幕发送成功!', 'yellow', 'SENDMSG');
+            $this->lock['privateSendMsg'] += $this->_privateSendMsgInfo['time'];
+            return true;
+        }
+        $this->log('Danmu: 自定义弹幕发送失败!', 'red', 'SENDMSG');
+        //如果失败一小时重试一次
+        $this->lock['privateSendMsg'] += 3600;
+        return true;
     }
 
     //查询有效直播间
@@ -419,8 +458,8 @@ trait liveGlobal
     //分享sign生成
     public function shareSign()
     {
-        $this->_userUid = $this->getUserInfo();
-        $temp = md5($this->_userUid . $this->_roomRealId . 'bilibili');
+        $this->uid = $this->getUserInfo();
+        $temp = md5($this->uid . $this->_roomRealId . 'bilibili');
         $temp .= 'bilibili';
         $temp = sha1($temp);
         return $temp;
