@@ -19,8 +19,8 @@ trait socketHelper
     {
         socketRestart:
 
-//        $data1 = '进入socket时内存:' . round(memory_get_usage() / 1024 / 1024, 2) . 'MB' . PHP_EOL;
-//        file_put_contents('./tmp/memory.log', $data1, FILE_APPEND);
+        //$data1 = '进入socket时内存:' . memory_get_peak_usage() . PHP_EOL;
+        //file_put_contents('./tmp/memory.log', $data1, FILE_APPEND);
 
         //保存socket到全局
         if (!$this->_socket) {
@@ -28,40 +28,44 @@ trait socketHelper
 
             //检查状态，返回真实roomid
             $this->_roomRealId = $this->getUserRecommend();
-            $this->_roomRealId = $this->_roomRealId ? $this->liveRoomStatus($this->_defaultRoomId) : $this->liveCheck();
-
+            $this->_roomRealId = $this->_roomRealId ?: $this->liveRoomStatus($this->_defaultRoomId);
             //$roomRealId = $this->getRealRoomID($roomId);
             $serverInfo = $this->getServer($this->_roomRealId);
 
             $this->log("连接弹幕服务器中", 'green', 'SOCKET');
-            $socketRes = $this->connectServer($serverInfo['ip'], $serverInfo['port'], $this->_roomRealId);
-            $this->_socket = $socketRes;
-            $this->log("连接弹幕服务器成功", 'green', 'SOCKET');
-        } else {
-            $socketRes = $this->_socket;
+
+            $this->_socket = $this->connectServer($serverInfo['ip'], $serverInfo['port'], $this->_roomRealId);
+            $this->log("连接" . $this->_roomRealId . "弹幕服务器成功", 'green', 'SOCKET');
         }
 
         //发送socket心跳包 30s一次 误差5s
-        $this->sendHeartBeatPkg($socketRes);
+        $this->sendHeartBeatPkg($this->_socket);
 
         //接收socket返回的数据
-        $resp = $this->decodeMessage($socketRes);
+        $resp = $this->decodeMessage($this->_socket);
+
+        //$data1 = '读取socket返回时内存:' . memory_get_peak_usage() . PHP_EOL;
+        //file_put_contents('./tmp/memory.log', $data1, FILE_APPEND);
 
         //判断是否需要重连
         if (!$resp) {
             $errorcode = socket_last_error();
             $errormsg = socket_strerror($errorcode);
             if ($errormsg) {
-                socket_close($socketRes);
-                unset($socketRes);
+                socket_clear_error($this->_socket);
+                socket_close($this->_socket);
+
+                $this->_socket = null;
+                unset($this->_socket);
+                $resp = null;
                 unset($resp);
-                $this->_socket = '';
+                $this->_socket = null;
 
                 $this->log("读取推送流错误,5秒后尝试重连...", 'red', 'SOCKET');
                 sleep(5);
 
-//                $data1 = '重连socket时内存:' . round(memory_get_usage() / 1024 / 1024, 2) . 'MB' . PHP_EOL;
-//                file_put_contents('./tmp/memory.log', $data1, FILE_APPEND);
+                //$data1 = '重连socket时内存:' . memory_get_peak_usage() . PHP_EOL;
+                //file_put_contents('./tmp/memory.log', $data1, FILE_APPEND);
 
                 //return $this->socketHelperStart();
                 //TODO 尝试用一下goto语句
@@ -95,7 +99,7 @@ trait socketHelper
 
         //周期是30s 但是socket读数据可能会超时
         //TODO
-        $this->lock['sheart'] += 20;
+        $this->lock['sheart'] = time() + 20;
         return true;
         //TODO
     }
@@ -136,6 +140,7 @@ trait socketHelper
     public function decodeMessage($socket)
     {
         $res = '';
+        $tmp = '';
         while ($out = socket_read($socket, 16)) {
             $res = unpack('N', $out);
             if ($res[1] != 16) {
@@ -144,15 +149,15 @@ trait socketHelper
         }
         //TODO
         //没做详细的错误判断，一律判断为断开失效
-        if (isset($res[1])) {
+        if (isset($res[1]) && $res[1] - 16 != 0) {
 
-//            $data1 = '读取socket时内存:' . round(memory_get_usage() / 1024 / 1024, 2) . 'MB' . PHP_EOL;
-//            file_put_contents('./tmp/memory.log', $data1, FILE_APPEND);
+            //$data1 = '读取socket时内存:' . memory_get_peak_usage() . PHP_EOL;
+            //file_put_contents('./tmp/memory.log', $data1, FILE_APPEND);
 
-            return socket_read($socket, $res[1] - 16);
-        } else {
-            return false;
+            $tmp = socket_read($socket, $res[1] - 16);
+            return $tmp;
         }
+        return false;
     }
 
     //获取第二个直播间
@@ -160,10 +165,10 @@ trait socketHelper
     {
         $raw = $this->curl($this->_getUserRecommend);
         $de_raw = json_decode($raw, true);
-        if ($de_raw['code'] != '0' || $de_raw['msg'] != 'ok') {
+        if ($de_raw['code'] != '0') {
             return false;
         }
-        $rand_num = rand(1,29);
+        $rand_num = rand(1, 29);
         return $de_raw['data'][$rand_num]['roomid'];
     }
 }

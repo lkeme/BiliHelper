@@ -56,7 +56,7 @@ trait activityLottery
             return true;
         }
         if (!empty($this->_activeLotteryList)) {
-            $this->lock['activeWin'] += 35;
+            $this->lock['activeWin'] = time() + 50;;
             $url = $this->_noticeActiveApi . 'roomid=' . $this->_activeLotteryList[0]['roomid'] . '&raffleId=' . $this->_activeLotteryList[0]['raffleId'];
 
             $raw = $this->curl($url);

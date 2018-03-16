@@ -138,39 +138,20 @@ class Bilibili
         $this->init();
         for ($idx = 0; $idx < 3; $idx++) {
             while (true) {
-
-//                $data1 = '1-3任务内存:' . round(memory_get_usage() / 1024 / 1024, 2) . 'MB' . PHP_EOL;
-//                file_put_contents('./tmp/memory.log', $data1, FILE_APPEND);
-
                 if (!$this->sign()) break;
                 if (!$this->heart()) break;
                 if (!$this->silver()) break;
-
-//                $data1 = '4-6任务内存:' . round(memory_get_usage() / 1024 / 1024, 2) . 'MB' . PHP_EOL;
-//                file_put_contents('./tmp/memory.log', $data1, FILE_APPEND);
-
                 if (!$this->giftheart()) break;
                 if (!$this->eggMoney()) break;
                 if (!$this->customerAction()) break;
-
-
-//                $data1 = '7-10任务内存:' . round(memory_get_usage() / 1024 / 1024, 2) . 'MB' . PHP_EOL;
-//                file_put_contents('./tmp/memory.log', $data1, FILE_APPEND);
-
                 if (!$this->smallTvWin()) break;
                 if (!$this->activeWin()) break;
                 if (!$this->dailyTask()) break;
                 if (!$this->dailyBag()) break;
-
-//                $data1 = '自定义任务内存:' . round(memory_get_usage() / 1024 / 1024, 2) . 'MB' . PHP_EOL;
-//                file_put_contents('./tmp/memory.log', $data1, FILE_APPEND);
-
-                foreach ($this->_biliTaskskip as $key => $value)
-                {
+                foreach ($this->_biliTaskskip as $key => $value) {
                     if ($value)
                         if (!$this->$key()) break;
                 }
-
                 sleep(1);
             }
             sleep(10);
@@ -555,7 +536,7 @@ class Bilibili
         echo sprintf($colors[$color], $date . $type . $message) . PHP_EOL;
     }
 
-    public function curl($url, $data = null, $log = true, $headers = null, $referer = null,$useragent=false)
+    public function curl($url, $data = null, $log = true, $headers = null, $referer = null, $useragent = false)
     {
         if ($this->debug) {
             $this->log('>>> ' . $url, 'lightgray');
@@ -579,7 +560,7 @@ class Bilibili
         }
 
         curl_setopt($curl, CURLOPT_COOKIE, $this->cookie);
-        if ($useragent){
+        if ($useragent) {
             curl_setopt($curl, CURLOPT_USERAGENT, $this->useragent);
         }
         if ($this->_issetProxy) {

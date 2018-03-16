@@ -22,9 +22,6 @@ unlink($data['cookie']);
 //start
 function start($account, $cookie, $data)
 {
-//    $data1 = '开始程序内存:' . round(memory_get_usage() / 1024 / 1024, 2) . 'MB' . PHP_EOL;
-//    file_put_contents('./tmp/memory.log', $data1, FILE_APPEND);
-
     $api = new Bilibili($cookie, $data);
     $api->debug = false;
     $api->color = true;
@@ -38,6 +35,7 @@ function start($account, $cookie, $data)
         $data = $login->start();
         $cookie = file_get_contents($data['cookie']);
         unlink($data['cookie']);
+        //unlink('./tmp/memory.log');
         call_user_func('start', $account, $cookie, $data);
     };
     $api->run();

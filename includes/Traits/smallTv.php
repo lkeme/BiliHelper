@@ -57,7 +57,7 @@ trait smallTv
             return true;
         }
         if (!empty($this->_smallTvLdList)) {
-            $this->lock['smallTvWin'] += 35;
+            $this->lock['smallTvWin'] = time() + 50;
             $url = $this->_smallTvFbApi . 'roomid=' . $this->_smallTvLdList[0]['roomid'] . '&raffleId=' . $this->_smallTvLdList[0]['raffleId'];
             $raw = $this->curl($url);
             $raw = json_decode($raw, true);
