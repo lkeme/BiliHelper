@@ -31,7 +31,7 @@ trait liveGlobal
         if (time() > $this->lock['wincheck']) {
             $data = $this->winningRecord();
             if ($data['list'] == '') {
-                $this->log("WIN: " . $data['month'] . '|No Winning ~', 'blue', 'LIVE');
+                $this->log("WIN: " . $data['month'] . '|No Winning ~', 'magenta', 'LIVE');
             } else {
                 $path = './record/' . $this->_userDataInfo['name'] . '-Winning.txt';
                 file_put_contents($path, date("Y-m-d H:i:s") . '|' . $data['list'] . "\r\n", FILE_APPEND);
@@ -442,5 +442,16 @@ trait liveGlobal
         $raw = json_decode($raw, true);
         //TODO 暂时返回uid
         return $raw['data']['userInfo']['uid'];
+    }
+
+    //内存检测
+    public function checkMemory($msg)
+    {
+        $size = memory_get_usage();
+        $path = './tmp/memory.log';
+        $unit = array('b', 'kb', 'mb', 'gb', 'tb', 'pb');
+        $memory = @round($size / pow(1024, ($i = floor(log($size, 1024)))), 2) . ' ' . $unit[$i];
+        $data = $msg . '时内存: ' . $memory . PHP_EOL;
+        file_put_contents($path, $data, FILE_APPEND);
     }
 }

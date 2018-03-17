@@ -7,20 +7,23 @@ trait socketHelper
     //获取弹幕服务器
     public $_roomServerApi = 'https://api.live.bilibili.com/api/player?id=cid:';
     //获取第一个直播间
-    public $_getUserRecommend = 'http://api.live.bilibili.com/room/v1/room/get_user_recommend?page=1';
+    public $_getUserRecommend = 'http://api.live.bilibili.com/room/v1/room/get_user_recommend?page=';
+    //获取人气直播
+    public $_getPopularityRoomidApi = 'https://api.live.bilibili.com/area/liveList?area=all&order=online&page=';
+
     //socket数据包
     public $_actionEntry = 7;
     public $_actionHeartBeat = 2;
     public $_socket = '';
     public $_uid = 18466419;
     public $_roomRealId = '';
+    public $_reflag = 0;
 
     public function socketHelperStart()
     {
         socketRestart:
-
-        //$data1 = '进入socket时内存:' . memory_get_peak_usage() . PHP_EOL;
-        //file_put_contents('./tmp/memory.log', $data1, FILE_APPEND);
+        //内存检测
+        //$this->checkMemory('进入SOCKET');
 
         //保存socket到全局
         if (!$this->_socket) {
@@ -31,10 +34,16 @@ trait socketHelper
             $this->_roomRealId = $this->_roomRealId ?: $this->liveRoomStatus($this->_defaultRoomId);
             //$roomRealId = $this->getRealRoomID($roomId);
             $serverInfo = $this->getServer($this->_roomRealId);
-
             $this->log("连接弹幕服务器中", 'green', 'SOCKET');
-
             $this->_socket = $this->connectServer($serverInfo['ip'], $serverInfo['port'], $this->_roomRealId);
+            //判断是否连接成功
+            if (!$this->_socket) {
+                if ($this->_reflag > 6) exit('重连次数超限!');
+                $this->_reflag += 1;
+                goto  socketRestart;
+            }
+            $this->_reflag = 0;
+
             $this->log("连接" . $this->_roomRealId . "弹幕服务器成功", 'green', 'SOCKET');
         }
 
@@ -42,30 +51,23 @@ trait socketHelper
         $this->sendHeartBeatPkg($this->_socket);
 
         //接收socket返回的数据
-        $resp = $this->decodeMessage($this->_socket);
+        $resp = $this->decodeMessage();
 
-        //$data1 = '读取socket返回时内存:' . memory_get_peak_usage() . PHP_EOL;
-        //file_put_contents('./tmp/memory.log', $data1, FILE_APPEND);
+        //内存检测
+        //$this->checkMemory('读取SOCKET返回');
 
         //判断是否需要重连
         if (!$resp) {
             $errorcode = socket_last_error();
             $errormsg = socket_strerror($errorcode);
             if ($errormsg) {
-                socket_clear_error($this->_socket);
-                socket_close($this->_socket);
-
-                $this->_socket = null;
-                unset($this->_socket);
-                $resp = null;
                 unset($resp);
-                $this->_socket = null;
+                unset($errormsg);
+                unset($errorcode);
+                $this->killSocket();
 
-                $this->log("读取推送流错误,5秒后尝试重连...", 'red', 'SOCKET');
-                sleep(5);
-
-                //$data1 = '重连socket时内存:' . memory_get_peak_usage() . PHP_EOL;
-                //file_put_contents('./tmp/memory.log', $data1, FILE_APPEND);
+                //内存检测
+                //$this->checkMemory('重连SOCKET');
 
                 //return $this->socketHelperStart();
                 //TODO 尝试用一下goto语句
@@ -137,25 +139,27 @@ trait socketHelper
     }
 
     //解码服务器返回的数据消息
-    public function decodeMessage($socket)
+    public function decodeMessage()
     {
         $res = '';
         $tmp = '';
-        while ($out = socket_read($socket, 16)) {
+        while ($out = $this->readerSocket(16)) {
             $res = unpack('N', $out);
-            if ($res[1] != 16) {
+            unset($out);
+            //打印
+            if ($res[1] < 16) var_dump($res[1]);
+
+            if ($res[1] > 16) {
                 break;
             }
         }
         //TODO
         //没做详细的错误判断，一律判断为断开失效
-        if (isset($res[1]) && $res[1] - 16 != 0) {
+        if (isset($res[1])) {
+            //内存检测
+            //$this->checkMemory('读取SOCKET');
 
-            //$data1 = '读取socket时内存:' . memory_get_peak_usage() . PHP_EOL;
-            //file_put_contents('./tmp/memory.log', $data1, FILE_APPEND);
-
-            $tmp = socket_read($socket, $res[1] - 16);
-            return $tmp;
+            return $this->readerSocket($res[1] - 16);
         }
         return false;
     }
@@ -163,7 +167,8 @@ trait socketHelper
     //获取第二个直播间
     public function getUserRecommend()
     {
-        $raw = $this->curl($this->_getUserRecommend);
+        $url = $this->_getPopularityRoomidApi . rand(1, 30);
+        $raw = $this->curl($url);
         $de_raw = json_decode($raw, true);
         if ($de_raw['code'] != '0') {
             return false;
@@ -171,4 +176,25 @@ trait socketHelper
         $rand_num = rand(1, 29);
         return $de_raw['data'][$rand_num]['roomid'];
     }
+
+    //socket_reader
+    public function readerSocket($length)
+    {
+        return socket_read($this->_socket, $length);
+    }
+
+    //杀掉连接
+    public function killSocket()
+    {
+        socket_clear_error($this->_socket);
+        socket_shutdown($this->_socket);
+        socket_close($this->_socket);
+
+        unset($this->_socket);
+        $this->_socket = null;
+
+        $this->log("读取推送流错误,5秒后尝试重连...", 'red', 'SOCKET');
+        sleep(5);
+    }
+
 }

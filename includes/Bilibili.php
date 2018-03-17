@@ -143,7 +143,6 @@ class Bilibili
                 if (!$this->silver()) break;
                 if (!$this->giftheart()) break;
                 if (!$this->eggMoney()) break;
-                if (!$this->customerAction()) break;
                 if (!$this->smallTvWin()) break;
                 if (!$this->activeWin()) break;
                 if (!$this->dailyTask()) break;
@@ -152,6 +151,8 @@ class Bilibili
                     if ($value)
                         if (!$this->$key()) break;
                 }
+
+                if (!$this->customerAction()) break;
                 sleep(1);
             }
             sleep(10);
