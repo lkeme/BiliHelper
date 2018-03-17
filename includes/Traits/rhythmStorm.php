@@ -66,7 +66,8 @@ trait rhythmStorm
         } else {
             print_r($de_raw);
         }
-        file_put_contents('./temp/stormjoin.txt', $raw, FILE_APPEND);
+
+        $this->writeFileTo('./temp/', 'stormjoin.txt', $raw . "\r\n");
         return true;
     }
 

@@ -29,7 +29,7 @@ trait socketHelper
         if (!$this->_socket) {
             $this->log("查找弹幕服务器中", 'green', 'SOCKET');
             //如果没有指定默认房间，就系统随机
-            if (!$this->_roomRealId){
+            if (!$this->_roomRealId) {
                 //检查状态，返回真实roomid
                 //$this->_roomRealId = $this->getRealRoomID($roomId);
                 $this->_roomRealId = $this->getUserRecommend();

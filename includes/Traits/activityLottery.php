@@ -28,8 +28,9 @@ trait activityLottery
                 if (is_array($checkdata['msg'])) {
                     foreach ($checkdata['msg'] as $value) {
                         $this->log("ActiveLottery: 编号-" . $value, 'cyan', 'SOCKET');
-                        $path = './record/' . $this->_userDataInfo['name'] . '-activeLotteryRecord.txt';
-                        file_put_contents($path, date("Y-m-d H:i:s") . '|' . 'RoomId:' . $data["real_roomid"] . '|RaffleId:' . $value . "\r\n", FILE_APPEND);
+                        $filename = $this->_userDataInfo['name'] . '-activeLotteryRecord.txt';
+                        $temp_data = date("Y-m-d H:i:s") . '|' . 'RoomId:' . $data["real_roomid"] . '|RaffleId:' . $value . "\r\n";
+                        $this->writeFileTo('./record/', $filename, $temp_data);
                         //加入查询数组
                         $raffleid = explode("|", $value);
                         $this->_activeLotteryList[] = [
@@ -68,10 +69,11 @@ trait activityLottery
 
             } elseif ($raw['code'] == '0') {
                 $this->log("ActiveLottery: " . $this->_activeLotteryList[0]['raffleId'] . '获得' . $raw['data']['gift_num'] . $raw['data']['gift_name'], 'yellow', 'SOCKET');
-                $path = './record/' . $this->_userDataInfo['name'] . '-activeLotteryFb.txt';
-                $data = "RoomId: " . $this->_activeLotteryList[0]['roomid'] . '|' . $this->_activeLotteryList[0]['raffleId'] . '获得' . $raw['data']['gift_num'] . $raw['data']['gift_name'];
+                $filename = $this->_userDataInfo['name'] . '-activeLotteryFb.txt';
+                $data = "RoomId: " . $this->_activeLotteryList[0]['roomid'] . '|' . $this->_activeLotteryList[0]['raffleId'] . '获得' . $raw['data']['gift_num'] . $raw['data']['gift_name'] . "\r\n";
 
-                file_put_contents($path, date("Y-m-d H:i:s") . '|' . $data . "\r\n", FILE_APPEND);
+                $this->writeFileTo('./record/', $filename, $data);
+
                 unset($this->_activeLotteryList[0]);
 
                 $this->_activeLotteryList = array_values($this->_activeLotteryList);
@@ -133,7 +135,7 @@ trait activityLottery
     public function activeJoin($roomid, $raffleId)
     {
         $url = $this->_joinActiveApi . 'roomid=' . $roomid . '&raffleId=' . $raffleId;
-        $raw = $this->curl($url,null,true,null,$roomid);
+        $raw = $this->curl($url, null, true, null, $roomid);
 
         $de_raw = json_decode($raw, true);
 

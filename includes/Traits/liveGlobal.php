@@ -33,8 +33,8 @@ trait liveGlobal
             if ($data['list'] == '') {
                 $this->log("WIN: " . $data['month'] . '|No Winning ~', 'magenta', 'LIVE');
             } else {
-                $path = './record/' . $this->_userDataInfo['name'] . '-Winning.txt';
-                file_put_contents($path, date("Y-m-d H:i:s") . '|' . $data['list'] . "\r\n", FILE_APPEND);
+                $data = date("Y-m-d H:i:s") . '|' . $data['list'] . "\r\n";
+                $this->writeFileTo('./record/', $this->_userDataInfo['name'] . '-Winning.txt', $data);
                 //TODO 详细写入信息没做
                 $this->log("Win:" . $data['month'] . '有中奖记录 ~', 'cyan', 'LIVE');
             }
@@ -201,6 +201,18 @@ trait liveGlobal
         return false;
     }
 
+    //写入文件
+    public function writeFileTo($path, $filename, $data)
+    {
+        if (!file_exists($path)) {
+            mkdir($path);
+            chmod($path, 0777);
+        }
+        $completePath = $path . $filename;
+        file_put_contents($completePath, $data, FILE_APPEND);
+        return true;
+    }
+
     //cmd数据解析
     public function parseRespJson($resp)
     {
@@ -264,7 +276,7 @@ trait liveGlobal
                  */
                 //TODO 节奏风暴暂时搁置
                 if (strpos($resp['msg'], $this->_stormKeyWord) !== false) {
-                    file_put_contents('./tmp/storm.txt', json_encode($resp), FILE_APPEND);
+                    $this->writeFileTo('./tmp/', 'storm.txt', json_encode($resp));
                     return [
                         'type' => 'storm',
                         'roomid' => $resp['roomid'],
@@ -448,10 +460,9 @@ trait liveGlobal
     public function checkMemory($msg)
     {
         $size = memory_get_usage();
-        $path = './tmp/memory.log';
         $unit = array('b', 'kb', 'mb', 'gb', 'tb', 'pb');
         $memory = @round($size / pow(1024, ($i = floor(log($size, 1024)))), 2) . ' ' . $unit[$i];
         $data = $msg . '时内存: ' . $memory . PHP_EOL;
-        file_put_contents($path, $data, FILE_APPEND);
+        $this->writeFileTo('./tmp/', 'memory.log', $data);
     }
 }
