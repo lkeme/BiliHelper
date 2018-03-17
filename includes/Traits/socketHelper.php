@@ -28,22 +28,25 @@ trait socketHelper
         //保存socket到全局
         if (!$this->_socket) {
             $this->log("查找弹幕服务器中", 'green', 'SOCKET');
-
-            //检查状态，返回真实roomid
-            $this->_roomRealId = $this->getUserRecommend();
-            $this->_roomRealId = $this->_roomRealId ?: $this->liveRoomStatus($this->_defaultRoomId);
-            //$roomRealId = $this->getRealRoomID($roomId);
+            //如果没有指定默认房间，就系统随机
+            if (!$this->_roomRealId){
+                //检查状态，返回真实roomid
+                //$this->_roomRealId = $this->getRealRoomID($roomId);
+                $this->_roomRealId = $this->getUserRecommend();
+                $this->_roomRealId = $this->_roomRealId ?: $this->liveRoomStatus($this->_defaultRoomId);
+            }
             $serverInfo = $this->getServer($this->_roomRealId);
             $this->log("连接弹幕服务器中", 'green', 'SOCKET');
             $this->_socket = $this->connectServer($serverInfo['ip'], $serverInfo['port'], $this->_roomRealId);
             //判断是否连接成功
             if (!$this->_socket) {
-                if ($this->_reflag > 6) exit('重连次数超限!');
+                if ($this->_reflag > 6) {
+                    exit('重连次数超限!');
+                }
                 $this->_reflag += 1;
-                goto  socketRestart;
+                goto socketRestart;
             }
             $this->_reflag = 0;
-
             $this->log("连接" . $this->_roomRealId . "弹幕服务器成功", 'green', 'SOCKET');
         }
 
@@ -146,20 +149,23 @@ trait socketHelper
         while ($out = $this->readerSocket(16)) {
             $res = unpack('N', $out);
             unset($out);
-            //打印
-            if ($res[1] < 16) var_dump($res[1]);
-
-            if ($res[1] > 16) {
+            if ($res[1] != 16) {
                 break;
             }
         }
         //TODO
         //没做详细的错误判断，一律判断为断开失效
         if (isset($res[1])) {
+            $length = $res[1] - 16;
+            //如果数据长度小于0 重连
+            if ($length <= 0 || $length > 65535) {
+                $this->log('Socket: 数据长度(' . $length . ')异常,重新连接!', 'red', 'SOCKET');
+                return false;
+            }
             //内存检测
             //$this->checkMemory('读取SOCKET');
 
-            return $this->readerSocket($res[1] - 16);
+            return $this->readerSocket($length);
         }
         return false;
     }
