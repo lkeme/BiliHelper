@@ -30,15 +30,15 @@ trait socketHelper
             $this->log("查找弹幕服务器中", 'green', 'SOCKET');
             //如果没有指定默认房间，就系统随机
             if (!$this->_roomRealId) {
-                $this->_roomRealId = $this->getUserRecommend();
-                $this->_roomRealId = $this->_roomRealId ?: $this->liveRoomStatus($this->_defaultRoomId);
+                $roomRealId = $this->getUserRecommend();
+                $roomRealId = $roomRealId ?: $this->liveRoomStatus($this->_defaultRoomId);
             }else{
                 //检查状态，返回真实roomid
-                $this->_roomRealId = $this->getRealRoomID($this->_roomRealId);
+                $roomRealId = $this->getRealRoomID($this->_roomRealId);
             }
-            $serverInfo = $this->getServer($this->_roomRealId);
+            $serverInfo = $this->getServer($roomRealId);
             $this->log("连接弹幕服务器中", 'green', 'SOCKET');
-            $this->_socket = $this->connectServer($serverInfo['ip'], $serverInfo['port'], $this->_roomRealId);
+            $this->_socket = $this->connectServer($serverInfo['ip'], $serverInfo['port'], $roomRealId);
             //判断是否连接成功
             if (!$this->_socket) {
                 if ($this->_reflag > 6) {
@@ -48,7 +48,7 @@ trait socketHelper
                 goto socketRestart;
             }
             $this->_reflag = 0;
-            $this->log("连接" . $this->_roomRealId . "弹幕服务器成功", 'green', 'SOCKET');
+            $this->log("连接" . $roomRealId . "弹幕服务器成功", 'green', 'SOCKET');
         }
 
         //发送socket心跳包 30s一次 误差5s
