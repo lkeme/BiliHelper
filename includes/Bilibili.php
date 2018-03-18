@@ -13,6 +13,7 @@ require "Traits/rhythmStorm.php";
 require "Traits/userHelper.php";
 require "Traits/otherGift.php";
 require "Traits/activityLottery.php";
+require "Traits/groupSign.php";
 
 class Bilibili
 {
@@ -24,6 +25,7 @@ class Bilibili
     use userHelper;
     use otherGift;
     use activityLottery;
+    use groupSign;
 
     // 主播房间 id
     public $roomid = '3746256';
@@ -94,6 +96,8 @@ class Bilibili
             'activeWin' => $this->start,
             //私人发送弹幕
             'privateSendMsg' => $this->start,
+            //应援团签到
+            'groupSign' => $this->start,
             //刷新cookie 周期20小时
             'refreshCookie' => $this->start + 20 * 60 * 60,
             //刷新token 周期100小时

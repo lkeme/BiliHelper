@@ -20,5 +20,7 @@ trait customConfig
         'silver2coin' => true,
         //发送弹幕任务，如果此项为true，对应$_privateSendMsgInfo配置项必，默认不执行
         'privateSendMsg' => false,
+        //应援团签到任务
+        'groupSignStart' => true,
     ];
 }

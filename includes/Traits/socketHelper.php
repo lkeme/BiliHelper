@@ -3,7 +3,7 @@
 trait socketHelper
 {
     //获取房间真实id
-    public $_roomTureIdApi = 'https://api.live.bilibili.com/room/v1/Room/room_init?id=';
+    public $_roomTrueIdApi = 'https://api.live.bilibili.com/room/v1/Room/room_init?id=';
     //获取弹幕服务器
     public $_roomServerApi = 'https://api.live.bilibili.com/api/player?id=cid:';
     //获取第一个直播间
@@ -30,10 +30,11 @@ trait socketHelper
             $this->log("查找弹幕服务器中", 'green', 'SOCKET');
             //如果没有指定默认房间，就系统随机
             if (!$this->_roomRealId) {
-                //检查状态，返回真实roomid
-                //$this->_roomRealId = $this->getRealRoomID($roomId);
                 $this->_roomRealId = $this->getUserRecommend();
                 $this->_roomRealId = $this->_roomRealId ?: $this->liveRoomStatus($this->_defaultRoomId);
+            }else{
+                //检查状态，返回真实roomid
+                $this->_roomRealId = $this->getRealRoomID($this->_roomRealId);
             }
             $serverInfo = $this->getServer($this->_roomRealId);
             $this->log("连接弹幕服务器中", 'green', 'SOCKET');
@@ -133,7 +134,7 @@ trait socketHelper
     // 获取直播间真实房间号
     public function getRealRoomID($shortID)
     {
-        $resp = json_decode($this->curl($this->_roomTureIdApi . $shortID), true);
+        $resp = json_decode($this->curl($this->_roomTrueIdApi . $shortID), true);
         if ($resp['code']) {
             exit($shortID . ' : ' . $resp['msg']);
         }
