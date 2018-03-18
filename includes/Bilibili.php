@@ -94,7 +94,10 @@ class Bilibili
             'activeWin' => $this->start,
             //私人发送弹幕
             'privateSendMsg' => $this->start,
-
+            //刷新cookie 周期20小时
+            'refreshCookie' => $this->start + 20 * 60 * 60,
+            //刷新token 周期100小时
+            'refreshToken' => $this->start + 100 * 60 * 60,
         );
     }
 
@@ -151,7 +154,8 @@ class Bilibili
                     if ($value)
                         if (!$this->$key()) break;
                 }
-
+                //刷新信息
+                if (!$this->refreshInfo()) break;
                 if (!$this->customerAction()) break;
                 sleep(1);
             }
@@ -537,13 +541,13 @@ class Bilibili
         echo sprintf($colors[$color], $date . $type . $message) . PHP_EOL;
     }
 
-    public function curl($url, $data = null, $log = true, $headers = null, $referer = null, $useragent = false)
+    public function curl($url, $data = null, $log = true, $headers = null, $referer = null, $useragent = false, $header = false)
     {
         if ($this->debug) {
             $this->log('>>> ' . $url, 'lightgray');
         }
         $curl = curl_init();
-        curl_setopt($curl, CURLOPT_HEADER, 0);
+        curl_setopt($curl, CURLOPT_HEADER, $header);
         curl_setopt($curl, CURLOPT_TIMEOUT, 20);
         curl_setopt($curl, CURLOPT_ENCODING, 'gzip');
         curl_setopt($curl, CURLOPT_IPRESOLVE, 1);
@@ -588,6 +592,6 @@ class Bilibili
     public function pr($var)
     {
         print_r($var);
-        exit;
+        exit();
     }
 }

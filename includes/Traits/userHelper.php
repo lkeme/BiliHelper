@@ -26,12 +26,42 @@ trait userHelper
         ksort($data);
         $data['sign'] = $this->createSign($data);
         $url = $this->_baseUrl . 'api/login/sso?' . http_build_query($data);
-        $res = $this->curl($url);
-        preg_match_all('/Set-Cookie: (.*);/iU', $res, $cookie);
-        if (empty($cookie)) {
+
+        $res = $this->curl($url, null, true, null, null, false, true);
+        preg_match_all('/Set-Cookie: (.*);/iU', $res, $cookies);
+        if (empty($cookies)) {
             $this->log('Cookie获取失败', 'red', 'BiliLogin');
+            return false;
         }
-        return $cookie;
+        $newcookie = '';
+        foreach ($cookies[1] as $cookie) {
+            $newcookie .= $cookie . ';';
+        }
+        return $newcookie;
+    }
+
+    //刷新信息
+    public function refreshInfo()
+    {
+        //每20小时刷新一次
+        if (time() < $this->lock['refreshCookie']) {
+            return true;
+        }
+        //每100小时刷新一次
+        if (time() > $this->lock['refreshToken']) {
+            $temp = $this->refreshToken();
+            //失败就跳出
+            if (!$temp) return true;
+            $this->lock['refreshToken'] = time() + 100 * 60 * 60;
+            $this->log('Token: 刷新成功', 'green', 'BiliLogin');
+        }
+        $temp = $this->getCookie();
+        //失败就跳出
+        if (!$temp) return true;
+        $this->cookie = $temp;
+        $this->lock['refreshToken'] = time() + 20 * 60 * 60;
+        $this->log('Cookie: 刷新成功', 'green', 'BiliLogin');
+        return true;
     }
 
     //获取登录认证信息
