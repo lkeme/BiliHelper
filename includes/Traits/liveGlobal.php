@@ -33,7 +33,7 @@ trait liveGlobal
             if ($data['list'] == '') {
                 $this->log("WIN: " . $data['month'] . '|No Winning ~', 'magenta', 'LIVE');
             } else {
-                $data = date("Y-m-d H:i:s") . '|' . $data['list'] . "\r\n";
+                $data = date("Y-m-d H:i:s") . '|' . $data['list'];
                 $this->writeFileTo('./record/', $this->_userDataInfo['name'] . '-Winning.txt', $data);
                 //TODO 详细写入信息没做
                 $this->log("Win:" . $data['month'] . '有中奖记录 ~', 'cyan', 'LIVE');
@@ -69,9 +69,9 @@ trait liveGlobal
             'scale' => 'xhdpi'
         ];
         $raw = $this->curl($url, $payload);
-        $data = json_decode($raw, true);
-        if ($data['code'] != 0) {
-            $this->log($data['msg'], 'bg_red', '心跳');
+        $de_raw = json_decode($raw, true);
+        if ($de_raw['code'] != 0) {
+            $this->log($de_raw['msg'], 'bg_red', '心跳');
             return false;
         }
         $this->lock['appHeart'] += 5 * 60;
@@ -209,7 +209,7 @@ trait liveGlobal
             chmod($path, 0777);
         }
         $completePath = $path . $filename;
-        file_put_contents($completePath, $data, FILE_APPEND);
+        file_put_contents($completePath, $data . PHP_EOL, FILE_APPEND);
         return true;
     }
 
@@ -462,7 +462,7 @@ trait liveGlobal
         $size = memory_get_usage();
         $unit = array('b', 'kb', 'mb', 'gb', 'tb', 'pb');
         $memory = @round($size / pow(1024, ($i = floor(log($size, 1024)))), 2) . ' ' . $unit[$i];
-        $data = $msg . '时内存: ' . $memory . PHP_EOL;
+        $data = $msg . '时内存: ' . $memory;
         $this->writeFileTo('./tmp/', 'memory.log', $data);
     }
 }

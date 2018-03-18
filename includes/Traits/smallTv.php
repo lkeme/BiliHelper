@@ -30,7 +30,7 @@ trait smallTv
                     foreach ($checkdata['msg'] as $value) {
                         $this->log("SmallTv: 编号-" . $value, 'cyan', 'SOCKET');
                         $filename = $this->_userDataInfo['name'] . '-smallTvRecord.txt';
-                        $temp_data = date("Y-m-d H:i:s") . '|' . 'RoomId:' . $data["real_roomid"] . '|RaffleId:' . $value . "\r\n";
+                        $temp_data = date("Y-m-d H:i:s") . '|' . 'RoomId:' . $data["real_roomid"] . '|RaffleId:' . $value;
                         $this->writeFileTo('./record/', $filename, $temp_data);
                         //加入查询数组
                         $raffleid = explode("|", $value);
@@ -69,7 +69,7 @@ trait smallTv
                 $this->log("SmallTv: " . $this->_smallTvLdList[0]['raffleId'] . '获得' . $raw['data']['gift_num'] . $raw['data']['gift_name'], 'yellow', 'SOCKET');
 
                 $filename = $this->_userDataInfo['name'] . '-smallTvFb.txt';
-                $temp_data = "SmallTv: " . $this->_smallTvLdList[0]['roomid'] . '|' . $this->_smallTvLdList[0]['raffleId'] . '获得' . $raw['data']['gift_num'] . $raw['data']['gift_name'] . "\r\n";
+                $temp_data = "SmallTv: " . $this->_smallTvLdList[0]['roomid'] . '|' . $this->_smallTvLdList[0]['raffleId'] . '获得' . $raw['data']['gift_num'] . $raw['data']['gift_name'];
                 $this->writeFileTo('./record/', $filename, $temp_data);
 
                 unset($this->_smallTvLdList[0]);

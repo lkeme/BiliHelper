@@ -419,7 +419,7 @@ class Bilibili
                     break;
                 case 'unkown':
                     //返回新未知类型
-                    $this->log('CMD: 暂定采集新的数据类型' . $data['raw'], 'yellow', 'SOCKET');
+                    $this->log('CMD: 数据包不全或有新的类型' . $data['raw'], 'green', 'SOCKET');
                     break;
                 default:
                     //不知道什么

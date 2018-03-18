@@ -6,6 +6,8 @@ trait activityLottery
     public $_checkActiveApi = 'https://api.live.bilibili.com/activity/v1/Raffle/check?roomid=';
     //roomid raffleId
     public $_joinActiveApi = 'https://api.live.bilibili.com/activity/v1/Raffle/join?';
+    //app活动抽奖
+    public $_appJoinActiveApi = 'http://api.live.bilibili.com/YunYing/roomEvent?';
     //roomid raffleId
     public $_noticeActiveApi = 'http://api.live.bilibili.com/activity/v1/Raffle/notice?';
     //保存活动抽奖信息
@@ -14,22 +16,22 @@ trait activityLottery
     //start
     public function activeStart($data)
     {
-        $this->log("ActiveLottery:" . $data['msg'], 'blue', 'SOCKET');
+        $this->log("PCActive: " . $data['msg'], 'blue', 'SOCKET');
         $checkdata = $this->activeCheck($data['real_roomid']);
-        $this->log("ActiveLottery: 检查状态", 'blue', 'SOCKET');
+        $this->log("PCActive: 检查状态", 'blue', 'SOCKET');
         switch ($checkdata['code']) {
             case '-1':
-                $this->log("ActiveLottery:" . $checkdata['msg'], 'red', 'SOCKET');
+                $this->log("PCActive: " . $checkdata['msg'], 'red', 'SOCKET');
                 break;
             case '2':
-                $this->log("ActiveLottery:" . $checkdata['msg'], 'red', 'SOCKET');
+                $this->log("PCActive: " . $checkdata['msg'], 'red', 'SOCKET');
                 break;
             case '0':
                 if (is_array($checkdata['msg'])) {
                     foreach ($checkdata['msg'] as $value) {
-                        $this->log("ActiveLottery: 编号-" . $value, 'cyan', 'SOCKET');
+                        $this->log("PCActive: 编号-" . $value, 'cyan', 'SOCKET');
                         $filename = $this->_userDataInfo['name'] . '-activeLotteryRecord.txt';
-                        $temp_data = date("Y-m-d H:i:s") . '|' . 'RoomId:' . $data["real_roomid"] . '|RaffleId:' . $value . "\r\n";
+                        $temp_data = date("Y-m-d H:i:s") . '|' . 'RoomId:' . $data["real_roomid"] . '|RaffleId:' . $value;
                         $this->writeFileTo('./record/', $filename, $temp_data);
                         //加入查询数组
                         $raffleid = explode("|", $value);
@@ -40,12 +42,12 @@ trait activityLottery
                         //TODO 详细写入信息没做
                     }
                 } else {
-                    $this->log("ActiveLottery: " . $checkdata['msg'], 'red', 'SOCKET');
+                    $this->log("PCActive: " . $checkdata['msg'], 'red', 'SOCKET');
                 }
                 break;
             default:
                 var_dump($checkdata['raw']);
-                $this->log('ActiveLottery: 关于活动的未知状态', 'red', 'SOCKET');
+                $this->log('PCActive: 关于活动的未知状态', 'red', 'SOCKET');
                 break;
         }
     }
@@ -64,15 +66,17 @@ trait activityLottery
             $raw = json_decode($raw, true);
 
             if ($raw['code'] == '-400') {
-                $this->log("ActiveLottery: " . $this->_activeLotteryList[0]['raffleId'] . $raw['msg'], 'green', 'SOCKET');
+                $this->log("PCActive: " . $this->_activeLotteryList[0]['raffleId'] . $raw['msg'], 'green', 'SOCKET');
                 return true;
 
             } elseif ($raw['code'] == '0') {
-                $this->log("ActiveLottery: " . $this->_activeLotteryList[0]['raffleId'] . '获得' . $raw['data']['gift_num'] . $raw['data']['gift_name'], 'yellow', 'SOCKET');
-                $filename = $this->_userDataInfo['name'] . '-activeLotteryFb.txt';
-                $data = "RoomId: " . $this->_activeLotteryList[0]['roomid'] . '|' . $this->_activeLotteryList[0]['raffleId'] . '获得' . $raw['data']['gift_num'] . $raw['data']['gift_name'] . "\r\n";
+                $info = '[PC] RoomId: ' . $this->_activeLotteryList[0]['roomid'] . '|RaffleId: ';
+                $info .= $this->_activeLotteryList[0]['raffleId'] . '|获得' . $raw['data']['gift_name'] . 'X' . $raw['data']['gift_num'];
 
-                $this->writeFileTo('./record/', $filename, $data);
+                $this->log("PCActive: " . $info, 'yellow', 'SOCKET');
+                $filename = $this->_userDataInfo['name'] . '-activeLotteryFb.txt';
+
+                $this->writeFileTo('./record/', $filename, $info);
 
                 unset($this->_activeLotteryList[0]);
 
@@ -125,14 +129,50 @@ trait activityLottery
             ];
             for ($i = 0; $i < count($de_raw['data']); $i++) {
                 $raffleId = $de_raw['data'][$i]['raffleId'];
-                $data['msg'][$i] = $this->activeJoin($roomid, $raffleId);
+                //pc
+                $data['msg'][$i] = $this->pcActiveJoin($roomid, $raffleId);
+                //app
+                $this->appActiveJoin($roomid, $raffleId);
             }
             return $data;
         }
     }
 
-    //加入
-    public function activeJoin($roomid, $raffleId)
+    //加入APP活动抽奖
+    public function appActiveJoin($roomid, $raffleId)
+    {
+        $data = [
+            'access_key' => $this->_accessToken,
+            'actionKey' => 'appkey',
+            'appkey' => $this->_appKey,
+            'build' => '414000',
+            'device' => 'android',
+            'event_type' => 'newspring-' . $raffleId,
+            'mobi_app' => 'android',
+            'platform' => 'android',
+            'room_id' => $roomid,
+            'ts' => time(),
+        ];
+        ksort($data);
+        $data['sign'] = $this->createSign($data);
+        $url = $this->_appJoinActiveApi . http_build_query($data);
+
+        $raw = $this->curl($url, null, true, null, $this->referer);
+        $de_raw = json_decode($raw, true);
+        if ($de_raw['code'] == '0') {
+            $info = '[APP] RoomId: ' . $roomid . '|RaffleId: ' . $raffleId . '|获得' . $de_raw['data']['gift_desc'];
+            $this->log("APPActive: " . $info, 'yellow', 'SOCKET');
+
+            $filename = $this->_userDataInfo['name'] . '-activeLotteryFb.txt';
+            $this->writeFileTo('./record/', $filename, $info);
+            return;
+        }
+        $this->log("APPActive: " . $de_raw['message'], 'green', 'SOCKET');
+        return;
+    }
+
+    //加入PC活动抽奖
+    public function pcActiveJoin($roomid, $raffleId)
     {
         $url = $this->_joinActiveApi . 'roomid=' . $roomid . '&raffleId=' . $raffleId;
         $raw = $this->curl($url, null, true, null, $roomid);
