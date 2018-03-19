@@ -20,8 +20,10 @@ php activeSendMsg.php
 ```
 
 如果需要一个稳定的直播间读取弹幕，可以使用本程序。
-
 默认的房间号是我的，你也可以修改
+
+如果遇到scandir()爆错，
+找到php.ini,查找disable_functions ，去掉scandir,保存、重启php即可
 
 ---
 待添加...
