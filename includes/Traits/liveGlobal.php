@@ -164,7 +164,7 @@ trait liveGlobal
         $de_raw = json_decode($raw, true);
         if ($de_raw['code'] == '0') {
             $this->log('Danmu: 自定义弹幕发送成功!', 'yellow', 'SENDMSG');
-            $this->lock['privateSendMsg'] += $this->_privateSendMsgInfo['time'];
+            $this->lock['privateSendMsg'] = time() + $this->_privateSendMsgInfo['time'];
             return true;
         }
         $this->log('Danmu: 自定义弹幕发送失败!', 'red', 'SENDMSG');

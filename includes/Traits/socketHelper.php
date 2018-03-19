@@ -110,6 +110,24 @@ trait socketHelper
         //TODO
     }
 
+    //保持活跃弹幕模块
+    public function activeSendMsg()
+    {
+        //TODO 暂时性功能 有需求就修改
+        $info = [
+            'roomid'=>'9522051',
+            'content'=>'9522051测试',
+        ];
+        $raw = $this->sendMsg($info);
+        $de_raw = json_decode($raw, true);
+        if ($de_raw['code'] == '0') {
+            $this->log('Danmu: 自定义弹幕发送成功!', 'yellow', 'SENDMSG');
+            return true;
+        }
+        $this->log('Danmu: 自定义弹幕发送失败!', 'red', 'SENDMSG');
+        return true;
+    }
+
     //打包请求
     public function packMsg($roomID, $uid)
     {
