@@ -17,8 +17,7 @@ if ($account['username'] == '' || $account['password'] == '') {
 $login = new BiliLogin($account);
 $data = $login->start();
 $cookie = file_get_contents($data['cookie']);
-unlink($data['cookie']);
-
+//unlink($data['cookie']);
 //start
 function start($account, $cookie, $data)
 {
@@ -37,7 +36,7 @@ function start($account, $cookie, $data)
         $login = new BiliLogin($account);
         $data = $login->start();
         $cookie = file_get_contents($data['cookie']);
-        unlink($data['cookie']);
+        //unlink($data['cookie']);
         //unlink('./tmp/memory.log');
         call_user_func('start', $account, $cookie, $data);
     };

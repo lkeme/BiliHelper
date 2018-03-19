@@ -64,13 +64,18 @@ class BiliLogin
 
                 $cookies = $this->getCookie($loginInfo);
                 $this->log('获取Cookie成功', 'green', 'BiliLogin');
-
-                $tempfile = './tmp/' . $this->getRandCode();
-
+                //临时保存cookie
+                $tempcookie = '';
                 foreach ($cookies[1] as $cookie) {
-                    file_put_contents($tempfile, $cookie . ';', FILE_APPEND);
+                    $tempcookie .= $cookie . ';';
                 }
-                return $tempfile;
+                $filename = $this->getUserInfo($tempcookie) . '.cookies';
+                if (is_file($filename)) {
+                    unlink($filename);
+                }
+                $this->writeFileTo('./user/', $filename, $tempcookie);
+                //返回 用户名.cookies 路径
+                return './user/' . $filename;
             }
             $this->log($loginInfo['message'], 'red', 'BiliLogin');
             die;
@@ -79,17 +84,47 @@ class BiliLogin
         $cookies = $this->getCookie($loginInfo);
         $this->log('获取Cookie成功', 'green', 'BiliLogin');
 
-        $tempfile = $this->getRandCode();
-
+        //临时保存cookie
+        $tempcookie = '';
         foreach ($cookies[1] as $cookie) {
-            file_put_contents($tempfile, $cookie . ';', FILE_APPEND);
+            $tempcookie .= $cookie . ';';
         }
+        $filename = $this->getUserInfo($tempcookie) . '.cookies';
+        if (is_file($filename)) {
+            unlink($filename);
+        }
+        $this->writeFileTo('./user/', $filename, $tempcookie);
+        //返回 用户名.cookies 路径
+        $cookiefile = './user/' . $filename;
+
         //返回cookie access_token refresh_token
         return [
-            'cookie' => $tempfile,
+            'cookie' => $cookiefile,
             'access_token' => $loginInfo['data']['access_token'],
             'refresh_token' => $loginInfo['data']['refresh_token'],
         ];
+    }
+
+    //写入文件
+    public function writeFileTo($path, $filename, $data)
+    {
+        if (!file_exists($path)) {
+            mkdir($path);
+            chmod($path, 0777);
+        }
+        $completePath = $path . $filename;
+        file_put_contents($completePath, $data . PHP_EOL, FILE_APPEND);
+        return true;
+    }
+
+    //查用户名
+    public function getUserInfo($cookie)
+    {
+        $url = 'http://api.live.bilibili.com/User/getUserInfo?ts=' . time();
+        $raw = $this->curl($url, null, false, $cookie);
+        $de_raw = json_decode($raw, true);
+        //返回用户名
+        return $de_raw['data']['uname'];
     }
 
     public function captchaLogin($url, $data)

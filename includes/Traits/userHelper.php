@@ -12,6 +12,7 @@ trait userHelper
     public $_baseUrl = 'http://passport.bilibili.com/';
 
     //TODO
+    //刷新cookie
     public function getCookie()
     {
         $data = [
@@ -37,6 +38,12 @@ trait userHelper
         foreach ($cookies[1] as $cookie) {
             $newcookie .= $cookie . ';';
         }
+        //写入cookie文件
+        $filename = $this->_userDataInfo['name'] . '.cookies';
+        if (is_file($filename)) {
+            unlink($filename);
+        }
+        $this->writeFileTo('./user/', $filename, $newcookie);
         return $newcookie;
     }
 
