@@ -57,6 +57,7 @@ trait socketHelper
         //接收socket返回的数据
         $resp = $this->decodeMessage();
 
+
         //内存检测
         //$this->checkMemory('读取SOCKET返回');
 

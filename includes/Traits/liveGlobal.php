@@ -216,6 +216,10 @@ trait liveGlobal
     //cmd数据解析
     public function parseRespJson($resp)
     {
+        if (strlen($resp) == 4) {
+            $num= unpack('N', $resp)[1];
+            return 'ONLINE: 当前直播间有' . $num . '人在线';
+        }
         $resp = json_decode($resp, true);
         switch ($resp['cmd']) {
             case 'DANMU_MSG':
