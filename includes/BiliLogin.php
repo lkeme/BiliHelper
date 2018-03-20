@@ -70,12 +70,14 @@ class BiliLogin
                     $tempcookie .= $cookie . ';';
                 }
                 $filename = $this->getUserInfo($tempcookie) . '.cookies';
-                if (is_file($filename)) {
-                    unlink($filename);
+                //返回 用户名.cookies 路径
+                $cookiefile = './user/' . $filename;
+                if (is_file($cookiefile)) {
+                    unlink($cookiefile);
                 }
                 $this->writeFileTo('./user/', $filename, $tempcookie);
                 //返回 用户名.cookies 路径
-                return './user/' . $filename;
+                return $cookiefile;
             }
             $this->log($loginInfo['message'], 'red', 'BiliLogin');
             die;
@@ -90,12 +92,12 @@ class BiliLogin
             $tempcookie .= $cookie . ';';
         }
         $filename = $this->getUserInfo($tempcookie) . '.cookies';
-        if (is_file($filename)) {
-            unlink($filename);
-        }
-        $this->writeFileTo('./user/', $filename, $tempcookie);
         //返回 用户名.cookies 路径
         $cookiefile = './user/' . $filename;
+        if (is_file($cookiefile)) {
+            unlink($cookiefile);
+        }
+        $this->writeFileTo('./user/', $filename, $tempcookie);
 
         //返回cookie access_token refresh_token
         return [

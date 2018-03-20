@@ -40,8 +40,10 @@ trait userHelper
         }
         //写入cookie文件
         $filename = $this->_userDataInfo['name'] . '.cookies';
-        if (is_file($filename)) {
-            unlink($filename);
+        //返回 用户名.cookies 路径
+        $cookiefile = './user/' . $filename;
+        if (is_file($cookiefile)) {
+            unlink($cookiefile);
         }
         $this->writeFileTo('./user/', $filename, $newcookie);
         return $newcookie;
