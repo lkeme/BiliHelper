@@ -75,15 +75,34 @@ trait otherGift
         if (time() < $this->lock['dailyTask']) {
             return true;
         }
-        $url = $this->prefix . 'activity/v1/task/receive_award';
-        $payload1 = ['task_id' => 'single_watch_task'];
-        $this->curl($url, $payload1);
-        $payload2 = ['task_id' => 'double_watch_task'];
-        $this->curl($url, $payload2);
-        $payload3 = ['task_id' => 'share_task'];
-        $this->curl($url, $payload3);
-        //TODO 沒有判斷
+        //https://api.live.bilibili.com/i/api/taskInfo
+        $url = $this->prefix . 'activity/v1/task/user_tasks';
+        $raw = $this->curl($url);
+        $de_raw = json_decode($raw, true);
+        if (empty($de_raw['data'])) {
+            return true;
+        }
+        $url = $this->prefix . 'activity/v1/task/receive_award?';
+        $flag = 0;
+        foreach ($de_raw['data'] as $tasks) {
+            $data = null;
+            $data = [
+                'task_id' => $tasks['task_id'],
+            ];
+            $newurl = $url . http_build_query($data);
+            $raw = $this->curl($newurl);
+            $de_raw = json_decode($raw, true);
+            if ($de_raw['msg'] != '参数错误') {
+                $flag += 1;
+                $this->log('每日任務: [' . $tasks['task_id'] . ']' . $de_raw['msg'], 'blue', 'DAILY');
+            }
+        }
+        //TODO 暂时沒有判斷
         $this->lock['dailyTask'] += 24 * 60 * 60;
+        if (!$flag) {
+            $this->log('每日任務: 没有需要完成任务!', 'red', 'DAILY');
+            return true;
+        }
         $this->log('每日任務: 完成!', 'blue', 'DAILY');
         return true;
     }
