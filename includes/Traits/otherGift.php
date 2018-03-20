@@ -37,8 +37,9 @@ trait otherGift
             if (!$this->refreshToken())
                 return false;
         }
-        $url = 'https://api.live.bilibili.com/AppExchange/silver2coin?access_key=' . $this->_accessToken;
+        $url = 'https://api.live.bilibili.com/AppExchange/silver2coin?';
         $data = [
+            'access_key' => $this->_accessToken,
             'actionKey' => 'appkey',
             'appkey' => $this->_appKey,
             'build' => '5210000',
@@ -48,7 +49,8 @@ trait otherGift
             'ts' => time()
         ];
         $data['sign'] = $this->createSign($data);
-        $raw = $this->curl($url, $data,true,null,null,false);
+        $url .= http_build_query($data);
+        $raw = $this->curl($url, null, true, null, null, false);
         $raw = json_decode($raw, true);
 
         if ($raw['code'] == '0' && $raw['msg'] == '兑换成功') {
@@ -96,12 +98,12 @@ trait otherGift
         $raw = $this->curl($url);
         $raw = json_decode($raw, true);
         //TODO 沒有判斷
-        if (empty($raw['data']['bag_list'])){
+        if (empty($raw['data']['bag_list'])) {
             $this->lock['dailyBag'] += 24 * 60 * 60;
-            $this->log('每日背包: 完成!' , 'blue', 'DAILY');
+            $this->log('每日背包: 完成!', 'blue', 'DAILY');
             return true;
         }
-        $this->log('每日背包: '.$raw['data']['bag_list'][0]['bag_name'].'完成!' , 'blue', 'DAILY');
+        $this->log('每日背包: ' . $raw['data']['bag_list'][0]['bag_name'] . '完成!', 'blue', 'DAILY');
         $this->lock['dailyBag'] += 24 * 60 * 60;
         return true;
     }
