@@ -290,8 +290,24 @@ class Bilibili
                 'csrf_token' => $this->token
             );
 
+            //TODO  有待优化
+            $length = mb_strlen(http_build_query($payload));
+            $headers = array(
+                'Host: api.live.bilibili.com',
+                'Connection: keep-alive',
+                'Content-Length: ' . $length,
+                'Accept: application/json, text/javascript, */*; q=0.01',
+                'Origin: http://live.bilibili.com',
+                'User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36',
+                'Content-Type: application/x-www-form-urlencoded; charset=UTF-8',
+                'Referer: http://live.bilibili.com/',
+                'Accept-Encoding: gzip, deflate, br',
+                'Accept-Language: zh-CN,zh;q=0.8',
+                'Cookie: ' . $this->cookie,
+            );
+
             $api = $this->prefix . 'gift/v2/live/bag_send';
-            $res = $this->curl($api, $payload);
+            $res = $this->curl($api, $payload, true, $headers);
             $res = json_decode($res, true);
 
             if ($res['code']) {
