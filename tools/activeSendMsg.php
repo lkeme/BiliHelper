@@ -45,9 +45,9 @@ class activeSendMsg
                     'content' => $msg,
                 ];
                 $this->privateSendMsg($info);
-                sleep(5);
+                sleep(10);
             }
-            sleep(5);
+            sleep(10);
         }
     }
 
@@ -55,7 +55,7 @@ class activeSendMsg
     public function init()
     {
         $this->_lock['cookie'] = $this->_start + 60 * 60;
-
+        $this->_userInfoList = [];
         $filelist = $this->scanPathFile();
         foreach ($filelist as $file) {
             $this->_userInfoList[] = file_get_contents($file);

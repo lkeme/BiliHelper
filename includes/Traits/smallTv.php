@@ -12,6 +12,8 @@ trait smallTv
 
     //数组 保存小电视抽奖信息
     public $_smallTvLdList = [];
+    //数组 保存小电视信息
+    public $_smallTvList = [];
 
     public function smallTvStart($data)
     {
@@ -125,6 +127,14 @@ trait smallTv
                 'msg' => [],
             ];
             for ($i = 0; $i < count($raw['data']); $i++) {
+                //随机延时抽奖
+                if ($i < 2) {
+                    $this->randFloat();
+                }
+                //抽奖前访问一次直播间
+                if ($i < 1) {
+                    $this->goToRoom($roomid);
+                }
                 $raffleId = $raw['data'][$i]['raffleId'];
                 $data['msg'][$i] = $this->joinActivity($roomRealid, $raffleId);
             }
@@ -135,6 +145,14 @@ trait smallTv
     //加入
     public function joinActivity($roomRealid, $raffleId)
     {
+        if (in_array($raffleId, $this->_smallTvList)) {
+            if (count($this->_smallTvList) > 100) {
+                $this->_smallTvList = null;
+            }
+            return $raffleId . '|重复抽奖!';
+        } else {
+            $this->_smallTvList[] = $raffleId;
+        }
         $url = $this->_smallTvJoinApi . $roomRealid . '&raffleId=' . $raffleId;
         $raw = $this->curl($url);
         $raw = json_decode($raw, true);

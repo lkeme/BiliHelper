@@ -217,7 +217,7 @@ trait liveGlobal
     public function parseRespJson($resp)
     {
         if (strlen($resp) == 4) {
-            $num= unpack('N', $resp)[1];
+            $num = unpack('N', $resp)[1];
             return 'ONLINE: 当前直播间有' . $num . '人在线';
         }
         $resp = json_decode($resp, true);
@@ -468,5 +468,21 @@ trait liveGlobal
         $memory = @round($size / pow(1024, ($i = floor(log($size, 1024)))), 2) . ' ' . $unit[$i];
         $data = $msg . '时内存: ' . $memory;
         $this->writeFileTo('./tmp/', 'memory.log', $data);
+    }
+
+    //随机延时
+    public function randFloat($min = 2, $max = 5)
+    {
+        $rand = $min + mt_rand() / mt_getrandmax() * ($max - $min);
+        sleep($rand);
+        return;
+    }
+
+    //访问一次抽奖直播间
+    public function goToRoom($roomid)
+    {
+        $url = 'http://live.bilibili.com/' . $roomid;
+        $this->curl($url);
+        return;
     }
 }

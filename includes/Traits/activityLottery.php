@@ -12,6 +12,8 @@ trait activityLottery
     public $_noticeActiveApi = 'http://api.live.bilibili.com/activity/v1/Raffle/notice?';
     //保存活动抽奖信息
     public $_activeLotteryList = [];
+    //保存活动信息
+    public $_activeList = [];
 
     //start
     public function activeStart($data)
@@ -128,11 +130,17 @@ trait activityLottery
                 'msg' => [],
             ];
             for ($i = 0; $i < count($de_raw['data']); $i++) {
+                if ($i < 2) {
+                    $this->randFloat();
+                }
+                if ($i < 1) {
+                    $this->goToRoom($roomid);
+                }
                 $raffleId = $de_raw['data'][$i]['raffleId'];
-                //pc
-                $data['msg'][$i] = $this->pcActiveJoin($roomid, $raffleId);
                 //app
                 $this->appActiveJoin($roomid, $raffleId);
+                //pc
+                $data['msg'][$i] = $this->pcActiveJoin($roomid, $raffleId);
             }
             return $data;
         }
@@ -174,6 +182,15 @@ trait activityLottery
     //加入PC活动抽奖
     public function pcActiveJoin($roomid, $raffleId)
     {
+        if (in_array($raffleId, $this->_activeList)) {
+            if (count($this->_activeList) > 100) {
+                $this->_activeList = null;
+            }
+            return $raffleId . '|重复抽奖!';
+        } else {
+            $this->_activeList[] = $raffleId;
+        }
+
         $url = $this->_joinActiveApi . 'roomid=' . $roomid . '&raffleId=' . $raffleId;
         $raw = $this->curl($url, null, true, null, $roomid);
 
