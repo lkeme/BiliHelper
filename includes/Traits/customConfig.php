@@ -22,5 +22,7 @@ trait customConfig
         'privateSendMsg' => false,
         //应援团签到任务
         'groupSignStart' => true,
+        //延迟任务 避免一定程度被ban
+        'delayTasks' => true,
     ];
 }

@@ -485,4 +485,17 @@ trait liveGlobal
         $this->curl($url);
         return;
     }
+
+    //延迟任务 防止一定程度被ban
+    public function delayTasks()
+    {
+        $hour = date('H');
+        if ($hour >= 2 && $hour < 6) {
+            $sleeptime = 60 * 60 * 5;
+            $this->log('Sleep: 本宝宝睡眠时间|(2:00 - 7:00不营业)!', 'yellow', 'SLEEP');
+            sleep($sleeptime);
+            return true;
+        }
+        return true;
+    }
 }
