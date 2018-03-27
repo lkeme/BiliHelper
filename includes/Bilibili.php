@@ -81,7 +81,7 @@ class Bilibili
             //中奖查询
             'wincheck' => $this->start,
             //扭蛋币
-            'eggMoney' => $this->start,
+            //'eggMoney' => $this->start,
             //瓜子换硬币
             'silver2coin' => $this->start,
             //客户端心跳
@@ -149,7 +149,7 @@ class Bilibili
                 if (!$this->heart()) break;
                 if (!$this->silver()) break;
                 if (!$this->giftheart()) break;
-                if (!$this->eggMoney()) break;
+                //if (!$this->eggMoney()) break;
                 if (!$this->smallTvWin()) break;
                 if (!$this->activeWin()) break;
                 if (!$this->dailyTask()) break;
