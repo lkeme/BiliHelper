@@ -3,7 +3,7 @@
 trait groupSign
 {
     //加入的应援团列表
-    public $_groupListApi = 'http://api.live.bilibili.com/link_group/v1/member/my_groups?';
+    public $_groupListApi = 'http://api.vc.bilibili.com/link_group/v1/member/my_groups?';
     //应援团签到
     public $_groupSignApi = 'http://api.vc.bilibili.com/link_setting/v1/link_setting/sign_in?';
 
