@@ -80,8 +80,6 @@ class Bilibili
             'sheart' => $this->start,
             //中奖查询
             'wincheck' => $this->start,
-            //扭蛋币
-            //'eggMoney' => $this->start,
             //瓜子换硬币
             'silver2coin' => $this->start,
             //客户端心跳
@@ -107,6 +105,7 @@ class Bilibili
 
     public function init()
     {
+        $this->cookie = $this->trimAll($this->cookie);
         $api = $this->prefix . 'room/v1/Room/room_init?id=' . $this->roomid;
         $raw = $this->curl($api);
         $data = json_decode($raw, true);
@@ -149,7 +148,6 @@ class Bilibili
                 if (!$this->heart()) break;
                 if (!$this->silver()) break;
                 if (!$this->giftheart()) break;
-                //if (!$this->eggMoney()) break;
                 if (!$this->smallTvWin()) break;
                 if (!$this->activeWin()) break;
                 if (!$this->dailyTask()) break;
@@ -589,10 +587,10 @@ class Bilibili
             curl_setopt($curl, CURLOPT_USERAGENT, $this->useragent);
         }
         if ($this->_issetProxy) {
+            //代理服务器地址
             curl_setopt($curl, CURLOPT_PROXY, $this->_setProxy['ip']);
+            curl_setopt($curl, CURLOPT_PROXYPORT, $this->_setProxy['port']); //代理服务器端口
         }
-        //代理服务器地址
-        curl_setopt($curl, CURLOPT_PROXYPORT, $this->_setProxy['port']); //代理服务器端口
         if (!empty($data)) {
             if (is_array($data)) {
                 $data = http_build_query($data);
@@ -605,6 +603,49 @@ class Bilibili
         if ($this->debug && $log) {
             $this->log('<<< ' . $result, 'yellow');
         }
+        return $result;
+    }
+
+    //appCurl
+    public function appCurl($url, $data)
+    {
+        $newdata = http_build_query($data);
+        $length = mb_strlen($newdata);
+
+        $headers = [
+            'Display-ID: 6580464-1522208142',
+            'Buvid: 53CA3838-C28F-4E42-9B97-886D3CF7AD4B36100infoc',
+            'User-Agent: Mozilla/5.0 BiliDroid/5.22.1 (bbcallen@gmail.com)',
+            'Device-ID: Pw83Bj8LbgppUTJTL1Mv',
+            'Content-Type: application/x-www-form-urlencoded',
+            'Content-Length: ' . $length,
+            'Host: api.live.bilibili.com',
+            'Connection: Keep-Alive',
+            'Accept-Encoding: gzip',
+            'Cookie: ' . $this->cookie,
+        ];
+
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_HEADER, 0);
+        curl_setopt($curl, CURLOPT_TIMEOUT, 20);
+        curl_setopt($curl, CURLOPT_ENCODING, 'gzip');
+        curl_setopt($curl, CURLOPT_IPRESOLVE, 1);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 10);
+
+        if ($this->_issetProxy) {
+            //代理服务器地址
+            curl_setopt($curl, CURLOPT_PROXY, $this->_setProxy['ip']);
+            curl_setopt($curl, CURLOPT_PROXYPORT, $this->_setProxy['port']); //代理服务器端口
+        }
+        curl_setopt($curl, CURLOPT_POST, 1);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $newdata);
+
+        $result = curl_exec($curl);
+        curl_close($curl);
         return $result;
     }
 

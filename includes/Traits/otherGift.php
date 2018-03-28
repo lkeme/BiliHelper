@@ -2,29 +2,6 @@
 
 trait otherGift
 {
-    //扭蛋币
-    public function eggMoney()
-    {
-        if (time() < $this->lock['eggMoney']) {
-            return true;
-        }
-        $url = 'http://live.bilibili.com/redLeaf/kingMoneyGift';
-        $raw = $this->curl($url);
-        $raw = json_decode($raw, true);
-        if ($raw['code'] == '-400') {
-            $this->lock['eggMoney'] += 24 * 60 * 60;
-            $this->log('EggMoney:' . $raw['msg'], 'blue', '扭蛋币');
-        } elseif ($raw['code'] == '0') {
-            $this->lock['eggMoney'] += 24 * 60 * 60;
-            $this->log('EggMoney:' . $raw['msg'], 'blue', '扭蛋币');
-        } else {
-            //6小时重试
-            $this->lock['eggMoney'] += 6 * 60 * 60;
-            $this->log('EggMoney:' . $raw['msg'], 'red', '扭蛋币');
-        }
-        return true;
-    }
-
     //硬币兑换瓜子
     public function silver2coin()
     {

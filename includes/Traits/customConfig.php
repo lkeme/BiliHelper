@@ -24,7 +24,5 @@ trait customConfig
         'groupSignStart' => true,
         //延迟任务 避免一定程度被ban
         'delayTasks' => true,
-        //扭蛋币任务
-        //'eggMoney' => true,
     ];
 }

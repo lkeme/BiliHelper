@@ -67,7 +67,7 @@ trait userHelper
         $temp = $this->getCookie();
         //失败就跳出
         if (!$temp) return true;
-        $this->cookie = $temp;
+        $this->cookie = $this->trimAll($temp);
         $this->lock['refreshCookie'] = time() + 20 * 60 * 60;
         $this->log('Cookie: 刷新成功', 'green', 'BiliLogin');
         return true;

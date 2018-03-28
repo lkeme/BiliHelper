@@ -148,6 +148,48 @@ trait liveGlobal
 
     }
 
+    //app发送弹幕
+    public function appSendMsg(array $info)
+    {
+        $api = 'https://api.live.bilibili.com/api/sendmsg?';
+        $data = [
+            'access_key' => $this->_accessToken,
+            'actionKey' => 'appkey',
+            'appkey' => $this->_appKey,
+            'build' => '5220001',
+            'device' => 'android',
+            'mobi_app' => 'android',
+            'platform' => 'android',
+            'ts' => time(),
+        ];
+        ksort($data);
+        $data['sign'] = $this->createSign($data);
+
+        $url = $api . http_build_query($data);
+        $payload = [
+            'cid' => $info['roomid'],
+            'mid' => $this->uid,
+            'msg' => $info['msg'],
+            'rnd' => time(),
+            'mode' => '1',
+            'pool' => '0',
+            'type' => 'json',
+            'color' => '16777215',
+            'fontsize' => '25',
+            'playTime' => '0.0',
+        ];
+
+        $raw = $this->appCurl($url, $payload);
+        $de_raw = json_decode($raw, true);
+
+        if ($de_raw['code'] == '0') {
+            $this->log('Danmu: 自定义弹幕发送成功!', 'yellow', 'SENDMSG');
+            return true;
+        }
+        $this->log('Danmu: 自定义弹幕发送失败!', 'red', 'SENDMSG');
+        return true;
+    }
+
     //使用发送弹幕模块
     public function privateSendMsg()
     {
@@ -241,7 +283,7 @@ trait liveGlobal
                  * 活动
                  */
                 //var_dump($resp);
-                return 'ACTIVITY_EVENT: ' . $resp['data']['keyword'] . '|' . $resp['data']['type'];
+                return 'ACTIVITY_EVENT: ' . $resp['data']['keyword'] . ' | ' . $resp['data']['type'];
                 break;
             case 'GUARD_MSG':
                 /**
@@ -254,13 +296,13 @@ trait liveGlobal
                 /**
                  * 开始直播
                  */
-                return 'LIVE: [房间]' . $resp['roomid'] . '|开始直播';
+                return 'LIVE: [房间]' . $resp['roomid'] . ' | 开始直播';
                 break;
             case 'PREPARING':
                 /**
                  * 准备直播
                  */
-                return 'PREPARING: [房间]' . $resp['roomid'] . '|准备直播';
+                return 'PREPARING: [房间]' . $resp['roomid'] . ' | 准备直播';
                 break;
             case 'WELCOME_GUARD':
                 /**
@@ -280,7 +322,7 @@ trait liveGlobal
                  */
                 //TODO 节奏风暴暂时搁置
                 if (strpos($resp['msg'], $this->_stormKeyWord) !== false) {
-                    $this->writeFileTo('./tmp/', 'storm.txt', json_encode($resp));
+                    $this->writeFileTo(' ./tmp / ', 'storm . txt', json_encode($resp));
                     return [
                         'type' => 'storm',
                         'roomid' => $resp['roomid'],
@@ -323,7 +365,7 @@ trait liveGlobal
                 var_dump($resp);
                 if (array_key_exists('39', $resp['data'])) {
                     if ($resp['data']['39']['action'] == 'end') {
-                        return 'SPECIAL_GIFT: ' . $resp['data']['39']['id'] . '|节奏风暴结束';
+                        return 'SPECIAL_GIFT: ' . $resp['data']['39']['id'] . ' | 节奏风暴结束';
                     }
                     //TODO
                     if ($resp['data']['39']['action'] == 'start') {
@@ -335,97 +377,97 @@ trait liveGlobal
                     }
                 }
                 var_dump($resp['data']);
-                return 'SPECIAL_GIFT: ' . $resp['data']['39']['id'] . '|' . $resp['data']['39']['content'] . '|不知道是什么东西';
+                return 'SPECIAL_GIFT: ' . $resp['data']['39']['id'] . ' | ' . $resp['data']['39']['content'] . ' | 不知道是什么东西';
                 break;
             case 'WELCOME_ACTIVITY':
                 /**
                  * 欢迎消息-活动
                  */
-                return 'WELCOME_ACTIVITY: ' . $resp['data']['type'] . '|' . $resp['data']['uname'];
+                return 'WELCOME_ACTIVITY: ' . $resp['data']['type'] . ' | ' . $resp['data']['uname'];
                 break;
             case 'GUARD_BUY':
                 /**
                  * 舰队购买
                  */
-                return 'GUARD_BUY: [房间]' . $resp['roomid'] . '|' . $resp['data']['username'] . '购买舰队';
+                return 'GUARD_BUY: [房间]' . $resp['roomid'] . ' | ' . $resp['data']['username'] . '购买舰队';
                 break;
             case 'RAFFLE_START':
                 /**
                  * 抽奖开始
                  */
-                return 'RAFFLE_START: [房间]' . $resp['roomid'] . '|' . $resp['data']['raffleId'];
+                return 'RAFFLE_START: [房间]' . $resp['roomid'] . ' | ' . $resp['data']['raffleId'];
                 break;
             case 'RAFFLE_END':
                 /**
                  * 抽奖结束
                  */
-                return 'RAFFLE_END: [房间]' . $resp['roomid'] . '|' . $resp['data']['raffleId'];
+                return 'RAFFLE_END: [房间]' . $resp['roomid'] . ' | ' . $resp['data']['raffleId'];
                 break;
             case 'TV_START':
                 /**
                  * 小电视抽奖开始
                  */
-                return 'TV_START: [房间]' . $resp['data']['msg']['real_roomid'] . '|' . $resp['data']['msg']['msg'];
+                return 'TV_START: [房间]' . $resp['data']['msg']['real_roomid'] . ' | ' . $resp['data']['msg']['msg'];
                 break;
             case 'TV_END':
                 /**
                  * 小电视抽奖结束
                  */
-                return 'TV_END: ' . $resp['data']['id'] . '|' . $resp['data']['mobileTips'];
+                return 'TV_END: ' . $resp['data']['id'] . ' | ' . $resp['data']['mobileTips'];
                 break;
             case 'EVENT_CMD':
                 /**
                  * 活动相关
                  */
-                return 'EVENT_CMD: [房间]' . $resp['roomid'] . '|' . $resp['data']['event_type'];
+                return 'EVENT_CMD: [房间]' . $resp['roomid'] . ' | ' . $resp['data']['event_type'];
                 break;
             case 'ROOM_SILENT_ON':
                 /**
                  * 房间开启禁言
                  */
-                return 'ROOM_SILENT_ON: [房间]' . $resp['roomid'] . '|开启禁言';
+                return 'ROOM_SILENT_ON: [房间]' . $resp['roomid'] . ' | 开启禁言';
                 break;
             case 'ROOM_SILENT_OFF':
                 /**
                  * 房间禁言结束
                  */
-                return 'ROOM_SILENT_OFF: [房间]' . $resp['roomid'] . '|禁言结束';
+                return 'ROOM_SILENT_OFF: [房间]' . $resp['roomid'] . ' | 禁言结束';
                 break;
             case 'ROOM_SHIELD':
                 /**
                  * 房间屏蔽
                  */
-                return 'ROOM_SHIELD: [房间]' . $resp['roomid'] . '|屏蔽';
+                return 'ROOM_SHIELD: [房间]' . $resp['roomid'] . ' | 屏蔽';
                 break;
             case 'ROOM_BLOCK_MSG':
                 /**
                  * 房间封禁消息
                  */
-                return 'ROOM_BLOCK_MSG: [房间]' . $resp['roomid'] . '|封禁:' . $resp['uname'];
+                return 'ROOM_BLOCK_MSG: [房间]' . $resp['roomid'] . ' | 封禁:' . $resp['uname'];
                 break;
             case 'ROOM_ADMINS':
                 /**
                  * 管理员变更
                  */
-                return 'ROOM_ADMINS: [房间]' . $resp['roomid'] . '|管理员变更';
+                return 'ROOM_ADMINS: [房间]' . $resp['roomid'] . ' | 管理员变更';
                 break;
             case 'CHANGE_ROOM_INFO':
                 /**
                  * 房间设置变更
                  */
-                return 'CHANGE_ROOM_INFO: [房间]' . $resp['roomid'] . '|设置变更';
+                return 'CHANGE_ROOM_INFO: [房间]' . $resp['roomid'] . ' | 设置变更';
                 break;
             case 'WISH_BOTTLE':
                 /**
                  * 许愿瓶
                  */
-                return 'WISH_BOTTLE: [房间]' . $resp['data']['wish']['uid'] . '|' . $resp['data']['wish']['content'];
+                return 'WISH_BOTTLE: [房间]' . $resp['data']['wish']['uid'] . ' | ' . $resp['data']['wish']['content'];
                 break;
             case 'CUT_OFF':
                 /**
                  * 直播强制切断
                  */
-                return 'CUT_OFF: [房间]' . $resp['roomid'] . '|' . $resp['msg'];
+                return 'CUT_OFF: [房间]' . $resp['roomid'] . ' | ' . $resp['msg'];
                 break;
             default:
                 // 新添加的消息类型
@@ -453,7 +495,7 @@ trait liveGlobal
     //获取用户UID
     public function getUserInfo()
     {
-        $url = $this->prefix . 'i/api/liveinfo';
+        $url = $this->prefix . 'i / api / liveinfo';
         $raw = $this->curl($url);
         $raw = json_decode($raw, true);
         //TODO 暂时返回uid
@@ -467,7 +509,7 @@ trait liveGlobal
         $unit = array('b', 'kb', 'mb', 'gb', 'tb', 'pb');
         $memory = @round($size / pow(1024, ($i = floor(log($size, 1024)))), 2) . ' ' . $unit[$i];
         $data = $msg . '时内存: ' . $memory;
-        $this->writeFileTo('./tmp/', 'memory.log', $data);
+        $this->writeFileTo(' ./tmp / ', 'memory . log', $data);
     }
 
     //随机延时
@@ -498,4 +540,12 @@ trait liveGlobal
         }
         return true;
     }
+
+    //删除cookie的空格和回车
+    public function trimAll($str)
+    {
+        $rule = array("\r\n", " ", "　", "\t", "\n", "\r");
+        return str_replace($rule, '', $str);
+    }
+
 }
