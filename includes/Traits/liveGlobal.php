@@ -532,6 +532,7 @@ trait liveGlobal
             "room_id" => $roomid,
             "csrf_token" => $this->token,
         ];
+        $this->curl($url, $data);
         return;
     }
 
