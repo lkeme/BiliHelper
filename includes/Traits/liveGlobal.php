@@ -523,8 +523,15 @@ trait liveGlobal
     //访问一次抽奖直播间
     public function goToRoom($roomid)
     {
-        $url = 'http://live.bilibili.com/' . $roomid;
-        $this->curl($url);
+//        $url = 'http://live.bilibili.com/' . $roomid;
+//        $this->curl($url);
+//        return;
+
+        $url = 'https://api.live.bilibili.com/room/v1/Room/room_entry_action';
+        $data = [
+            "room_id" => $roomid,
+            "csrf_token" => $this->token,
+        ];
         return;
     }
 
