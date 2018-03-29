@@ -1,6 +1,8 @@
 # BilibiliHelper
 B 站直播实用脚本
 
+BUG群 : 55308141
+
 
 ## 运行环境
  php版本推荐7.*+
