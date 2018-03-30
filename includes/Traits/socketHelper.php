@@ -19,6 +19,10 @@ trait socketHelper
     public $_roomRealId = '';
     public $_reflag = 0;
 
+    //socketInfo
+    public $_socketDomain = '';
+    public $_socketPort = '';
+
     public function socketHelperStart()
     {
         socketRestart:
@@ -32,7 +36,7 @@ trait socketHelper
             if (!$this->_roomRealId) {
                 $roomRealId = $this->getUserRecommend();
                 $roomRealId = $roomRealId ?: $this->liveRoomStatus($this->_defaultRoomId);
-            }else{
+            } else {
                 //检查状态，返回真实roomid
                 $roomRealId = $this->getRealRoomID($this->_roomRealId);
             }
@@ -116,8 +120,8 @@ trait socketHelper
     {
         //TODO 暂时性功能 有需求就修改
         $info = [
-            'roomid'=>'9522051',
-            'content'=>'9522051测试',
+            'roomid' => '9522051',
+            'content' => '9522051测试',
         ];
         $raw = $this->sendMsg($info);
         $de_raw = json_decode($raw, true);
@@ -139,6 +143,10 @@ trait socketHelper
     // 获取弹幕服务器的 ip 和端口号
     public function getServer($roomID)
     {
+        if ($this->_socketDomain) {
+            return ['ip' => $this->_socketDomain, 'port' => $this->_socketPort];
+        }
+
         $xmlResp = '<xml>' . $this->curl($this->_roomServerApi . $roomID) . '</xml>';
         $parser = xml_parser_create();
 

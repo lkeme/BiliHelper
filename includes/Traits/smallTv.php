@@ -27,6 +27,9 @@ trait smallTv
             case '2':
                 $this->log("SmallTv:" . $checkdata['msg'], 'red', 'SOCKET');
                 break;
+            case '444':
+                $this->log("SmallTv:" . $checkdata['msg'], 'red', 'SOCKET');
+                break;
             case '0':
                 if (is_array($checkdata['msg'])) {
                     foreach ($checkdata['msg'] as $value) {
@@ -95,7 +98,14 @@ trait smallTv
         $url = $this->_smallTvCheckApi . $roomRealid;
         $raw = $this->curl($url);
         $raw = json_decode($raw, true);
-
+        //钓鱼检测
+        if (!$this->liveRoomStatus($roomRealid)) {
+            $data = [
+                'code' => '444',
+                'msg' => '该房间存在钓鱼行为!',
+            ];
+            return $data;
+        }
         if (array_key_exists('status', $raw['data'])) {
             switch ($raw['data']['status']) {
                 case '-1':

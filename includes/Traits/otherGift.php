@@ -31,16 +31,16 @@ trait otherGift
         $raw = json_decode($raw, true);
 
         if ($raw['code'] == '0' && $raw['msg'] == '兑换成功') {
-            $this->lock['silver2coin'] += 24 * 60 * 60;
+            $this->lock['silver2coin'] = time() + 24 * 60 * 60;
             $this->log('硬币兑换: ' . $raw['msg'], 'blue', 'COIN');
             return true;
         } elseif ($raw['code'] == '403') {
-            $this->lock['silver2coin'] += 24 * 60 * 60;
+            $this->lock['silver2coin'] = time() + 24 * 60 * 60;
             $this->log('硬币兑换: ' . $raw['msg'], 'blue', 'COIN');
             return true;
         } else {
             //6小时重试
-            $this->lock['silver2coin'] += 6 * 60 * 60;
+            $this->lock['silver2coin'] = time() + 6 * 60 * 60;
             $this->log('硬币兑换: 兑换失败', 'red', 'COIN');
             return false;
         }
@@ -75,7 +75,7 @@ trait otherGift
             }
         }
         //TODO 暂时沒有判斷
-        $this->lock['dailyTask'] += 24 * 60 * 60;
+        $this->lock['dailyTask'] = time() + 24 * 60 * 60;
         if (!$flag) {
             $this->log('每日任務: 没有需要完成任务!', 'red', 'DAILY');
             return true;
@@ -95,12 +95,12 @@ trait otherGift
         $raw = json_decode($raw, true);
         //TODO 沒有判斷
         if (empty($raw['data']['bag_list'])) {
-            $this->lock['dailyBag'] += 24 * 60 * 60;
+            $this->lock['dailyBag'] = time() + 24 * 60 * 60;
             $this->log('每日背包: 完成!', 'blue', 'DAILY');
             return true;
         }
         $this->log('每日背包: ' . $raw['data']['bag_list'][0]['bag_name'] . '完成!', 'blue', 'DAILY');
-        $this->lock['dailyBag'] += 24 * 60 * 60;
+        $this->lock['dailyBag'] = time() + 24 * 60 * 60;
         return true;
     }
 }

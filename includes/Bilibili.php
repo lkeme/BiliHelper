@@ -184,7 +184,7 @@ class Bilibili
         // 已经签到
         if ($data['code'] == -500) {
             $this->log($data['msg'], 'green', '签到');
-            $this->lock['sign'] += 24 * 60 * 60;
+            $this->lock['sign'] = time() + 24 * 60 * 60;
             return true;
         }
         // 签到失败
@@ -225,7 +225,7 @@ class Bilibili
             $this->log($data['msg'], 'bg_red', '心跳');
             return false;
         }
-        $this->lock['heart'] += 5 * 60;
+        $this->lock['heart'] = time() + 5 * 60;
 
         $api = $this->prefix . 'User/getUserInfo?ts=' . round(microtime(true) * 1000);
         $raw = $this->curl($api);
@@ -256,7 +256,7 @@ class Bilibili
         if (time() < $this->lock['giftsend'] || empty($this->token)) {
             return true;
         }
-        $this->lock['giftsend'] += 3600;
+        $this->lock['giftsend'] = time() + 3600;
 
         $this->log('开始翻动礼物', 'green', '投喂');
         $api = $this->prefix . 'gift/v2/gift/bag_list';
@@ -322,7 +322,7 @@ class Bilibili
         if (time() < $this->lock['giftheart']) {
             return true;
         }
-        $this->lock['giftheart'] += 5 * 60;
+        $this->lock['giftheart'] = time() + 5 * 60;
 
         $api = $this->prefix . 'gift/v2/live/heart_gift_receive?roomid=' . $this->roomid;
         $raw = $this->curl($api);
@@ -330,7 +330,7 @@ class Bilibili
 
         if ($data['code'] == -403) {
             $this->log($data['msg'], 'magenta', '收礼');
-            $this->lock['giftheart'] += 60 * 60;
+            $this->lock['giftheart'] = time() + 60 * 60;
             $this->curl($this->prefix . 'eventRoom/index?ruid=17561885');
             return true;
         }
@@ -341,7 +341,7 @@ class Bilibili
 
         if ($data['data']['heart_status'] == 0) {
             $this->log('没有礼物可以领了呢', 'magenta', '收礼');
-            $this->lock['giftheart'] += 60 * 60;
+            $this->lock['giftheart'] = time() + 60 * 60;
         }
 
         if (isset($data['data']['gift_list'])) {
@@ -365,7 +365,7 @@ class Bilibili
             $data = json_decode($raw, true);
             // 今日已经领完
             if ($data['code'] == -10017) {
-                $this->lock['silver'] += 60 * 60;
+                $this->lock['silver'] = time() + 60 * 60;
                 $this->log($data['msg'], 'blue', '宝箱');
                 return true;
             }

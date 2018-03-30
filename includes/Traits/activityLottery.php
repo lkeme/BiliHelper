@@ -28,6 +28,9 @@ trait activityLottery
             case '2':
                 $this->log("PCActive: " . $checkdata['msg'], 'red', 'SOCKET');
                 break;
+            case '444':
+                $this->log("PCActive: " . $checkdata['msg'], 'red', 'SOCKET');
+                break;
             case '0':
                 if (is_array($checkdata['msg'])) {
                     foreach ($checkdata['msg'] as $value) {
@@ -98,6 +101,15 @@ trait activityLottery
         $url = $this->_checkActiveApi . $roomid;
         $raw = $this->curl($url);
         $de_raw = json_decode($raw, true);
+
+        //钓鱼检测
+        if (!$this->liveRoomStatus($roomid)) {
+            $data = [
+                'code' => '444',
+                'msg' => '该房间存在钓鱼行为!',
+            ];
+            return $data;
+        }
 
         if (array_key_exists('status', $de_raw['data'])) {
             switch ($de_raw['data']['status']) {

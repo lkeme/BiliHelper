@@ -38,7 +38,7 @@ trait liveGlobal
                 //TODO 详细写入信息没做
                 $this->log("Win:" . $data['month'] . '有中奖记录 ~', 'cyan', 'LIVE');
             }
-            $this->lock['wincheck'] += 12 * 60 * 60;
+            $this->lock['wincheck'] = time() + 12 * 60 * 60;
         }
 
         return $this->parseRespJson($resp);
@@ -74,7 +74,7 @@ trait liveGlobal
             $this->log($de_raw['msg'], 'bg_red', '心跳');
             return false;
         }
-        $this->lock['appHeart'] += 5 * 60;
+        $this->lock['appHeart'] = time() + 5 * 60;
 
         $this->log('AppHeart: OK!', 'magenta', '心跳');
 
@@ -211,7 +211,7 @@ trait liveGlobal
         }
         $this->log('Danmu: 自定义弹幕发送失败!', 'red', 'SENDMSG');
         //如果失败一小时重试一次
-        $this->lock['privateSendMsg'] += 3600;
+        $this->lock['privateSendMsg'] = time() + 3600;
         return true;
     }
 
@@ -237,7 +237,16 @@ trait liveGlobal
         $url = $this->_liveStatusApi . $roomid;
         $raw = $this->curl($url);
         $raw = json_decode($raw, true);
-        if ($raw['code'] == 0 || $raw['msg'] == 'ok' && $raw['message'] == 'ok') {
+        if ($raw['code'] == 0) {
+            if ($raw['data']['is_hidden']) {
+                return false;
+            }
+            if ($raw['data']['is_locked']) {
+                return false;
+            }
+            if ($raw['data']['encrypted']) {
+                return false;
+            }
             return $raw['data']['room_id'];
         }
         return false;
