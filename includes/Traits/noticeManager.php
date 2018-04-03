@@ -45,6 +45,13 @@ trait noticeManager
                 ];
                 $this->scSend($info);
                 break;
+            case 'winIng':
+                $info = [
+                    'title' => '实物中奖',
+                    'content' => '[' . $nowtime . ']' . ' 用户: ' . $this->_userDataInfo['name'] . ' 实物中奖: ' . $result,
+                ];
+                $this->scSend($info);
+                break;
             default:
                 break;
 
@@ -73,8 +80,7 @@ trait noticeManager
             ]
         ];
         $context = stream_context_create($opts);
-        $result = file_get_contents('https://sc.ftqq.com/' . $this->_scKey . '.send', false, $context);
-        print_r($result);
+        file_get_contents('https://sc.ftqq.com/' . $this->_scKey . '.send', false, $context);
         return true;
         //return $result = file_get_contents('https://sc.ftqq.com/' . $this->_sckey . '.send', false, $context);
     }

@@ -24,5 +24,7 @@ trait customConfig
         'groupSignStart' => true,
         //延迟任务 避免一定程度被ban
         'delayTasks' => true,
+        //实物抽奖 实验性
+        'drawLottery' => true,
     ];
 }

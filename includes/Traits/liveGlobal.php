@@ -34,6 +34,10 @@ trait liveGlobal
                 $this->log("WIN: " . $data['month'] . '|No Winning ~', 'magenta', 'LIVE');
             } else {
                 $data = date("Y-m-d H:i:s") . '|' . $data['list'];
+
+                //推送实物信息
+                $this->infoSendManager('winIng', $data);
+
                 $this->writeFileTo('./record/', $this->_userDataInfo['name'] . '-Winning.txt', $data);
                 //TODO 详细写入信息没做
                 $this->log("Win:" . $data['month'] . '有中奖记录 ~', 'cyan', 'LIVE');

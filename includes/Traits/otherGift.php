@@ -103,4 +103,44 @@ trait otherGift
         $this->lock['dailyBag'] = time() + 24 * 60 * 60;
         return true;
     }
+
+    //实物抽奖 试验性
+    public function drawLottery()
+    {
+        if (time() < $this->lock['drawLottery']) {
+            return true;
+        }
+
+        for ($i = 60; $i < 80; $i++) {
+            $url = "https://api.live.bilibili.com/lottery/v1/box/getStatus?aid=" . $i;
+            $raw = $this->curl($url);
+            $de_raw = json_decode($raw, true);
+
+            if ($de_raw['code'] != '0') {
+                break;
+            }
+            $title = $de_raw['data']['title'];
+
+            if (strpos($title, '测试') !== false) {
+                break;
+            }
+
+            $total = count($de_raw['data']['typeB']);
+
+            for ($k = 0; $k < $total; $k++) {
+                $join_end_time = $de_raw['data']['typeB'][$k]['join_end_time'];
+                $join_start_time = $de_raw['data']['typeB'][$k]['join_start_time'];
+                if ($join_end_time > time() && time() > $join_start_time) {
+                    $data = [
+                        'aid' => $i,
+                        'number' => $k + 1,
+                    ];
+                    $url1 = 'https://api.live.bilibili.com/lottery/v1/box/draw?' . http_build_query($data);
+                    $this->curl($url1);
+                }
+            }
+        }
+        $this->lock['drawLottery'] = time() + 5 * 60;
+        return true;
+    }
 }
