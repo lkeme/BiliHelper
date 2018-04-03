@@ -71,11 +71,16 @@ trait smallTv
                 $this->log("SmallTv: " . $this->_smallTvLdList[0]['raffleId'] . $raw['msg'], 'green', 'SOCKET');
                 return true;
             } elseif ($raw['data']['status'] == '2') {
-                $this->log("SmallTv: " . $this->_smallTvLdList[0]['raffleId'] . '获得' . $raw['data']['gift_num'] . $raw['data']['gift_name'], 'yellow', 'SOCKET');
+                $this->log("SmallTv: " . $this->_smallTvLdList[0]['raffleId'] . '获得' . $raw['data']['gift_name'] . 'X' . $raw['data']['gift_num'], 'yellow', 'SOCKET');
 
                 $filename = $this->_userDataInfo['name'] . '-smallTvFb.txt';
-                $temp_data = "SmallTv: " . $this->_smallTvLdList[0]['roomid'] . '|' . $this->_smallTvLdList[0]['raffleId'] . '获得' . $raw['data']['gift_num'] . $raw['data']['gift_name'];
+                $temp_data = "SmallTv: " . $this->_smallTvLdList[0]['roomid'] . '|' . $this->_smallTvLdList[0]['raffleId'] . '获得' . $raw['data']['gift_name'] . 'X' . $raw['data']['gift_num'];
                 $this->writeFileTo('./record/', $filename, $temp_data);
+
+                if ($raw['data']['gift_name'] != '辣条') {
+                    //推送活动抽奖信息
+                    $this->infoSendManager('smallTv', $temp_data);
+                }
 
                 unset($this->_smallTvLdList[0]);
                 $this->_smallTvLdList = array_values($this->_smallTvLdList);

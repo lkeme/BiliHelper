@@ -14,6 +14,7 @@ require "Traits/userHelper.php";
 require "Traits/otherGift.php";
 require "Traits/activityLottery.php";
 require "Traits/groupSign.php";
+require "Traits/noticeManager.php";
 
 class Bilibili
 {
@@ -26,6 +27,7 @@ class Bilibili
     use otherGift;
     use activityLottery;
     use groupSign;
+    use noticeManager;
 
     // 主播房间 id
     public $roomid = '3746256';
@@ -128,6 +130,7 @@ class Bilibili
         }
 
         $this->uid = $data['data']['info']['uid'];
+        $this->_userDataInfo['name'] = $data['data']['info']['uname'];
 
         preg_match('/bili_jct=(.{32})/', $this->cookie, $token);
         $this->token = isset($token[1]) ? $token[1] : '';
@@ -180,6 +183,9 @@ class Bilibili
         $api = $this->prefix . 'sign/doSign';
         $raw = $this->curl($api);
         $data = json_decode($raw, true);
+
+        //推送签到结果信息
+        $this->infoSendManager('todaySign', $data['msg']);
 
         // 已经签到
         if ($data['code'] == -500) {

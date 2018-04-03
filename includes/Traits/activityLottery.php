@@ -78,6 +78,11 @@ trait activityLottery
                 $info = '[PC] RoomId: ' . $this->_activeLotteryList[0]['roomid'] . '|RaffleId: ';
                 $info .= $this->_activeLotteryList[0]['raffleId'] . '|获得' . $raw['data']['gift_name'] . 'X' . $raw['data']['gift_num'];
 
+                if ($raw['data']['gift_name'] != '辣条') {
+                    //推送活动抽奖信息
+                    $this->infoSendManager('active', $info);
+                }
+
                 $this->log("PCActive: " . $info, 'yellow', 'SOCKET');
                 $filename = $this->_userDataInfo['name'] . '-activeLotteryFb.txt';
 

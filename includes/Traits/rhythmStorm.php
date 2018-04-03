@@ -68,6 +68,10 @@ trait rhythmStorm
         }
 
         $this->writeFileTo('./temp/', 'stormjoin.txt', $raw);
+
+        //推送节奏风暴抽奖信息
+        $this->infoSendManager('storm', $raw);
+
         return true;
     }
 

@@ -30,6 +30,9 @@ function start($account, $cookie, $data)
     $api->roomid = 9522051;
     //要指定读弹幕消息的直播间id
     $api->_roomRealId = '';
+    //Server酱接口，有key则推送，为空则不推送
+    $api->_scKey = '';
+
     $api->callback = function () {
         //递归调用
         global $account;
