@@ -77,7 +77,11 @@ trait smallTv
                 $temp_data = "SmallTv: " . $this->_smallTvLdList[0]['roomid'] . '|' . $this->_smallTvLdList[0]['raffleId'] . '获得' . $raw['data']['gift_name'] . 'X' . $raw['data']['gift_num'];
                 $this->writeFileTo('./record/', $filename, $temp_data);
 
-                if ($raw['data']['gift_name'] != '辣条') {
+                if ($raw['data']['gift_name'] == ''){
+                    print_r($raw);
+                }
+
+                if ($raw['data']['gift_name'] != '辣条' && $raw['data']['gift_name'] != '') {
                     //推送活动抽奖信息
                     $this->infoSendManager('smallTv', $temp_data);
                 }
