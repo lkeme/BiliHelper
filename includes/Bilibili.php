@@ -182,7 +182,8 @@ class Bilibili
             return true;
         }
         //debug 可删
-        echo '签到时间' . date("Y-h-d H:i:s", $this->lock['sign']);
+        echo '当前时间:' . date("Y-m-d H:i:s");
+        echo '签到时间:' . date("Y-m-d H:i:s", $this->lock['sign']);
 
         $api = $this->prefix . 'sign/doSign';
         $raw = $this->curl($api);
