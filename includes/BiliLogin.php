@@ -73,6 +73,10 @@ class BiliLogin
             }
         }
 
+        if ($loginInfo['code'] != 0) {
+            $this->log($loginInfo['message'], 'red', 'BiliLogin');
+        }
+
         $this->log('获取Cookie成功', 'green', 'BiliLogin');
         $cookie_file = $this->saveCookie($loginInfo);
         /**
@@ -150,7 +154,8 @@ class BiliLogin
         $data['captcha'] = $ocr_raw;
         ksort($data);
         $data['sign'] = $this->createSign($data);
-        $raw = $this->curl($url, null, false, $captcha_raw['cookie']);
+        $cookie = $this->trimAll($captcha_raw['cookie']);
+        $raw = $this->curl($url, $data, false, $cookie);
 
         $loginInfo = json_decode($raw, true);
 
@@ -244,6 +249,14 @@ class BiliLogin
         ];
     }
 
+    //删除cookie的空格和回车
+    public function trimAll($str)
+    {
+        $rule = array("\r\n", " ", "　", "\t", "\n", "\r");
+        return str_replace($rule, '', $str);
+    }
+
+    //rsa加密
     private function rsaEncrypt($data)
     {
         $public_key = openssl_pkey_get_public($this->_keyHash['key']);
