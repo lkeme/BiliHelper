@@ -64,7 +64,8 @@ BUG群 : 55308141
  - 0.9.6: 添加Server酱通知
  - 0.9.7: 添加一个实物抽奖
  - 0.9.8: 添加PC端兑换硬币
- -
+ - 0.9.9: 添加验证码识别(待测试反馈)
+ - 
 
 ## BUG日志
  - 2018年3月28日
@@ -76,7 +77,7 @@ BUG群 : 55308141
  - 2018年4月3日
   > 添加一个实物抽奖(实验),添加通知实物中奖信息，优化了一点代码
  - 2018年4月6日
-  > 更换登陆接口，添加PC端银瓜子兑换硬币
+  > 更换登陆接口，添加PC端银瓜子兑换硬币，添加验证码登陆(云端ocr)
  -
 
 ## Server酱
@@ -244,6 +245,8 @@ $account = [
 
 [bilibili-api](https://github.com/czp3009/bilibili-api)
 
+[bilibili-live-tools](https://github.com/Dawnnnnnn/bilibili-live-tools)
+
 
 ## License
-BilibiliHelper is under the MIT license.
+BiliHelper is under the MIT license.
