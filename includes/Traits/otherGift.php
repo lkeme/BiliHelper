@@ -2,12 +2,14 @@
 
 trait otherGift
 {
-    //硬币兑换瓜子
+    //瓜子兑换硬币 app
     public function silver2coin()
     {
         if (time() < $this->lock['silver2coin']) {
             return true;
         }
+        //TODO 没单独做时间 直接放到一起 有时间改
+        $this->silver2coinPc();
         //TODO 客户端 网页端都可以领一次 暂时只做了客户端的
         //判断accessToken 可用
         if (!$this->authInfo()) {
@@ -32,18 +34,29 @@ trait otherGift
 
         if ($raw['code'] == '0' && $raw['msg'] == '兑换成功') {
             $this->lock['silver2coin'] = time() + 24 * 60 * 60;
-            $this->log('硬币兑换: ' . $raw['msg'], 'blue', 'COIN');
+            $this->log('APP硬币兑换: ' . $raw['msg'], 'blue', 'COIN');
             return true;
         } elseif ($raw['code'] == '403') {
             $this->lock['silver2coin'] = time() + 24 * 60 * 60;
-            $this->log('硬币兑换: ' . $raw['msg'], 'blue', 'COIN');
+            $this->log('APP硬币兑换: ' . $raw['msg'], 'blue', 'COIN');
             return true;
         } else {
             //6小时重试
             $this->lock['silver2coin'] = time() + 6 * 60 * 60;
-            $this->log('硬币兑换: 兑换失败', 'red', 'COIN');
+            $this->log('APP硬币兑换: 兑换失败', 'red', 'COIN');
             return false;
         }
+    }
+
+    public function silver2coinPc()
+    {
+        $url = "https://api.live.bilibili.com/exchange/silver2coin";
+        $raw = $this->curl($url);
+        $de_raw = json_decode($raw, true);
+        // TODO 没做验证
+
+        $this->log('PC硬币兑换: ' . $de_raw['msg'], 'blue', 'COIN');
+        return true;
     }
 
     //領取每日任務獎勵
@@ -80,7 +93,6 @@ trait otherGift
             $this->log('每日任務: 没有需要完成任务!', 'red', 'DAILY');
             return true;
         }
-        $this->log('每日任務: 完成!', 'blue', 'DAILY');
         return true;
     }
 
