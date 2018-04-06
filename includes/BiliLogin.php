@@ -17,7 +17,7 @@ class BiliLogin
     //APP_SECRET
     private $_appSecret = '560c52ccd288fed045859ed18bffd973';
     //DEBUG
-    private $_deBug = false;
+    private $_deBug = true;
     private $_keyHash = '';
     // 调试信息上色
     public $color = true;
@@ -45,7 +45,11 @@ class BiliLogin
         $pass = $this->_keyHash['hash'] . $this->_pass;
         $newpass = $this->rsaEncrypt($pass);
 
-        $url = $this->_baseUrl . 'api/oauth2/login';
+        /**
+         *  OldApi : 'api/oauth2/login'
+         *  更换接口
+         */
+        $url = $this->_baseUrl . 'api/v2/oauth2/login';
         $data = [
             'appkey' => $this->_appKey,
             'username' => $this->_user,
@@ -57,54 +61,56 @@ class BiliLogin
         $loginInfo = json_decode($res, true);
 
         if (array_key_exists('message', $loginInfo)) {
-            if ($loginInfo['message'] == 'CAPTCHA is not match') {
-                //code = -105
-                $loginInfo = null;
+            if ($loginInfo['code'] == -105) {
+                /**
+                 *  TODO 验证码登陆问题
+                 *  $loginInfo['message'] = 'CAPTCHA is not match'
+                 */
+                unset($loginInfo);
                 $loginInfo = $this->captchaLogin($url, $data);
 
-                $cookies = $this->getCookie($loginInfo);
                 $this->log('获取Cookie成功', 'green', 'BiliLogin');
-                //临时保存cookie
-                $tempcookie = '';
-                foreach ($cookies[1] as $cookie) {
-                    $tempcookie .= $cookie . ';';
-                }
-                $filename = $this->getUserInfo($tempcookie) . '.cookies';
-                //返回 用户名.cookies 路径
-                $cookiefile = './user/' . $filename;
-                if (is_file($cookiefile)) {
-                    unlink($cookiefile);
-                }
-                $this->writeFileTo('./user/', $filename, $tempcookie);
-                //返回 用户名.cookies 路径
-                return $cookiefile;
+                $cookie_file = $this->saveCookie($loginInfo);
+
+                return $cookie_file;
             }
             $this->log($loginInfo['message'], 'red', 'BiliLogin');
             die;
         }
 
-        $cookies = $this->getCookie($loginInfo);
         $this->log('获取Cookie成功', 'green', 'BiliLogin');
-
-        //临时保存cookie
-        $tempcookie = '';
-        foreach ($cookies[1] as $cookie) {
-            $tempcookie .= $cookie . ';';
-        }
-        $filename = $this->getUserInfo($tempcookie) . '.cookies';
-        //返回 用户名.cookies 路径
-        $cookiefile = './user/' . $filename;
-        if (is_file($cookiefile)) {
-            unlink($cookiefile);
-        }
-        $this->writeFileTo('./user/', $filename, $tempcookie);
-
-        //返回cookie access_token refresh_token
+        $cookie_file = $this->saveCookie($loginInfo);
+        /**
+         * return
+         * path $cookie_file
+         * string $access_token
+         * string $refresh_token
+         */
         return [
-            'cookie' => $cookiefile,
-            'access_token' => $loginInfo['data']['access_token'],
-            'refresh_token' => $loginInfo['data']['refresh_token'],
+            'cookie' => $cookie_file,
+            'access_token' => $loginInfo['data']['token_info']['access_token'],
+            'refresh_token' => $loginInfo['data']['token_info']['refresh_token'],
         ];
+    }
+
+    //保存cookie
+    public function saveCookie($login_nfo)
+    {
+        //临时保存cookie
+        $temp_cookie = '';
+        $cookies = $login_nfo['data']['cookie_info']['cookies'];
+        foreach ($cookies as $cookie) {
+            $temp_cookie .= $cookie['name'] . '=' . $cookie['value'] . ';';
+        }
+        $filename = $this->getUserInfo($temp_cookie) . '.cookies';
+        //返回 用户名.cookies 路径
+        $cookie_file = './user/' . $filename;
+        if (is_file($cookie_file)) {
+            unlink($cookie_file);
+        }
+        $this->writeFileTo('./user/', $filename, $temp_cookie);
+
+        return $cookie_file;
     }
 
     //写入文件
@@ -195,7 +201,7 @@ class BiliLogin
             'ts' => time(),
         ];
 
-        $data['access_key'] = $loginInfo['data']['access_token'];
+        $data['access_key'] = $loginInfo['data']['token_info']['access_token'];
         ksort($data);
         $data['sign'] = $this->createSign($data);
         $url = 'http://passport.bilibili.com/api/login/sso?' . http_build_query($data);

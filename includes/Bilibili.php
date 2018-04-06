@@ -178,6 +178,7 @@ class Bilibili
 
     private function sign()
     {
+       //var_dump(date("Y-h-d H:i:s", $this->lock['sign']));
         if (time() < $this->lock['sign']) {
             return true;
         }
@@ -185,9 +186,6 @@ class Bilibili
         $api = $this->prefix . 'sign/doSign';
         $raw = $this->curl($api);
         $data = json_decode($raw, true);
-
-        //推送签到结果信息
-        $this->infoSendManager('todaySign', $data['msg']);
 
         // 已经签到
         if ($data['code'] == -500) {
@@ -202,6 +200,9 @@ class Bilibili
         }
         // 签到成功
         $this->log($data['msg'], 'blue', '签到');
+
+        //推送签到结果信息
+        $this->infoSendManager('todaySign', $data['msg']);
 
         $api = $this->prefix . 'giftBag/sendDaily?_=' . round(microtime(true) * 1000);
         $raw = $this->curl($api);
