@@ -67,6 +67,11 @@ BUG群 : 55308141
  - 0.9.9: 添加验证码识别(待测试反馈)
  - 
 
+## 打赏
+![](https://i.loli.net/2018/04/07/5ac79ff8c2900.png)
+
+> 无耻的加上了二维码，走过的打赏个阔落，路过的可以无视~ (hhhhhh)
+
 ## BUG日志
  - 2018年3月28日
   > 删除扭蛋币代码，增加一个curl模块，添加APP端的弹幕发送，添加一个规避措施(防止被ban)
@@ -246,7 +251,6 @@ $account = [
 [bilibili-api](https://github.com/czp3009/bilibili-api)
 
 [bilibili-live-tools](https://github.com/Dawnnnnnn/bilibili-live-tools)
-
 
 ## License
 BiliHelper is under the MIT license.
