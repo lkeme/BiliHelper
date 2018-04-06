@@ -17,7 +17,7 @@ class BiliLogin
     //APP_SECRET
     private $_appSecret = '560c52ccd288fed045859ed18bffd973';
     //DEBUG
-    private $_deBug = true;
+    private $_deBug = false;
     private $_keyHash = '';
     // 调试信息上色
     public $color = true;
