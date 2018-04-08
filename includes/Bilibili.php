@@ -101,9 +101,9 @@ class Bilibili
             //实物抽奖
             'drawLottery' => $this->start,
             //刷新cookie 周期20小时
-            'refreshCookie' => $this->start + 48 * 60 * 60,
+            'refreshCookie' => $this->start + 240 * 60 * 60,
             //刷新token 周期100小时
-            'refreshToken' => $this->start + 120 * 60 * 60,
+            'refreshToken' => $this->start + 480 * 60 * 60,
         );
     }
 
@@ -181,9 +181,6 @@ class Bilibili
         if (time() < $this->lock['sign']) {
             return true;
         }
-        //debug 可删
-        $this->log('当前时间:' . date("Y-m-d H:i:s"), 'yellow', 'DEBUG');
-        $this->log('签到时间:' . date("Y-m-d H:i:s", $this->lock['sign']), 'yellow', 'DEBUG');
 
         $api = $this->prefix . 'sign/doSign';
         $raw = $this->curl($api);

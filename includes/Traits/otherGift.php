@@ -148,7 +148,11 @@ trait otherGift
                         'number' => $k + 1,
                     ];
                     $url1 = 'https://api.live.bilibili.com/lottery/v1/box/draw?' . http_build_query($data);
-                    $this->curl($url1);
+                    $raw = $this->curl($url1);
+                    $de_raw = json_decode($raw, true);
+                    if ($de_raw['code'] == 0) {
+                        $this->log('实物抽奖: 成功!', 'blue', 'DRAW');
+                    }
                 }
             }
         }

@@ -61,14 +61,14 @@ trait userHelper
             $temp = $this->refreshToken();
             //失败就跳出
             if (!$temp) return true;
-            $this->lock['refreshToken'] = time() + 120 * 60 * 60;
+            $this->lock['refreshToken'] = time() + 480 * 60 * 60;
             $this->log('Token: 刷新成功', 'green', 'BiliLogin');
         }
         $temp = $this->getCookie();
         //失败就跳出
         if (!$temp) return true;
         $this->cookie = $this->trimAll($temp);
-        $this->lock['refreshCookie'] = time() + 48 * 60 * 60;
+        $this->lock['refreshCookie'] = time() + 240 * 60 * 60;
         $this->log('Cookie: 刷新成功', 'green', 'BiliLogin');
 
         //推送Cookie刷新成功信息
