@@ -34,7 +34,7 @@ trait liveGlobal
                 $this->log("WIN: " . $data['month'] . '|没有中奖记录 ~', 'magenta', 'LIVE');
             } else {
                 $init_time = strtotime(date("y-m-d h:i:s")); //当前时间
-               foreach ($data['list'] as $gift){
+                foreach ($data['list'] as $gift) {
                     $next_time = strtotime($gift['create_time']);  //礼物时间
                     $day = ceil(($init_time - $next_time) / 86400);  //60s*60min*24h
 
@@ -345,7 +345,7 @@ trait liveGlobal
                  */
                 //TODO 节奏风暴暂时搁置
                 if (strpos($resp['msg'], $this->_stormKeyWord) !== false) {
-                    $this->writeFileTo(' ./tmp / ', 'storm . txt', json_encode($resp));
+                    $this->writeFileTo(' ./tmp/', 'storm . txt', json_encode($resp));
                     return [
                         'type' => 'storm',
                         'roomid' => $resp['roomid'],
@@ -518,7 +518,7 @@ trait liveGlobal
     //获取用户UID
     public function getUserInfo()
     {
-        $url = $this->prefix . 'i / api / liveinfo';
+        $url = $this->prefix . 'i/api/liveinfo';
         $raw = $this->curl($url);
         $raw = json_decode($raw, true);
         //TODO 暂时返回uid
@@ -532,7 +532,7 @@ trait liveGlobal
         $unit = array('b', 'kb', 'mb', 'gb', 'tb', 'pb');
         $memory = @round($size / pow(1024, ($i = floor(log($size, 1024)))), 2) . ' ' . $unit[$i];
         $data = $msg . '时内存: ' . $memory;
-        $this->writeFileTo(' ./tmp / ', 'memory . log', $data);
+        $this->writeFileTo(' ./tmp/', 'memory . log', $data);
     }
 
     //随机延时

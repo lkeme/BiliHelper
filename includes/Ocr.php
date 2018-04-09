@@ -4,10 +4,12 @@
  *  Author: Mudew
  *  Version: 0.0.1
  */
+header("Content-Type:text/html; charset=utf-8");
 
 class Ocr
 {
     private $_captcha = '';
+
     public function foreUpload($filename)
     {
         $this->_captcha = $filename;

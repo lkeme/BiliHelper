@@ -4,6 +4,7 @@
  *  Author: METO
  *  Version: 0.6.2
  */
+header("Content-Type:text/html; charset=utf-8");
 
 require "Traits/customConfig.php";
 require "Traits/smallTv.php";

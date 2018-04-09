@@ -4,7 +4,7 @@
  *  Author: Mudew
  *  Version: 0.0.1
  */
-require 'Ocr.php';
+header("Content-Type:text/html; charset=utf-8");
 
 class BiliLogin
 {
