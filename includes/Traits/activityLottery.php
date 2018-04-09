@@ -3,9 +3,9 @@
 trait activityLottery
 {
     //roomid
-    public $_checkActiveApi = 'https://api.live.bilibili.com/activity/v1/Raffle/check?roomid=';
+    public $_checkActiveApi = 'http://api.live.bilibili.com/activity/v1/Raffle/check?roomid=';
     //roomid raffleId
-    public $_joinActiveApi = 'https://api.live.bilibili.com/activity/v1/Raffle/join?';
+    public $_joinActiveApi = 'http://api.live.bilibili.com/activity/v1/Raffle/join?';
     //app活动抽奖
     public $_appJoinActiveApi = 'http://api.live.bilibili.com/YunYing/roomEvent?';
     //roomid raffleId
@@ -34,6 +34,9 @@ trait activityLottery
             case '0':
                 if (is_array($checkdata['msg'])) {
                     foreach ($checkdata['msg'] as $value) {
+                        if (!$value) {
+                            continue;
+                        }
                         $this->log("PCActive: 编号-" . $value, 'cyan', 'SOCKET');
                         $filename = $this->_userDataInfo['name'] . '-activeLotteryRecord.txt';
                         $temp_data = date("Y-m-d H:i:s") . '|' . 'RoomId:' . $data["real_roomid"] . '|RaffleId:' . $value;
@@ -64,42 +67,40 @@ trait activityLottery
             return true;
         }
         if (!empty($this->_activeLotteryList)) {
-            $this->lock['activeWin'] = time() + 50;;
-            $url = $this->_noticeActiveApi . 'roomid=' . $this->_activeLotteryList[0]['roomid'] . '&raffleId=' . $this->_activeLotteryList[0]['raffleId'];
-
-            $raw = $this->curl($url);
-            $raw = json_decode($raw, true);
-
-            if ($raw['code'] == '-400') {
-                $this->log("PCActive: " . $this->_activeLotteryList[0]['raffleId'] . $raw['msg'], 'green', 'SOCKET');
-                return true;
-
-            } elseif ($raw['code'] == '0') {
-                $info = '[PC] RoomId: ' . $this->_activeLotteryList[0]['roomid'] . '|RaffleId: ';
-                $info .= $this->_activeLotteryList[0]['raffleId'] . '|获得' . $raw['data']['gift_name'] . 'X' . $raw['data']['gift_num'];
-
-                if ($raw['data']['gift_name'] == ''){
-                    print_r($raw);
+            for ($i = 0; $i < 5; $i++) {
+                if (!isset($this->_activeLotteryList[$i])) {
+                    break;
                 }
+                $url = $this->_noticeActiveApi . 'roomid=' . $this->_activeLotteryList[0]['roomid'] . '&raffleId=' . $this->_activeLotteryList[0]['raffleId'];
+                $raw = $this->curl($url);
+                $de_raw = json_decode($raw, true);
+                switch ($de_raw['code']) {
+                    case  -400:
+                        break;
+                    case  0:
+                        $info = '[PC] RoomId: ' . $this->_activeLotteryList[$i]['roomid'] . '|RaffleId: ';
+                        $info .= $this->_activeLotteryList[$i]['raffleId'] . '|获得' . $de_raw['data']['gift_name'] . 'X' . $de_raw['data']['gift_num'];
 
-                if ($raw['data']['gift_name'] != '辣条' && $raw['data']['gift_name'] != '') {
-                    //推送活动抽奖信息
-                    $this->infoSendManager('active', $info);
+                        if ($de_raw['data']['gift_name'] != '辣条' && $de_raw['data']['gift_name'] != '') {
+                            //推送活动抽奖信息
+                            $this->infoSendManager('active', $info);
+                        }
+
+                        $this->log("PCActive: " . $info, 'yellow', 'SOCKET');
+
+                        $filename = $this->_userDataInfo['name'] . '-activeLotteryFb.txt';
+                        $this->writeFileTo('./record/', $filename, $info);
+
+                        unset($this->_activeLotteryList[$i]);
+                        $this->_activeLotteryList = array_values($this->_activeLotteryList);
+
+                        break;
+                    default:
+                        break;
                 }
-
-                $this->log("PCActive: " . $info, 'yellow', 'SOCKET');
-                $filename = $this->_userDataInfo['name'] . '-activeLotteryFb.txt';
-
-                $this->writeFileTo('./record/', $filename, $info);
-
-                unset($this->_activeLotteryList[0]);
-
-                $this->_activeLotteryList = array_values($this->_activeLotteryList);
-                return true;
-
-            } else {
-                return true;
             }
+            $this->lock['activeWin'] = time() + 30;
+            return true;
         }
         return true;
     }
@@ -113,11 +114,10 @@ trait activityLottery
 
         //钓鱼检测
         if (!$this->liveRoomStatus($roomid)) {
-            $data = [
+            return [
                 'code' => '444',
                 'msg' => '该房间存在钓鱼行为!',
             ];
-            return $data;
         }
 
         if (array_key_exists('status', $de_raw['data'])) {
@@ -176,7 +176,7 @@ trait activityLottery
             'appkey' => $this->_appKey,
             'build' => '414000',
             'device' => 'android',
-            'event_type' => 'newspring-' . $raffleId,
+            'event_type' => 'flower_rain-' . $raffleId,
             'mobi_app' => 'android',
             'platform' => 'android',
             'room_id' => $roomid,
@@ -204,21 +204,27 @@ trait activityLottery
     public function pcActiveJoin($roomid, $raffleId)
     {
         if (in_array($raffleId, $this->_activeList)) {
-            if (count($this->_activeList) > 100) {
+            if (count($this->_activeList) > 2000) {
                 $this->_activeList = null;
             }
-            return $raffleId . '|重复抽奖!';
+            return false;
         } else {
             $this->_activeList[] = $raffleId;
+            $this->_activeList = array_unique($this->_activeList);
         }
 
         $url = $this->_joinActiveApi . 'roomid=' . $roomid . '&raffleId=' . $raffleId;
-        $raw = $this->curl($url, null, true, null, $roomid);
+        $headers = [
+            'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36',
+            'referer: http://live.bilibili.com/' . $roomid,
+        ];
 
+        $raw = $this->curl($url, null, true, $headers);
         $de_raw = json_decode($raw, true);
 
         //打印加入信息
-        var_dump($de_raw);
+        print_r($de_raw);
+
         if ($de_raw['code'] == 0) {
             return $raffleId . '|成功，注意查看中奖信息';
         } elseif ($de_raw['message'] == '抽奖已失效！') {

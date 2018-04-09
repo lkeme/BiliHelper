@@ -33,6 +33,9 @@ trait smallTv
             case '0':
                 if (is_array($checkdata['msg'])) {
                     foreach ($checkdata['msg'] as $value) {
+                        if (!$value) {
+                            continue;
+                        }
                         $this->log("SmallTv: 编号-" . $value, 'cyan', 'SOCKET');
                         $filename = $this->_userDataInfo['name'] . '-smallTvRecord.txt';
                         $temp_data = date("Y-m-d H:i:s") . '|' . 'RoomId:' . $data["real_roomid"] . '|RaffleId:' . $value;
@@ -63,38 +66,40 @@ trait smallTv
             return true;
         }
         if (!empty($this->_smallTvLdList)) {
-            $this->lock['smallTvWin'] = time() + 50;
-            $url = $this->_smallTvFbApi . 'roomid=' . $this->_smallTvLdList[0]['roomid'] . '&raffleId=' . $this->_smallTvLdList[0]['raffleId'];
-            $raw = $this->curl($url);
-            $raw = json_decode($raw, true);
-            if ($raw['data']['status'] == '3') {
-                $this->log("SmallTv: " . $this->_smallTvLdList[0]['raffleId'] . $raw['msg'], 'green', 'SOCKET');
-                return true;
-            } elseif ($raw['data']['status'] == '2') {
-                $this->log("SmallTv: " . $this->_smallTvLdList[0]['raffleId'] . '获得' . $raw['data']['gift_name'] . 'X' . $raw['data']['gift_num'], 'yellow', 'SOCKET');
-
-                $filename = $this->_userDataInfo['name'] . '-smallTvFb.txt';
-                $temp_data = "SmallTv: " . $this->_smallTvLdList[0]['roomid'] . '|' . $this->_smallTvLdList[0]['raffleId'] . '获得' . $raw['data']['gift_name'] . 'X' . $raw['data']['gift_num'];
-                $this->writeFileTo('./record/', $filename, $temp_data);
-
-                if ($raw['data']['gift_name'] == ''){
-                    print_r($raw);
+            for ($i = 0; $i < 5; $i++) {
+                if (!isset($this->_smallTvLdList[$i])) {
+                    break;
                 }
+                $url = $this->_smallTvFbApi . 'roomid=' . $this->_smallTvLdList[0]['roomid'] . '&raffleId=' . $this->_smallTvLdList[0]['raffleId'];
+                $raw = $this->curl($url);
+                $de_raw = json_decode($raw, true);
+                switch ($de_raw['data']['status']) {
+                    case 3:
+                        break;
+                    case 2:
+                        $this->log("SmallTv: " . $this->_smallTvLdList[$i]['raffleId'] . '获得' . $de_raw['data']['gift_name'] . 'X' . $de_raw['data']['gift_num'], 'yellow', 'SOCKET');
+                        //写入文件
+                        $filename = $this->_userDataInfo['name'] . '-smallTvFb.txt';
+                        $temp_data = "SmallTv: " . $this->_smallTvLdList[$i]['roomid'] . '|' . $this->_smallTvLdList[0]['raffleId'] . '获得' . $de_raw['data']['gift_name'] . 'X' . $de_raw['data']['gift_num'];
+                        $this->writeFileTo('./record/', $filename, $temp_data);
+                        //推送活动抽奖信息
+                        if ($de_raw['data']['gift_name'] != '辣条' && $de_raw['data']['gift_name'] != '') {
+                            $this->infoSendManager('smallTv', $temp_data);
+                        }
+                        //删除id
+                        unset($this->_smallTvLdList[$i]);
+                        $this->_smallTvLdList = array_values($this->_smallTvLdList);
 
-                if ($raw['data']['gift_name'] != '辣条' && $raw['data']['gift_name'] != '') {
-                    //推送活动抽奖信息
-                    $this->infoSendManager('smallTv', $temp_data);
+                        break;
+                    default:
+                        break;
                 }
-
-                unset($this->_smallTvLdList[0]);
-                $this->_smallTvLdList = array_values($this->_smallTvLdList);
-                return true;
-            } else {
-                return true;
             }
+
+            $this->lock['smallTvWin'] = time() + 30;
+            return true;
         }
         return true;
-
     }
 
     //检查
@@ -168,18 +173,18 @@ trait smallTv
             if (count($this->_smallTvList) > 100) {
                 $this->_smallTvList = null;
             }
-            return $raffleId . '|重复抽奖!';
+            return false;
         } else {
             $this->_smallTvList[] = $raffleId;
         }
         $url = $this->_smallTvJoinApi . $roomRealid . '&raffleId=' . $raffleId;
         $raw = $this->curl($url);
-        $raw = json_decode($raw, true);
+        $de_raw = json_decode($raw, true);
         //打印加入信息
-        var_dump($raw);
-        if ($raw['code'] == 0) {
+        print_r($de_raw);
+        if ($de_raw['code'] == 0) {
             return $raffleId . '|成功，注意查看中奖信息';
-        } elseif ($raw['message'] == '抽奖已失效！') {
+        } elseif ($de_raw['message'] == '抽奖已失效！') {
             return $raffleId . '|失效';
         } else {
             return $raffleId . '|失败';

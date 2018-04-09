@@ -188,17 +188,17 @@ class Bilibili
 
         // 已经签到
         if ($data['code'] == -500) {
-            $this->log($data['msg'], 'green', '签到');
+            $this->log($data['msg'], 'green', 'SIGN');
             $this->lock['sign'] = time() + 24 * 60 * 60;
             return true;
         }
         // 签到失败
         if ($data['code'] != 0) {
-            $this->log($data['msg'], 'bg_red', '签到');
+            $this->log($data['msg'], 'bg_red', 'SIGN');
             return false;
         }
         // 签到成功
-        $this->log($data['msg'], 'blue', '签到');
+        $this->log($data['msg'], 'blue', 'SIGN');
 
         //推送签到结果信息
         $this->infoSendManager('todaySign', $data['msg']);
@@ -207,7 +207,7 @@ class Bilibili
         $raw = $this->curl($api);
         $data = json_decode($raw, true);
         if ($data['code'] != 0) {
-            $this->log($data['msg'], 'bg_red', '签到');
+            $this->log($data['msg'], 'bg_red', 'SIGN');
             return false;
         }
 
@@ -215,7 +215,7 @@ class Bilibili
         $raw = $this->curl($api);
         $data = json_decode($raw, true);
 
-        $this->log("获得 " . $data['data']['text'] . $data['data']['specialText'], 'green', '签到');
+        $this->log("获得 " . $data['data']['text'] . $data['data']['specialText'], 'green', 'SIGN');
         return true;
     }
 
@@ -230,7 +230,7 @@ class Bilibili
         $raw = $this->curl($api);
         $data = json_decode($raw, true);
         if ($data['code'] != 0) {
-            $this->log($data['msg'], 'bg_red', '心跳');
+            $this->log($data['msg'], 'bg_red', 'HEART');
             return false;
         }
         $this->lock['heart'] = time() + 5 * 60;
@@ -254,25 +254,25 @@ class Bilibili
         $a = $data['data']['user_intimacy'];
         $b = $data['data']['user_next_intimacy'];
         $per = round($a / $b * 100, 3);
-        $this->log('PCHeart: OK!', 'magenta', '心跳');
-        $this->log("level:$level exp:$a/$b ($per%)", 'magenta', '心跳');
+        $this->log('PCHeart: OK!', 'magenta', 'HEART');
+        $this->log("level:$level exp:$a/$b ($per%)", 'magenta', 'HEART');
         return true;
     }
 
-    private function giftsend()
+    public function giftsend()
     {
         if (time() < $this->lock['giftsend'] || empty($this->token)) {
             return true;
         }
         $this->lock['giftsend'] = time() + 3600;
 
-        $this->log('开始翻动礼物', 'green', '投喂');
+        $this->log('开始翻动礼物', 'green', 'FEED');
         $api = $this->prefix . 'gift/v2/gift/bag_list';
         $raw = $this->curl($api);
         $data = json_decode($raw, true);
 
         if ($data['code'] != 0) {
-            $this->log($data['msg'], 'bg_red', '投喂');
+            $this->log($data['msg'], 'bg_red', 'FEED');
             return false;
         }
 
@@ -317,9 +317,9 @@ class Bilibili
             $res = json_decode($res, true);
 
             if ($res['code']) {
-                $this->log("{$res['msg']}", 'red', '投喂');
+                $this->log("{$res['msg']}", 'red', 'FEED');
             } else {
-                $this->log("成功向 https://live.bilibili.com/{$this->roomid} 投喂了 {$vo['gift_num']} 个 {$vo['gift_name']}", 'green', '投喂');
+                $this->log("成功向 https://live.bilibili.com/{$this->roomid} 投喂了 {$vo['gift_num']} 个 {$vo['gift_name']}", 'green', 'FEED');
             }
         }
         return true;
@@ -337,24 +337,24 @@ class Bilibili
         $data = json_decode($raw, true);
 
         if ($data['code'] == -403) {
-            $this->log($data['msg'], 'magenta', '收礼');
+            $this->log($data['msg'], 'magenta', 'GIFTS');
             $this->lock['giftheart'] = time() + 60 * 60;
             $this->curl($this->prefix . 'eventRoom/index?ruid=17561885');
             return true;
         }
         if ($data['code'] != 0) {
-            $this->log($data['msg'], 'bg_red', '收礼');
+            $this->log($data['msg'], 'bg_red', 'GIFTS');
             return false;
         }
 
         if ($data['data']['heart_status'] == 0) {
-            $this->log('没有礼物可以领了呢', 'magenta', '收礼');
+            $this->log('没有礼物可以领了呢', 'magenta', 'GIFTS');
             $this->lock['giftheart'] = time() + 60 * 60;
         }
 
         if (isset($data['data']['gift_list'])) {
             foreach ($data['data']['gift_list'] as $vo) {
-                $this->log("{$data['msg']}，礼物 {$vo['gift_name']} ({$vo['day_num']}/{$vo['day_limit']})", 'magenta', '收礼');
+                $this->log("{$data['msg']}，礼物 {$vo['gift_name']} ({$vo['day_num']}/{$vo['day_limit']})", 'magenta', 'GIFTS');
             }
         }
         return true;
@@ -374,15 +374,15 @@ class Bilibili
             // 今日已经领完
             if ($data['code'] == -10017) {
                 $this->lock['silver'] = time() + 60 * 60;
-                $this->log($data['msg'], 'blue', '宝箱');
+                $this->log($data['msg'], 'blue', 'SBOX');
                 return true;
             }
             // 领取失败
             if ($data['code'] != 0) {
-                $this->log($data['msg'], 'bg_red', '签到');
+                $this->log($data['msg'], 'bg_red', 'SBOX');
                 return false;
             }
-            $this->log("领取宝箱，内含 {$data['data']['silver']} 瓜子，需要 {$data['data']['minute']} 分钟开启", 'cyan', '宝箱');
+            $this->log("领取宝箱，内含 {$data['data']['silver']} 瓜子，需要 {$data['data']['minute']} 分钟开启", 'cyan', 'SBOX');
 
             $this->temp['task'] = array(
                 'start' => $data['data']['time_start'],
@@ -392,7 +392,7 @@ class Bilibili
             $this->log(sprintf(
                 "等待 %s 领取",
                 date('H:i:s', $this->lock['silver'])
-            ), 'blue', '宝箱');
+            ), 'blue', 'SBOX');
 
             return true;
         }
@@ -409,9 +409,9 @@ class Bilibili
         $data = json_decode($raw, true);
 
         if ($data['code'] != 0) {
-            $this->log($data['msg'], 'bg_red', '宝箱');
+            $this->log($data['msg'], 'bg_red', 'SBOX');
         } else {
-            $this->log("领取成功，silver: {$data['data']['silver']}(+{$data['data']['awardSilver']})", 'cyan', '宝箱');
+            $this->log("领取成功，silver: {$data['data']['silver']}(+{$data['data']['awardSilver']})", 'cyan', 'SBOX');
         }
 
         unset($this->temp['task']);
@@ -462,7 +462,7 @@ class Bilibili
 
     public function captcha()
     {
-        $this->log("开始做幼儿算术", "blue", '宝箱');
+        $this->log("开始做幼儿算术", "blue", 'SBOX');
 
         $api = $this->prefix . 'lottery/v1/SilverBox/getCaptcha?ts=' . time();
         $raw = $this->curl($api);
@@ -536,7 +536,7 @@ class Bilibili
         }
 
         $ans = eval("return $result;");
-        $this->log("好耶！ $result = $ans", 'blue', '宝箱');
+        $this->log("好耶！ $result = $ans", 'blue', 'SBOX');
         return $ans;
     }
 

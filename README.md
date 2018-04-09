@@ -9,11 +9,11 @@ BUG群 : 55308141
 
 |extension  |
 | --------- |
-|php-gd     |
-|php-curl   |
+|php_gd     |
+|php_curl   |
 |php_sockets|
-|php-xml    |
-|php-openssl|
+|php_xml    |
+|php_openssl|
 |add...     |
 
 
@@ -83,6 +83,8 @@ BUG群 : 55308141
   > 添加一个实物抽奖(实验),添加通知实物中奖信息，优化了一点代码
  - 2018年4月6日
   > 更换登陆接口，添加PC端银瓜子兑换硬币，添加验证码登陆(云端ocr)
+ - 2018年4月9日
+  > 修复实物提醒，重写了抽奖结果，另外写了很多新BUG
  -
 
 ## Server酱

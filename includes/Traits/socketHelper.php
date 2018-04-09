@@ -106,7 +106,7 @@ trait socketHelper
         }
         $str = pack('NnnNN', 16, 16, 1, $this->_actionHeartBeat, 1);
         socket_write($socket, $str, strlen($str));
-        $this->log('SocketHeart: OK!', 'magenta', '心跳');
+        $this->log('SocketHeart: OK!', 'magenta', 'HEART');
 
         //周期是30s 但是socket读数据可能会超时
         //TODO
