@@ -5,6 +5,11 @@
 # IntelliJ project files
 .idea
 .idea/
+index1.php
+user/
+record/
+temp/
+tmp/
 *.iml
 out
 gen

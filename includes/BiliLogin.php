@@ -101,7 +101,9 @@ class BiliLogin
         foreach ($cookies as $cookie) {
             $temp_cookie .= $cookie['name'] . '=' . $cookie['value'] . ';';
         }
-        $filename = $this->getUserInfo($temp_cookie) . '.cookies';
+        //尝试转UTF8编码
+        $filename = mb_convert_encoding($this->getUserInfo($temp_cookie), "UTF-8") . '.cookies';
+
         //返回 用户名.cookies 路径
         $cookie_file = './user/' . $filename;
         if (is_file($cookie_file)) {
