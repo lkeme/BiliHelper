@@ -124,7 +124,7 @@ trait liveGlobal
         } else {
             return [
                 'month' => $month,
-                'list' => $raw['data']['list'],
+                'list' => $de_raw['data']['list'],
             ];
         }
     }
