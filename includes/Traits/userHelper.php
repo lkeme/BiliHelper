@@ -10,8 +10,21 @@ trait userHelper
     public $_appSecret = '560c52ccd288fed045859ed18bffd973';
     //prefix
     public $_baseUrl = 'http://passport.bilibili.com/';
+    //查看是否实名
+    public $_stormFlag = true;
 
-    //TODO
+    //查看是否实名
+    public function realnameCheck()
+    {
+        $url = "http://account.bilibili.com/identify/index";
+        $raw = $this->curl($url);
+        $de_raw = json_decode($raw,true);
+        //检查有没有名字，没有则没实名
+        if (!$de_raw['data']['memberPerson']['realname']){
+            $this->_stormFlag = false;
+        }
+        return true;
+    }
     //刷新cookie
     public function getCookie()
     {

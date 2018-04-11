@@ -11,11 +11,21 @@ trait rhythmStorm
 
     public function rhythmStormStart($data)
     {
+        //检测实名
+        $this->realnameCheck();
+        if (!$this->_stormFlag) {
+            $this->log('Storm: 未实名，跳过节奏风暴功能!', 'green', 'SOCKET');
+            return true;
+        }
+        //随机睡眠
+        sleep(rand(5, 15));
+        //如果有ID，直接加入
         if (array_key_exists('id', $data)) {
             $this->joinStorm($data['id']);
             return true;
         }
-        $this->log('Storm:' . $data['msg'], 'blue', 'SOCKET');
+        $this->log('Storm: ' . $data['msg'], 'blue', 'SOCKET');
+        //没有ID，则check
         $check = $this->checkStorm($data['roomid']);
         if (is_array($check)) {
             $this->joinStorm($check['id']);
