@@ -112,6 +112,7 @@ trait smallTv
         $url = $this->_smallTvCheckApi . $roomRealid;
         $raw = $this->curl($url);
         $raw = json_decode($raw, true);
+
         //钓鱼检测
         if (!$this->liveRoomStatus($roomRealid)) {
             $data = [
@@ -180,6 +181,13 @@ trait smallTv
         $url = $this->_smallTvJoinApi . $roomRealid . '&raffleId=' . $raffleId;
         $raw = $this->curl($url);
         $de_raw = json_decode($raw, true);
+
+        //封禁检查
+        if ($de_raw['code'] == 400 && $de_raw['msg'] == "访问被拒绝"){
+            $this->bannedVisit();
+            return "账号封禁~";
+        }
+
         //打印加入信息
         print_r($de_raw);
         if ($de_raw['code'] == 0) {

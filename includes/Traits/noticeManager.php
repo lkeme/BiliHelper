@@ -52,6 +52,14 @@ trait noticeManager
                 ];
                 $this->scSend($info);
                 break;
+            case 'banned':
+                $info = [
+                    'title' => '账号封禁',
+                    'content' => '[' . $nowtime . ']' . ' 用户: ' . $this->_userDataInfo['name'] . ' 账号被封禁: 程序开始睡眠,凌晨自动唤醒,距离唤醒还有' . $result . '小时',
+                ];
+                $this->scSend($info);
+                break;
+
             default:
                 break;
 

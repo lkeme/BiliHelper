@@ -579,4 +579,26 @@ trait liveGlobal
         return str_replace($rule, '', $str);
     }
 
+    //被封禁访问
+    public function bannedVisit(): bool
+    {
+        //获取当前时间
+        $block_time = strtotime(date("Y-m-d H:i:s"));
+        //第二天凌晨时间
+        $unblock_time = strtotime(date("Y-m-d", strtotime("+1 day", $block_time)));
+        //00:10:00解封
+        $second = ceil($unblock_time - $block_time) + 10 * 60;
+        $hour = $second / 60 / 60;
+
+        //推送封禁信息
+        $this->infoSendManager('banned', $hour);
+        $this->log('Sleep: 封禁睡眠时间(自动唤醒)!', 'yellow', 'SLEEP');
+
+        //睡眠
+        sleep($second);
+        $this->log('Sleep: 封禁自动唤醒)!', 'yellow', 'SLEEP');
+        return true;
+
+    }
+
 }
