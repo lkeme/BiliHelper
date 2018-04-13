@@ -61,20 +61,26 @@ class BiliLogin
         $loginInfo = json_decode($res, true);
 
         if (array_key_exists('message', $loginInfo)) {
-            $this->log($loginInfo['message'], 'red', 'BILILOGIN');
+            switch ($loginInfo['code']){
+                case -629:
+                    //账号或者密码错误
+                    $this->log($loginInfo['message'], 'red', 'BILILOGIN');
+                    exit("检查账号密码是否正确!");
+                    break;
 
-            if ($loginInfo['code'] == -105) {
-                /**
-                 *  TODO 验证码登陆问题
-                 *  $loginInfo['message'] = 'CAPTCHA is not match'
-                 */
-                unset($loginInfo);
-                $loginInfo = $this->captchaLogin($url, $data);
+                case -105:
+                    /**
+                     *  TODO 验证码登陆问题
+                     *  $loginInfo['message'] = 'CAPTCHA is not match'
+                     */
+                    unset($loginInfo);
+                    $loginInfo = $this->captchaLogin($url, $data);
+                    break;
+
+                default:
+                    $this->log($loginInfo['message'], 'red', 'BILILOGIN');
+                    break;
             }
-        }
-
-        if ($loginInfo['code'] != 0) {
-            $this->log($loginInfo['message'], 'red', 'BILILOGIN');
         }
 
         $this->log('获取Cookie成功', 'green', 'BILILOGIN');
