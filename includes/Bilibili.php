@@ -397,17 +397,34 @@ class Bilibili
 
             return true;
         }
+        /*
+                $captcha = $this->captcha();
+                $api = $this->prefix . sprintf(
+                        'lottery/v1/SilverBox/getAward?time_start=%s&end_time=%s&captcha=%s',
+                        $this->temp['task']['start'],
+                        $this->temp['task']['end'],
+                        $captcha
+                    );
+        */
+        $data = [
+            'access_key' => $this->_accessToken,
+            'actionKey' => 'appkey',
+            'appkey' => $this->_appKey,
+            'build' => '414000',
+            'device' => 'android',
+            'mobi_app' => 'android',
+            'platform' => 'android',
+            'time_end' => $this->temp['task']['end'],
+            'time_start' => $this->temp['task']['start'],
+            'ts' => time(),
+        ];
+        ksort($data);
+        $data['sign'] = $this->createSign($data);
 
-        $captcha = $this->captcha();
-
-        $api = $this->prefix . sprintf(
-                'lottery/v1/SilverBox/getAward?time_start=%s&end_time=%s&captcha=%s',
-                $this->temp['task']['start'],
-                $this->temp['task']['end'],
-                $captcha
-            );
+        $api = 'https://api.live.bilibili.com/mobile/freeSilverAward?' . http_build_query($data);
         $raw = $this->curl($api);
         $data = json_decode($raw, true);
+        var_dump($data);
 
         if ($data['code'] != 0) {
             $this->log($data['msg'], 'bg_red', 'SBOX');

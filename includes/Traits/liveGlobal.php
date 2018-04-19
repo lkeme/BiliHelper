@@ -69,7 +69,7 @@ trait liveGlobal
             'actionKey' => 'appkey',
             'appkey' => $this->_appKey,
             'build' => '414000',
-            'device' => 'android',
+            'device' => '',
             'mobi_app' => 'android',
             'platform' => 'android',
             'ts' => time(),
@@ -345,7 +345,7 @@ trait liveGlobal
                  */
                 //TODO 节奏风暴暂时搁置
                 if (strpos($resp['msg'], $this->_stormKeyWord) !== false) {
-                    $this->writeFileTo(' ./tmp/', 'storm . txt', json_encode($resp));
+                    $this->writeFileTo('./tmp/', 'storm.txt', json_encode($resp));
                     return [
                         'type' => 'storm',
                         'roomid' => $resp['roomid'],
@@ -532,7 +532,7 @@ trait liveGlobal
         $unit = array('b', 'kb', 'mb', 'gb', 'tb', 'pb');
         $memory = @round($size / pow(1024, ($i = floor(log($size, 1024)))), 2) . ' ' . $unit[$i];
         $data = $msg . '时内存: ' . $memory;
-        $this->writeFileTo(' ./tmp/', 'memory . log', $data);
+        $this->writeFileTo('./tmp/', 'memory.log', $data);
     }
 
     //随机延时
