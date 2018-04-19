@@ -69,7 +69,7 @@ trait liveGlobal
             'actionKey' => 'appkey',
             'appkey' => $this->_appKey,
             'build' => '414000',
-            'device' => '',
+            'device' => 'android',
             'mobi_app' => 'android',
             'platform' => 'android',
             'ts' => time(),

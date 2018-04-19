@@ -424,7 +424,6 @@ class Bilibili
         $api = 'https://api.live.bilibili.com/mobile/freeSilverAward?' . http_build_query($data);
         $raw = $this->curl($api);
         $data = json_decode($raw, true);
-        var_dump($data);
 
         if ($data['code'] != 0) {
             $this->log($data['msg'], 'bg_red', 'SBOX');

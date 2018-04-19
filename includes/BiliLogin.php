@@ -198,7 +198,7 @@ class BiliLogin
             'actionKey' => 'appkey',
             'appkey' => $this->_appKey,
             'build' => '414000',
-            'platform' => '',
+            'platform' => 'android',
             'ts' => time(),
         ];
 
