@@ -10,6 +10,8 @@ trait otherGift
         }
         //TODO 没单独做时间 直接放到一起 有时间改
         $this->silver2coinPc();
+        //睡眠三秒
+        sleep(3);
         //TODO 客户端 网页端都可以领一次 暂时只做了客户端的
         //判断accessToken 可用
         if (!$this->authInfo()) {
@@ -123,35 +125,56 @@ trait otherGift
             return true;
         }
 
-        for ($i = 60; $i < 80; $i++) {
+        for ($i = 68; $i < 88; $i++) {
             $url = "https://api.live.bilibili.com/lottery/v1/box/getStatus?aid=" . $i;
             $raw = $this->curl($url);
             $de_raw = json_decode($raw, true);
 
             if ($de_raw['code'] != '0') {
-                break;
+                continue;
             }
+
             $title = $de_raw['data']['title'];
-
             if (strpos($title, '测试') !== false) {
-                break;
+                continue;
             }
 
-            $total = count($de_raw['data']['typeB']);
-
-            for ($k = 0; $k < $total; $k++) {
-                $join_end_time = $de_raw['data']['typeB'][$k]['join_end_time'];
-                $join_start_time = $de_raw['data']['typeB'][$k]['join_start_time'];
+            $lotterys = $de_raw['data']['typeB'];
+            $num = 1;
+            foreach ($lotterys as $lottery) {
+                $join_end_time = $lottery['join_end_time'];
+                $join_start_time = $lottery['join_start_time'];
                 if ($join_end_time > time() && time() > $join_start_time) {
-                    $data = [
-                        'aid' => $i,
-                        'number' => $k + 1,
-                    ];
-                    $url1 = 'https://api.live.bilibili.com/lottery/v1/box/draw?' . http_build_query($data);
-                    $raw = $this->curl($url1);
-                    $de_raw = json_decode($raw, true);
-                    if ($de_raw['code'] == 0) {
-                        $this->log('实物抽奖: 成功!', 'blue', 'DRAW');
+                    switch ($lottery['status']) {
+                        case 3:
+                            $this->log('实物抽奖: 当前轮次已经结束!', 'blue', 'DRAW');
+                            break;
+                        case 1:
+                            $this->log('实物抽奖: 当前轮次已经抽过了!', 'blue', 'DRAW');
+                            break;
+                        case -1:
+                            $this->log('实物抽奖: 当前轮次暂未开启!', 'blue', 'DRAW');
+                            break;
+                        case 0:
+                            $this->log('实物抽奖: 当前轮次正在抽奖中!', 'blue', 'DRAW');
+
+                            $data = [
+                                'aid' => $i,
+                                'number' => $num,
+                            ];
+                            $url1 = 'https://api.live.bilibili.com/lottery/v1/box/draw?' . http_build_query($data);
+                            $raw = $this->curl($url1);
+                            $de_raw = json_decode($raw, true);
+
+                            if ($de_raw['code'] == 0) {
+                                $this->log('实物抽奖: 成功!', 'blue', 'DRAW');
+                            }
+                            $num++;
+                            break;
+
+                        default:
+                            $this->log('实物抽奖: 当前轮次状态码[' . $lottery['status'] . ']未知!', 'blue', 'DRAW');
+                            break;
                     }
                 }
             }

@@ -103,6 +103,7 @@ trait userHelper
 
         $raw = $this->curl($url);
         $raw = json_decode($raw, true);
+
         if ($raw['code'] == 0 && isset($raw['data']['mid']) && !empty($raw['data']['mid'])) {
             return $raw['data'];
         }
