@@ -13,3 +13,10 @@ tmp/
 *.iml
 out
 gen
+/vendor/
+config
+*.log
+Traits/
+README1.md
+conf/user.conf
+/conf/user.conf

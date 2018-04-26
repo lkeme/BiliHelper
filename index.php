@@ -1,49 +1,86 @@
 <?php
+
+/*!
+ * metowolf BilibiliHelper
+ * https://i-meto.com/
+ * Version 18.04.25 (0.7.3)
+ *
+ * Copyright 2018, metowolf
+ * Released under the MIT license
+ */
+
+//autoload
+require 'vendor/autoload.php';
+
+use Dotenv\Dotenv;
+use lkeme\BiliHelper\Curl;
+use lkeme\BiliHelper\Daily;
+use lkeme\BiliHelper\GiftSend;
+use lkeme\BiliHelper\Heart;
+use lkeme\BiliHelper\Login;
+use lkeme\BiliHelper\Silver;
+use lkeme\BiliHelper\Task;
+use lkeme\BiliHelper\Silver2Coin;
+use lkeme\BiliHelper\GiftHeart;
+use lkeme\BiliHelper\MaterialObject;
+use lkeme\BiliHelper\GroupSignIn;
+use lkeme\BiliHelper\Socket;
+use lkeme\BiliHelper\Live;
+
+
+// timeout
 set_time_limit(0);
+// header UTF-8
 header("Content-Type:text/html; charset=utf-8");
-require "includes/Bilibili.php";
-require "includes/BiliLogin.php";
+// timezone
+date_default_timezone_set('Asia/Shanghai');
 
-//输入账号密码必填
-$account = [
-    'username' => '',
-    'password' => '',
-];
-//判断
-if ($account['username'] == '' || $account['password'] == '') {
-    die("账号密码为空,检查配置,必填项!");
+// load config
+$conf_file = isset($argv[1]) ? $argv[1] : 'user.conf';
+$dotenv = loadConfigFile($conf_file);
+
+// run
+while (true) {
+    if (!Login::check()) {
+        $dotenv->overload();
+    }
+    Daily::run();
+    GiftSend::run();
+    Heart::run();
+    Silver::run();
+    Task::run();
+    Silver2Coin::run();
+    GiftHeart::run();
+    MaterialObject::run();
+    GroupSignIn::run();
+    Socket::run();
+
+    sleep(0.5);
 }
-//第一次获取cookie
-$login = new BiliLogin($account);
-$data = $login->start();
-$cookie = file_get_contents($data['cookie']);
-//unlink($data['cookie']);
-//start
-function start($account, $cookie, $data)
+
+function loadConfigFile($conf_file)
 {
-    $api = new Bilibili($cookie, $data);
-    $api->debug = false;
-    $api->color = true;
-    $api->_accessToken = $data['access_token'];
-    $api->_refreshToken = $data['refresh_token'];
-    //要指定投喂过期礼物的直播间id
-    $api->roomid = 9522051;
-    //要指定读弹幕消息的直播间id
-    $api->_roomRealId = '';
-    //Server酱接口，有key则推送，为空则不推送
-    $api->_scKey = '';
+    $file_path = __DIR__ . '\conf\\' . $conf_file;
 
-    $api->callback = function () {
-        //递归调用
-        global $account;
-        $login = new BiliLogin($account);
-        $data = $login->start();
-        $cookie = file_get_contents($data['cookie']);
-        //unlink($data['cookie']);
-        //unlink('./tmp/memory.log');
-        call_user_func('start', $account, $cookie, $data);
-    };
-    $api->run();
+    if (is_file($file_path) && $conf_file != 'user.conf') {
+        $load_files = [
+            $conf_file,
+            'bili.conf',
+        ];
+    } else {
+        $load_files = [
+            'bili.conf',
+            'user.conf',
+        ];
+    }
+    foreach ($load_files as $load_file) {
+        $dotenv = new Dotenv(__DIR__ . '\conf', $load_file);
+        $dotenv->load();
+    }
+
+    // load ACCESS_KEY
+    Login::run($conf_file);
+    $dotenv->overload();
+
+    return $dotenv;
 }
-
-call_user_func('start', $account, $cookie, $data);

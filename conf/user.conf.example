@@ -1,0 +1,45 @@
+# 帐号|密码
+APP_USER=
+APP_PASS=
+
+# 多账号区别输出
+APP_MULTIPLE=false
+# 账号别名，如果为空则默认使用登陆账号作为标示
+APP_USER_IDENTITY=
+
+# 自动生成
+ACCESS_TOKEN=
+REFRESH_TOKEN=
+
+# 调试模式
+APP_DEBUG=false
+
+# 切换HTTPS,为真则使用https协议
+IS_HTTPS=false
+
+# 是否使用代理(前提保证有效代理)
+USE_PROXY=false
+PROXY_IP=
+PROXY_PORT=
+
+# 直播间ID，用于礼物赠送
+ROOM_ID=9522051
+
+# [SOCKET]
+# 直播间ID，用于连接SOCKET
+ROOM_ID_SOCKET=
+# UID，用于连接SOCKET
+UID=18466419
+
+# 错误回调地址
+APP_CALLBACK="http://www.example.com/api.send?text={account}[{level}]: {message}"
+
+# 错误回调级别
+#
+#   DEBUG   100
+#   INFO    200
+#   NOTICE  250
+#   WARNING 300
+#   ERROR   400
+#
+APP_CALLBACK_LEVEL=400
