@@ -40,7 +40,7 @@ class Silver
         $data = json_decode($data, true);
 
         if (isset($data['code']) && $data['code']) {
-            Log::warning('领取宝箱失败！', $data['message']);
+            Log::warning($data['message'] . '|领取宝箱失败！');
             self::$lock = time() + 60;
             return;
         }
@@ -64,7 +64,7 @@ class Silver
         }
 
         if (isset($data['code']) && $data['code']) {
-            Log::error('check freeSilverCurrentTask failed! Error message: '.$data['message']);
+            Log::error('check freeSilverCurrentTask failed! Error message: ' . $data['message']);
             die();
         }
 
