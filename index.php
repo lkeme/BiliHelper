@@ -60,7 +60,7 @@ while (true) {
 
 function loadConfigFile($conf_file)
 {
-    $file_path = __DIR__ . '\conf\\' . $conf_file;
+    $file_path = __DIR__ . '/conf/' . $conf_file;
 
     if (is_file($file_path) && $conf_file != 'user.conf') {
         $load_files = [
@@ -74,7 +74,7 @@ function loadConfigFile($conf_file)
         ];
     }
     foreach ($load_files as $load_file) {
-        $dotenv = new Dotenv(__DIR__ . '\conf', $load_file);
+        $dotenv = new Dotenv(__DIR__ . '/conf', $load_file);
         $dotenv->load();
     }
 
