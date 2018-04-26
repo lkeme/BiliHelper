@@ -7,7 +7,7 @@
 </p>
 
 
-# BilibiliHelper
+# BiliHelper
 B 站直播实用脚本
 
 BUG群 : 55308141 | 路过的大佬丢个Star
@@ -111,7 +111,7 @@ $ systemctl restart bilibili
 # /usr/lib/systemd/system/bilibili.service
 
 [Unit]
-Description=Bilibili Helper Manager
+Description=Bili Helper Manager
 Documentation=https://github.com/lkeme/BiliHelper
 After=network.target
 
