@@ -23,10 +23,16 @@ class Socket
     protected static $socket_ip = null;
     protected static $socket_port = null;
     public static $lock = 0;
+    protected static $heart_lock = 0;
 
     // RUN
     public static function run()
     {
+        if (self::$lock > time()) {
+            return;
+        }
+        self::$lock = time() + 0.5;
+
         self::start();
         $message = self::decodeMessage();
         if (!$message) {
@@ -116,14 +122,14 @@ class Socket
     // SEND HEART
     protected static function sendHeartBeatPkg()
     {
-        if (self::$lock > time()) {
+        if (self::$heart_lock > time()) {
             return;
         }
         $action_heart_beat = getenv('ACTIONHEARTBEAT');
         $str = pack('NnnNN', 16, 16, 1, $action_heart_beat, 1);
         socket_write(self::$socket_connection, $str, strlen($str));
         Log::info('发送一次SOCKET心跳!');
-        self::$lock = time() + 30;
+        self::$heart_lock = time() + 30;
         return;
     }
 
