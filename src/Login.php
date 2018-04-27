@@ -144,6 +144,7 @@ class Login
         $refresh_token = $data['data']['token_info']['refresh_token'];
         File::writeNewEnvironmentFileWith('REFRESH_TOKEN', $refresh_token);
         Log::info(' > refresh token: ' . $refresh_token);
+
         return;
     }
 

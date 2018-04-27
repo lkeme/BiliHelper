@@ -72,8 +72,8 @@ class Index
 
         if (is_file($file_path) && self::$conf_file != 'user.conf') {
             $load_files = [
-                self::$conf_file,
                 'bili.conf',
+                self::$conf_file,
             ];
         } else {
             $load_files = [
@@ -85,7 +85,7 @@ class Index
             self::$dotenv = new Dotenv(__DIR__ . '/conf', $load_file);
             self::$dotenv->load();
         }
-
+        
         // load ACCESS_KEY
         Login::run();
         self::$dotenv->overload();

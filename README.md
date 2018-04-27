@@ -185,9 +185,11 @@ http://live.bilibili.com/9522051
 
 ## 相关
 
- > 本项目基于[BilibiliHelper](https://github.com/metowolf/BilibiliHelper)
+ > 本项目基于[BilibiliHelper](https://github.com/metowolf/BilibiliHelper)项目
  
- > 前项目一切不必要的原有信息都么有删除，保持原有状态，另外欢迎重构(Haha)
+ > 基于父项目的架构开发，在此感谢父项目的开发
+ 
+ > 保留父项目没必要修改的信息，另外欢迎重构(Haha)
 
 [BilibiliHelper](https://github.com/metowolf/BilibiliHelper)
 
