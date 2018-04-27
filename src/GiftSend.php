@@ -17,7 +17,7 @@ use lkeme\BiliHelper\Log;
 
 class GiftSend
 {
-    protected static $lock = 0;
+    public static $lock = 0;
     protected static $uid = 0;
     protected static $ruid = 0;
     protected static $roomid = 0;

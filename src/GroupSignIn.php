@@ -16,7 +16,7 @@ use lkeme\BiliHelper\Log;
 
 class GroupSignIn
 {
-    protected static $lock = 0;
+    public static $lock = 0;
 
     // RUN
     public static function run()

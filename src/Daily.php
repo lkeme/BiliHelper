@@ -16,7 +16,7 @@ use lkeme\BiliHelper\Log;
 
 class Daily
 {
-    protected static $lock = 0;
+    public static $lock = 0;
 
     public static function run()
     {

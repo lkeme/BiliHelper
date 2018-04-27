@@ -13,12 +13,17 @@ namespace lkeme\BiliHelper;
 use lkeme\BiliHelper\Curl;
 use lkeme\BiliHelper\Sign;
 use lkeme\BiliHelper\Log;
+use lkeme\BiliHelper\User;
 
 class Live
 {
+    public static $lock = 0;
+
     // RUN
     public static function run()
     {
+        // TODO
+        self::isSleep();
     }
 
     // GET RANDOW ROOM_ID
@@ -87,6 +92,61 @@ class Live
         Curl::post('https://api.live.bilibili.com/room/v1/Room/room_entry_action', Sign::api($payload));
         Log::info('进入直播间[' . $room_id . ']抽奖!');
         return true;
+    }
+
+    // get Millisecond
+    public static function getMillisecond()
+    {
+        list($t1, $t2) = explode(' ', microtime());
+        return (float)sprintf('%.0f', (floatval($t1) + floatval($t2)) * 1000);
+    }
+
+    // IS SLEEP
+    public static function isSleep()
+    {
+        if (self::$lock > time()) {
+            return;
+        }
+        self::$lock = time() + 5 * 60;
+
+        $hour = date('H');
+        if ($hour >= 2 && $hour < 6) {
+            self::bannedVisit('sleep');
+            Log::warning('休眠时间,暂停非必要任务,5小时后自动开启!');
+            return;
+        }
+
+        $payload = [];
+        $raw = Curl::get('https://api.live.bilibili.com/mobile/freeSilverAward', Sign::api($payload));
+        $de_raw = json_decode($raw, true);
+        if ($de_raw['msg'] == '访问被拒绝') {
+            self::bannedVisit('ban');
+            Log::warning('账号拒绝访问,暂停非必要任务,凌晨自动开启!');
+        }
+        return;
+    }
+
+    //被封禁访问
+    public static function bannedVisit($arg)
+    {
+        // 获取当前时间
+        $block_time = strtotime(date("Y-m-d H:i:s"));
+        if ($arg == 'ban') {
+            $unblock_time = strtotime(date("Y-m-d", strtotime("+1 day", $block_time)));
+        } elseif ($arg == 'sleep') {
+            $unblock_time = strtotime(date("Y-m-d", strtotime("+5 hours", $block_time)));
+        } else {
+            $unblock_time = time();
+        }
+        // +10 分钟
+        $second = time() + ceil($unblock_time - $block_time) + 10 * 60;
+        $hour = $second / 60 / 60;
+
+        \lkeme\BiliHelper\Silver::$lock = $second;
+        \lkeme\BiliHelper\MaterialObject::$lock = $second;
+        \lkeme\BiliHelper\Socket::$lock = $second;
+
+        return;
     }
 
 }

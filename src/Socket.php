@@ -22,7 +22,7 @@ class Socket
     protected static $ips = [];
     protected static $socket_ip = null;
     protected static $socket_port = null;
-    protected static $lock = 0;
+    public static $lock = 0;
 
     // RUN
     public static function run()

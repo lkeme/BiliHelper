@@ -13,6 +13,7 @@ namespace lkeme\BiliHelper;
 use lkeme\BiliHelper\Curl;
 use lkeme\BiliHelper\Sign;
 use lkeme\BiliHelper\Log;
+use lkeme\BiliHelper\Live;
 
 class User
 {
@@ -32,5 +33,21 @@ class User
             return false;
         }
         return true;
+    }
+
+    // 老爷检测
+    public static function isMaster(): bool
+    {
+        $payload = [
+            'ts' => Live::getMillisecond(),
+        ];
+        $raw = Curl::get('https://api.live.bilibili.com/User/getUserInfo', Sign::api($payload));
+        $de_raw = json_decode($raw, true);
+        if ($de_raw['msg'] == 'ok') {
+            if ($de_raw['data']['vip'] || $de_raw['data']['svip']) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -1,13 +1,15 @@
 <?php
 
-/*!
- * metowolf BilibiliHelper
- * https://i-meto.com/
- * Version 18.04.25 (0.7.3)
- *
- * Copyright 2018, metowolf
- * Released under the MIT license
+
+/**
+ *  Website: https://mudew.com/
+ *  Author: Lkeme
+ *  Version: 0.0.2
+ *  License: The MIT License
+ *  Updated: 20180425 18:47:50
  */
+
+namespace lkeme\BiliHelper;
 
 //autoload
 require 'vendor/autoload.php';
@@ -23,62 +25,76 @@ use lkeme\BiliHelper\Silver2Coin;
 use lkeme\BiliHelper\GiftHeart;
 use lkeme\BiliHelper\MaterialObject;
 use lkeme\BiliHelper\GroupSignIn;
+use lkeme\BiliHelper\Live;
 use lkeme\BiliHelper\Socket;
 
 
-// timeout
 set_time_limit(0);
-// header UTF-8
 header("Content-Type:text/html; charset=utf-8");
-// timezone
 date_default_timezone_set('Asia/Shanghai');
 
-// load config
-$conf_file = isset($argv[1]) ? $argv[1] : 'user.conf';
-$dotenv = loadConfigFile($conf_file);
-
-// run
-while (true) {
-    if (!Login::check()) {
-        $dotenv->overload();
-    }
-    Daily::run();
-    GiftSend::run();
-    Heart::run();
-    Silver::run();
-    Task::run();
-    Silver2Coin::run();
-    GiftHeart::run();
-    MaterialObject::run();
-    GroupSignIn::run();
-    Socket::run();
-
-    sleep(0.5);
-}
-
-function loadConfigFile($conf_file)
+class Index
 {
-    $file_path = __DIR__ . '/conf/' . $conf_file;
+    public static $conf_file = null;
+    public static $dotenv = null;
 
-    if (is_file($file_path) && $conf_file != 'user.conf') {
-        $load_files = [
-            $conf_file,
-            'bili.conf',
-        ];
-    } else {
-        $load_files = [
-            'bili.conf',
-            'user.conf',
-        ];
+    // RUN
+    public static function run($conf_file)
+    {
+        self::$conf_file = $conf_file;
+        self::loadConfigFile();
+
+        while (true) {
+            if (!Login::check()) {
+                self::$dotenv->overload();
+            }
+            Daily::run();
+            GiftSend::run();
+            Heart::run();
+            Silver::run();
+            Task::run();
+            Silver2Coin::run();
+            GiftHeart::run();
+            MaterialObject::run();
+            GroupSignIn::run();
+            Live::run();
+            Socket::run();
+
+            sleep(0.5);
+        }
     }
-    foreach ($load_files as $load_file) {
-        $dotenv = new Dotenv(__DIR__ . '/conf', $load_file);
-        $dotenv->load();
+
+    protected static function loadConfigFile()
+    {
+        $file_path = __DIR__ . '/conf/' . self::$conf_file;
+
+        if (is_file($file_path) && self::$conf_file != 'user.conf') {
+            $load_files = [
+                self::$conf_file,
+                'bili.conf',
+            ];
+        } else {
+            $load_files = [
+                'bili.conf',
+                'user.conf',
+            ];
+        }
+        foreach ($load_files as $load_file) {
+            self::$dotenv = new Dotenv(__DIR__ . '/conf', $load_file);
+            self::$dotenv->load();
+        }
+
+        // load ACCESS_KEY
+        Login::run();
+        self::$dotenv->overload();
     }
 
-    // load ACCESS_KEY
-    Login::run($conf_file, $dotenv);
-    $dotenv->overload();
-
-    return $dotenv;
 }
+
+// LOAD
+$conf_file = isset($argv[1]) ? $argv[1] : 'user.conf';
+// RUN
+Index::run($conf_file);
+
+
+

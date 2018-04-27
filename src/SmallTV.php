@@ -20,7 +20,7 @@ class SmallTV
     // ROOM ID
     private static $room_id = 0;
 
-    protected static $lock = 0;
+    public static $lock = 0;
 
     private static $smalltv_list = [];
     private static $smalltv_lottery_list = [];

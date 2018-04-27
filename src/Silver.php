@@ -17,7 +17,7 @@ use lkeme\BiliHelper\Log;
 
 class Silver
 {
-    protected static $lock = 0;
+    public static $lock = 0;
     protected static $task = 0;
 
     public static function run()

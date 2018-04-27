@@ -14,22 +14,23 @@ namespace lkeme\BiliHelper;
 use lkeme\BiliHelper\Curl;
 use lkeme\BiliHelper\Sign;
 use lkeme\BiliHelper\Log;
+use lkeme\BiliHelper\Index;
 
 class Login
 {
-    protected static $lock = 0;
+    public static $lock = 0;
     protected static $user_conf = '';
 
-    public static function run($file, $dotenv)
+    public static function run()
     {
-        self::$user_conf = $file;
+        self::$user_conf = Index::$conf_file;
         Log::info('开始启动程序...');
         if (empty(getenv('ACCESS_TOKEN'))) {
             Log::info('令牌载入中...');
             self::login();
         }
         // 重载配置文件
-        $dotenv->overload();
+        Index::$dotenv->overload();
 
         Log::info('正在检查令牌合法性...');
         if (!self::info()) {
