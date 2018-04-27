@@ -20,7 +20,7 @@ class Login
     protected static $lock = 0;
     protected static $user_conf = '';
 
-    public static function run($file)
+    public static function run($file, $dotenv)
     {
         self::$user_conf = $file;
         Log::info('开始启动程序...');
@@ -28,6 +28,9 @@ class Login
             Log::info('令牌载入中...');
             self::login();
         }
+        // 重载配置文件
+        $dotenv->overload();
+
         Log::info('正在检查令牌合法性...');
         if (!self::info()) {
             Log::warning('令牌即将过期');

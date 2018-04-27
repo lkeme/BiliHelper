@@ -97,5 +97,15 @@ class Storm
         ];
     }
 
-
+    // 测试 app接口
+    public static function testStorm()
+    {
+        $payload = [
+            'roomid' => getenv('ROOM_ID')
+        ];
+        $raw = Curl::post('https://api.live.bilibili.com/lottery/v1/Storm/join', Sign::api($payload));
+        $de_raw = json_decode($raw, true);
+        print_r($de_raw);
+        exit();
+    }
 }

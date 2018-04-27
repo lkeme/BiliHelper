@@ -13,7 +13,6 @@
 require 'vendor/autoload.php';
 
 use Dotenv\Dotenv;
-use lkeme\BiliHelper\Curl;
 use lkeme\BiliHelper\Daily;
 use lkeme\BiliHelper\GiftSend;
 use lkeme\BiliHelper\Heart;
@@ -25,7 +24,6 @@ use lkeme\BiliHelper\GiftHeart;
 use lkeme\BiliHelper\MaterialObject;
 use lkeme\BiliHelper\GroupSignIn;
 use lkeme\BiliHelper\Socket;
-use lkeme\BiliHelper\Live;
 
 
 // timeout
@@ -79,7 +77,7 @@ function loadConfigFile($conf_file)
     }
 
     // load ACCESS_KEY
-    Login::run($conf_file);
+    Login::run($conf_file, $dotenv);
     $dotenv->overload();
 
     return $dotenv;
