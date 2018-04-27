@@ -14,6 +14,8 @@ BUG群 : 55308141 | 路过的大佬丢个Star
 
 > 群只作用于反馈BUG,别来问怎么使用之类问题
 
+> 重点: 请看完`readme.md`(重点，重点，重点)
+
 ## 功能组件
 
 |plugin              |version             |description         |
@@ -26,16 +28,24 @@ BUG群 : 55308141 | 路过的大佬丢个Star
 |Task                |18.04.21            |每日任务             |
 |SmallTV             |18.04.26            |小电视抽奖           |
 |GiftHeart           |18.04.25            |心跳礼物             |
-|Silver2Coin         |18.04.25            |双端银瓜子换硬币      |
-|MaterialObject      |18.04.25            |实物抽奖              |
-|GroupSignIn         |18.04.25            |应援团签到            |
-|Storm               |18.04.26            |节奏风暴              |
-
+|Silver2Coin         |18.04.25            |双端银瓜子换硬币     |
+|MaterialObject      |18.04.25            |实物抽奖             |
+|GroupSignIn         |18.04.25            |应援团签到           |
+|Storm               |18.04.26            |节奏风暴             |
+|Notice              |18.04.27            |Server酱             |
 
 ## 未完成功能
-|待续    |
-|--------|
-|优化代码|
+|待续        |
+|-----------|
+|优化节奏风暴|
+|添加防封机制|
+|自动代理访问|
+|待添加      |
+
+## 打赏
+![](https://i.loli.net/2018/04/07/5ac79ff8c2900.png)
+
+> 有意的打赏个阔落，无意的可以无视.
 
 ## 环境依赖
 |Requirement         |
@@ -70,14 +80,14 @@ $ composer install
 $ php index.php
 ```
 
+<p align="center"><img width="680px" src="https://i.loli.net/2018/04/21/5adb497dc3ece.png"></p>
+
 ## 多开方案
 复制一份example配置文件，修改账号密码即可
 ```
-$ php index.php suibian.conf
+$ php index.php example.conf
 ```
-要保证配置文件存在，不然默认还是加载`user.conf`
-
-<p align="center"><img width="680px" src="https://i.loli.net/2018/04/21/5adb497dc3ece.png"></p>
+要保证配置文件存在，否则默认加载`user.conf`
 
 ## 升级指南
  1. 进入项目目录
