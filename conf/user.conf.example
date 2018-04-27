@@ -2,6 +2,9 @@
 APP_USER=
 APP_PASS=
 
+# 用户名,可自定义
+APP_UNAME=
+
 # 多账号区别输出
 APP_MULTIPLE=false
 # 账号别名，如果为空则默认使用登陆账号作为标示
@@ -13,6 +16,9 @@ REFRESH_TOKEN=
 
 # 调试模式
 APP_DEBUG=false
+
+# SERVER酱,用于推送消息
+USE_SCKEY=
 
 # 切换HTTPS,为真则使用https协议
 IS_HTTPS=false
