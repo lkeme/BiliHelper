@@ -8,13 +8,10 @@
 
 
 # BiliHelper
+
 B 站直播实用脚本
 
-BUG群 : 55308141 | 路过的大佬丢个Star
-
-> 群只作用于反馈BUG,别来问怎么使用之类问题
-
-> 重点: 请看完`readme.md`(重点，重点，重点)
+> 群`55308141`:只作用于反馈BUG,别来问怎么使用之类问题
 
 ## 功能组件
 
@@ -35,6 +32,7 @@ BUG群 : 55308141 | 路过的大佬丢个Star
 |Notice              |18.04.27            |Server酱             |
 
 ## 未完成功能
+
 |待续        |
 |-----------|
 |优化节奏风暴|
@@ -42,12 +40,8 @@ BUG群 : 55308141 | 路过的大佬丢个Star
 |自动代理访问|
 |待添加      |
 
-## 打赏
-![](https://i.loli.net/2018/04/07/5ac79ff8c2900.png)
-
-> 有意的打赏个阔落，无意的可以无视.
-
 ## 环境依赖
+
 |Requirement         |
 |--------------------|
 |PHP >=7.0           |
@@ -61,6 +55,12 @@ BUG群 : 55308141 | 路过的大佬丢个Star
 通常使用 `composer` 工具会自动检测上述依赖问题。  
 
 * 项目 `composer.lock` 基于镜像生成 https://pkg.phpcomposer.com/
+
+## 打赏
+
+![](https://i.loli.net/2018/04/07/5ac79ff8c2900.png)
+
+> 有意的打赏个阔落，无意的可以无视.
 
 ## 使用指南
 
@@ -83,6 +83,7 @@ $ php index.php
 <p align="center"><img width="680px" src="https://i.loli.net/2018/04/21/5adb497dc3ece.png"></p>
 
 ## 多开方案
+
 复制一份example配置文件，修改账号密码即可
 ```
 $ php index.php example.conf
@@ -90,6 +91,7 @@ $ php index.php example.conf
 要保证配置文件存在，否则默认加载`user.conf`
 
 ## 升级指南
+
  1. 进入项目目录
 ```
 $ cd BiliHelper
@@ -108,6 +110,7 @@ $ systemctl restart bilibili
 ```
 
 ## 部署指南
+
 如果你将 BiliHelper 部署到线上服务器时，则需要配置一个进程监控器来监测 `php index.php` 命令，在它意外退出时自动重启。
 
 通常可以使用以下的方式
@@ -117,6 +120,7 @@ $ systemctl restart bilibili
  - nohup
 
 ## systemd 脚本
+
 ```
 # /usr/lib/systemd/system/bilibili.service
 
@@ -134,6 +138,7 @@ WantedBy=multi-user.target
 ```
 
 ## Supervisor 配置
+
 ```
 [program:bilibili]
 process_name=%(program_name)s
@@ -145,6 +150,7 @@ stdout_logfile=/tmp/bilibili.log
 ```
 
 ## 报错通知问题
+
 脚本出现 error 级别的报错，会调用通知地址进行提醒，这里推荐两个服务
 
 |服务|官网|
@@ -167,7 +173,8 @@ APP_CALLBACK="https://api.telegram.org/bot<TOKEN>/sendMessage?chat_id=<CHAR_ID>&
 
 
 ## 直播间 ID 问题
-config 文件中有个 `ROOM_ID` 配置，填写此项可以清空临过期礼物给指定直播间。
+
+`user.conf` 文件中有个 `ROOM_ID` 配置，填写此项可以清空临过期礼物给指定直播间。
 
 通常可以在直播间页面的 url 获取到它
 ```
@@ -177,6 +184,7 @@ http://live.bilibili.com/9522051
 所有直播间号码小于 1000 的直播间为短号，该脚本在每次启动会自动修正，无需关心，
 
 ## 相关
+
  > 本项目基于[BilibiliHelper](https://github.com/metowolf/BilibiliHelper)
  
  > 前项目一切不必要的原有信息都么有删除，保持原有状态，另外欢迎重构(Haha)
@@ -185,6 +193,7 @@ http://live.bilibili.com/9522051
 
 
 ## License 许可证
+
 BiliHelper is under the MIT license.
 
 本项目基于 MIT 协议发布，并增加了 SATA 协议。
