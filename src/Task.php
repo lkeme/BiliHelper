@@ -14,6 +14,7 @@ namespace lkeme\BiliHelper;
 use lkeme\BiliHelper\Curl;
 use lkeme\BiliHelper\Sign;
 use lkeme\BiliHelper\Log;
+use lkeme\BiliHelper\Notice;
 
 class Task
 {
@@ -69,6 +70,8 @@ class Task
             Log::warning('签到失败', ['msg' => $data['message']]);
         } else {
             Log::info('签到成功');
+            // 推送签到信息
+            Notice::run('todaySign', $data['msg']);
         }
     }
 

@@ -3,7 +3,7 @@
 /**
  *  Website: https://mudew.com/
  *  Author: Lkeme
- *  Version: 0.0.1
+ *  Version: 0.0.2
  *  License: The MIT License
  *  Updated: 20180425 18:47:50
  */
@@ -14,6 +14,7 @@ use lkeme\BiliHelper\Curl;
 use lkeme\BiliHelper\Sign;
 use lkeme\BiliHelper\Log;
 use lkeme\BiliHelper\Live;
+use lkeme\BiliHelper\Notice;
 
 class SmallTV
 {
@@ -29,7 +30,6 @@ class SmallTV
     public static function run($room_id)
     {
         self::$room_id = $room_id;
-        self::smallTvResult();
         if (!Live::fishingDetection(self::$room_id)) {
             Log::warning('当前直播间[' . self::$room_id . ']存在敏感行为!');
             return;
@@ -134,10 +134,15 @@ class SmallTV
                 case 3:
                     break;
                 case 2:
-                    Log::notice('直播间[' . $room_id . ']小电视[' . $raffle_id . ']获得[' . $de_raw['data']['gift_name'] . 'X' . $de_raw['data']['gift_num'] . ']');
-                    // TODO 推送活动抽奖信息
+                    $temp_info = '直播间[' . $room_id . ']小电视[' . $raffle_id . ']获得[' . $de_raw['data']['gift_name'] . 'X' . $de_raw['data']['gift_num'] . ']';
+                    Log::notice($temp_info);
 
-                    //删除id
+                    // 推送活动抽奖信息
+                    if ($de_raw['data']['gift_name'] != '辣条' && $de_raw['data']['gift_name'] != '') {
+                        Notice::run('smallTv', $temp_info);
+                    }
+
+                    // 删除id
                     unset(self::$smalltv_lottery_list[$i]);
                     self::$smalltv_lottery_list = array_values(self::$smalltv_lottery_list);
                     break;

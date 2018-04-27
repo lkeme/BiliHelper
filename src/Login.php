@@ -14,16 +14,14 @@ namespace lkeme\BiliHelper;
 use lkeme\BiliHelper\Curl;
 use lkeme\BiliHelper\Sign;
 use lkeme\BiliHelper\Log;
-use lkeme\BiliHelper\Index;
+use lkeme\BiliHelper\File;
 
 class Login
 {
     public static $lock = 0;
-    protected static $user_conf = '';
 
     public static function run()
     {
-        self::$user_conf = Index::$conf_file;
         Log::info('开始启动程序...');
         if (empty(getenv('ACCESS_TOKEN'))) {
             Log::info('令牌载入中...');
@@ -94,10 +92,10 @@ class Login
         }
         Log::info('令牌生成完毕!');
         $access_token = $data['data']['access_token'];
-        self::writeNewEnvironmentFileWith('ACCESS_TOKEN', $access_token);
+        File::writeNewEnvironmentFileWith('ACCESS_TOKEN', $access_token);
         Log::info(' > access token: ' . $access_token);
         $refresh_token = $data['data']['refresh_token'];
-        self::writeNewEnvironmentFileWith('REFRESH_TOKEN', $refresh_token);
+        File::writeNewEnvironmentFileWith('REFRESH_TOKEN', $refresh_token);
         Log::info(' > refresh token: ' . $refresh_token);
         return true;
     }
@@ -141,20 +139,12 @@ class Login
         }
         Log::info('令牌获取成功!');
         $access_token = $data['data']['token_info']['access_token'];
-        self::writeNewEnvironmentFileWith('ACCESS_TOKEN', $access_token);
+        File::writeNewEnvironmentFileWith('ACCESS_TOKEN', $access_token);
         Log::info(' > access token: ' . $access_token);
         $refresh_token = $data['data']['token_info']['refresh_token'];
-        self::writeNewEnvironmentFileWith('REFRESH_TOKEN', $refresh_token);
+        File::writeNewEnvironmentFileWith('REFRESH_TOKEN', $refresh_token);
         Log::info(' > refresh token: ' . $refresh_token);
         return;
     }
 
-    protected static function writeNewEnvironmentFileWith($key, $value)
-    {
-        file_put_contents(__DIR__ . '/../conf/' . self::$user_conf, preg_replace(
-            '/^' . $key . '=' . getenv($key) . '/m',
-            $key . '=' . $value,
-            file_get_contents(__DIR__ . '/../conf/' . self::$user_conf)
-        ));
-    }
 }

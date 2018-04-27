@@ -26,6 +26,7 @@ use lkeme\BiliHelper\GiftHeart;
 use lkeme\BiliHelper\MaterialObject;
 use lkeme\BiliHelper\GroupSignIn;
 use lkeme\BiliHelper\Live;
+use lkeme\BiliHelper\Winning;
 use lkeme\BiliHelper\Socket;
 
 
@@ -58,6 +59,7 @@ class Index
             MaterialObject::run();
             GroupSignIn::run();
             Live::run();
+            Winning::run();
             Socket::run();
 
             sleep(0.5);

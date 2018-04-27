@@ -1,6 +1,6 @@
 {
   "name": "lkeme/bilihelper",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "B 站直播助手、直播挂机脚本 - PHP 版",
   "type": "project",
   "require": {

@@ -3,7 +3,7 @@
 /**
  *  Website: https://mudew.com/
  *  Author: Lkeme
- *  Version: 0.0.1
+ *  Version: 0.0.2
  *  License: The MIT License
  *  Updated: 20180425 18:47:50
  */

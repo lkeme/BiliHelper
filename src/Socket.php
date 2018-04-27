@@ -3,7 +3,7 @@
 /**
  *  Website: https://mudew.com/
  *  Author: Lkeme
- *  Version: 0.0.1
+ *  Version: 0.0.2
  *  License: The MIT License
  *  Updated: 20180425 18:47:50
  */
@@ -164,7 +164,7 @@ class Socket
                 self::$socket_port = $resp[$index['DM_PORT'][0]]['value'];
 
                 break;
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 Log::warning('获取SOCKET服务器出错!', $e);
                 continue;
             }
