@@ -146,6 +146,7 @@ class Live
         \lkeme\BiliHelper\Silver::$lock = $second;
         \lkeme\BiliHelper\MaterialObject::$lock = $second;
         \lkeme\BiliHelper\Socket::$lock = $second;
+        \lkeme\BiliHelper\GiftHeart::$lock = $second;
 
         return;
     }

@@ -55,9 +55,9 @@ class Index
             Silver::run();
             Task::run();
             Silver2Coin::run();
-            GiftHeart::run();
             GroupSignIn::run();
             Live::run();
+            GiftHeart::run();
             Winning::run();
             MaterialObject::run();
             Socket::run();
