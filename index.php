@@ -56,10 +56,10 @@ class Index
             Task::run();
             Silver2Coin::run();
             GiftHeart::run();
-            MaterialObject::run();
             GroupSignIn::run();
             Live::run();
             Winning::run();
+            MaterialObject::run();
             Socket::run();
 
             sleep(0.5);
@@ -85,7 +85,7 @@ class Index
             self::$dotenv = new Dotenv(__DIR__ . '/conf', $load_file);
             self::$dotenv->load();
         }
-        
+
         // load ACCESS_KEY
         Login::run();
         self::$dotenv->overload();

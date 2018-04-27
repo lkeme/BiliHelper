@@ -139,9 +139,10 @@ class Live
             $unblock_time = time();
         }
         // +10 分钟
-        $second = time() + ceil($unblock_time - $block_time) + 10 * 60;
+        $second = time() + ceil($unblock_time - $block_time) + 5 * 60;
         $hour = $second / 60 / 60;
 
+        self::$lock = $second;
         \lkeme\BiliHelper\Silver::$lock = $second;
         \lkeme\BiliHelper\MaterialObject::$lock = $second;
         \lkeme\BiliHelper\Socket::$lock = $second;
