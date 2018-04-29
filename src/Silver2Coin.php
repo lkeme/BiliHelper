@@ -39,11 +39,11 @@ class Silver2Coin
         $de_raw = json_decode($raw, true);
 
         if (!$de_raw['code'] && $de_raw['msg'] == '兑换成功') {
-            Log::info('[APP]硬币兑换瓜子: ' . $de_raw['msg']);
+            Log::info('[APP]银瓜子兑换硬币: ' . $de_raw['msg']);
         } elseif ($de_raw['code'] == 403) {
-            Log::info('[APP]硬币兑换瓜子: ' . $de_raw['msg']);
+            Log::info('[APP]银瓜子兑换硬币: ' . $de_raw['msg']);
         } else {
-            Log::warning('[APP]硬币兑换瓜子: ' . $de_raw['msg']);
+            Log::warning('[APP]银瓜子兑换硬币: ' . $de_raw['msg']);
             return false;
         }
         return true;
@@ -58,7 +58,7 @@ class Silver2Coin
         if ($de_raw['code'] == -403) {
             return false;
         }
-        Log::info('[PC]硬币兑换瓜子: ' . $de_raw['msg']);
+        Log::info('[PC]银瓜子兑换硬币: ' . $de_raw['msg']);
         // TODO
         return true;
     }

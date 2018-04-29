@@ -19,8 +19,7 @@ class Sign
             'access_key' => getenv('ACCESS_TOKEN'),
             'actionKey' => 'appkey',
             'appkey' => getenv('APP_KEY'),
-            'appver' => '6620',
-            'build' => '6620',
+            'build' => '6670',
             'device' => 'phone',
             'mobi_app' => 'iphone',
             'platform' => 'ios',
@@ -33,7 +32,7 @@ class Sign
         }
         ksort($payload);
         $data = http_build_query($payload);
-        $payload['sign'] = md5($data.getenv('APP_SECRET'));
+        $payload['sign'] = md5($data . getenv('APP_SECRET'));
 
         return $payload;
     }

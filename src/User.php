@@ -60,7 +60,7 @@ class User
         ];
         $raw = Curl::get('https://api.live.bilibili.com/User/getUserInfo', Sign::api($payload));
         $de_raw = json_decode($raw, true);
-        
+
         if (!empty(getenv('APP_UNAME'))) {
             return true;
         }

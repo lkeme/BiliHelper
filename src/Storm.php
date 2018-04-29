@@ -17,10 +17,12 @@ use lkeme\BiliHelper\User;
 
 class Storm
 {
+    private static $realname_check = true;
+
     // RUN
     public static function run(array $data)
     {
-        if (!User::realnameCheck()) {
+        if (!self::$realname_check) {
             Log::notice('该账号没有实名,跳过节奏风暴!');
             return;
         }
@@ -64,6 +66,10 @@ class Storm
         ];
         $raw = Curl::post('https://api.live.bilibili.com/lottery/v1/Storm/join', Sign::api($payload));
         $de_raw = json_decode($raw, true);
+        if ($de_raw['code'] == 429 || $de_raw['code'] == -429) {
+            self::$realname_check = false;
+            return false;
+        }
         if ($de_raw['code'] == 0) {
             Log::notice($de_raw['data']['mobile_content']);
             return false;

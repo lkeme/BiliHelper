@@ -23,7 +23,7 @@ class Login
     public static function run()
     {
         Log::info('开始启动程序...');
-        if (empty(getenv('ACCESS_TOKEN'))) {
+        if (getenv('ACCESS_TOKEN') == "") {
             Log::info('令牌载入中...');
             self::login();
         }
