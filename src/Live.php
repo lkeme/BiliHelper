@@ -14,6 +14,7 @@ use lkeme\BiliHelper\Curl;
 use lkeme\BiliHelper\Sign;
 use lkeme\BiliHelper\Log;
 use lkeme\BiliHelper\User;
+use lkeme\BiliHelper\Notice;
 
 class Live
 {
@@ -112,7 +113,7 @@ class Live
         $hour = date('H');
         if ($hour >= 2 && $hour < 6) {
             self::bannedVisit('sleep');
-            Log::warning('休眠时间,暂停非必要任务,5小时后自动开启!');
+            Log::warning('休眠时间,暂停非必要任务,4小时后自动开启!');
             return;
         }
 
@@ -129,20 +130,28 @@ class Live
     //被封禁访问
     public static function bannedVisit($arg)
     {
-        // 获取当前时间
+        //获取当前时间
         $block_time = strtotime(date("Y-m-d H:i:s"));
+
         if ($arg == 'ban') {
             $unblock_time = strtotime(date("Y-m-d", strtotime("+1 day", $block_time)));
         } elseif ($arg == 'sleep') {
-            $unblock_time = strtotime(date("Y-m-d", strtotime("+5 hours", $block_time)));
+            // TODO
+            $unblock_time = $block_time + 4 * 60 * 60;
         } else {
             $unblock_time = time();
         }
-        // +10 分钟
+
         $second = time() + ceil($unblock_time - $block_time) + 5 * 60;
-        $hour = $second / 60 / 60;
+        $hour = floor(($second - time()) / 60 / 60);
+
+        if ($arg == ' ban') {
+            // 推送被ban信息
+            Notice::run('banned', $hour);
+        }
 
         self::$lock = $second;
+
         \lkeme\BiliHelper\Silver::$lock = $second;
         \lkeme\BiliHelper\MaterialObject::$lock = $second;
         \lkeme\BiliHelper\Socket::$lock = $second;
