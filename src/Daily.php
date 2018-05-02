@@ -23,7 +23,6 @@ class Daily
         if (self::$lock > time()) {
             return;
         }
-
         self::dailyBag();
 
         self::$lock = time() + 3600;

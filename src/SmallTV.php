@@ -78,7 +78,7 @@ class SmallTV
         Live::randFloat();
         foreach ($small_tvs as $raffle_id) {
             if ($total < 10) {
-                sleep(0.2);
+                usleep(0.2 * 1000000);
             } else {
                 sleep(10 / $total);
             }

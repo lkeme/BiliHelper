@@ -34,6 +34,7 @@ class Silver2Coin
     // APP API
     protected static function appSilver2coin(): bool
     {
+        sleep(1);
         $payload = [];
         $raw = Curl::get('https://api.live.bilibili.com/AppExchange/silver2coin', Sign::api($payload));
         $de_raw = json_decode($raw, true);
@@ -52,6 +53,7 @@ class Silver2Coin
     // PC API
     protected static function pcSilver2coin(): bool
     {
+        sleep(1);
         $payload = [];
         $raw = Curl::get('https://api.live.bilibili.com/exchange/silver2coin', Sign::api($payload));
         $de_raw = json_decode($raw, true);
