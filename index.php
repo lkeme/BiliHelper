@@ -44,10 +44,7 @@ class Index
     {
         self::$conf_file = $conf_file;
         self::loadConfigFile();
-        $i = 0;
         while (true) {
-            $i++;
-            echo "这是第几次访问" . $i . PHP_EOL;
             if (!Login::check()) {
                 self::$dotenv->overload();
             }
