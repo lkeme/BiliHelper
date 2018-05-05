@@ -108,7 +108,7 @@ class Socket
     protected static function start()
     {
         if (is_null(self::$socket_connection)) {
-            $room_id = empty(getenv('ROOM_ID_SOCKET')) ? Live::getUserRecommend() : Live::getRealRoomID(getenv('ROOM_ID_SOCKET'));
+            $room_id = empty(getenv('SOCKET_ROOM_ID')) ? Live::getUserRecommend() : Live::getRealRoomID(getenv('SOCKET_ROOM_ID'));
             $room_id = intval($room_id);
             if ($room_id) {
                 self::getSocketServer($room_id);
@@ -149,9 +149,12 @@ class Socket
     // PACK DATA
     protected static function packMsg($room_id)
     {
-        $uid = intval(getenv('UID'));
         $action_entry = getenv('ACTIONENTRY');
-        $data = json_encode(['roomid' => $room_id, 'uid' => $uid]);
+        $data = sprintf("{\"uid\":%d%08d,\"roomid\":%d}",
+            mt_rand(1000000, 2999999),
+            mt_rand(0, 99999999),
+            intval($room_id)
+        );
         return pack('NnnNN', 16 + strlen($data), 16, 1, $action_entry, 1) . $data;
     }
 
@@ -160,14 +163,19 @@ class Socket
     {
         while (1) {
             try {
-                $raw = Curl::get('https://api.live.bilibili.com/api/player?id=cid:' . $room_id);
-                $xml_dom = '<xml>' . $raw . '</xml>';
-                $parser = xml_parser_create();
-                xml_parse_into_struct($parser, $xml_dom, $resp, $index);
-                $domain = $resp[$index['DM_SERVER'][0]]['value'];
+                $payload = [
+                    'room_id' => $room_id,
+                ];
+                $data = Curl::get('https://api.live.bilibili.com/room/v1/Danmu/getConf', Sign::api($payload));
+                $data = json_decode($data, true);
 
-                self::$socket_ip = gethostbyname($domain);
-                self::$socket_port = $resp[$index['DM_PORT'][0]]['value'];
+                // TODO 判断
+                if (isset($data['code']) && $data['code']) {
+                    continue;
+                }
+
+                self::$socket_ip = gethostbyname($data['data']['host']);
+                self::$socket_port = $data['data']['port'];
 
                 break;
             } catch (\Exception $e) {

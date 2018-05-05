@@ -6,6 +6,7 @@
     "php": ">=7.0.0",
     "ext-curl": "*",
     "ext-openssl": "*",
+    "ext-sockets": "*",
     "vlucas/phpdotenv": "^2.4",
     "monolog/monolog": "^1.23",
     "bramus/monolog-colored-line-formatter": "^2.0"

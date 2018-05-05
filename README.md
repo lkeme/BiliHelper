@@ -13,6 +13,8 @@ B 站直播实用脚本
 
 > 群`55308141`:只作用于反馈BUG,别来问怎么使用之类问题
 
+> 另外，打个广告，需要亿圆的可以滴滴我，赚点零花钱，不喜勿喷
+
 ## 功能组件
 
 |plugin              |version             |description         |
@@ -45,11 +47,8 @@ B 站直播实用脚本
 |Requirement         |
 |--------------------|
 |PHP >=7.0           |
-|php_gd              |
 |php_curl            |
 |php_sockets         |
-|php_xml             |
-|php_mbstring        |
 |php_openssl         |
 
 通常使用 `composer` 工具会自动检测上述依赖问题。  
