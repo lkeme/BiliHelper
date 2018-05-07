@@ -31,6 +31,14 @@ ROOM_ID=9522051
 # 弹幕监控房间(为空则随机)
 SOCKET_ROOM_ID=9522051
 
+# 小电视
+USE_SMALLTV=true
+
+# 银瓜子兑换硬币
+USE_SILVER2COIN=true
+
+# 节奏风暴
+USE_STORM=true
 
 #######################
 #       日志设置       #

@@ -29,6 +29,9 @@ class SmallTV
     // RUN
     public static function run($room_id)
     {
+        if (getenv('USE_SMALLTV') == 'false'){
+            return;
+        }
         self::$room_id = $room_id;
         if (!Live::fishingDetection(self::$room_id)) {
             Log::warning('当前直播间[' . self::$room_id . ']存在敏感行为!');

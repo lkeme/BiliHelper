@@ -22,6 +22,9 @@ class Storm
     // RUN
     public static function run(array $data)
     {
+        if (getenv('USE_STORM') == 'false'){
+            return;
+        }
         if (!self::$realname_check) {
             Log::notice('该账号没有实名,跳过节奏风暴!');
             return;

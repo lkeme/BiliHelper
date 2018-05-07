@@ -25,7 +25,7 @@ class Notice
     // RUN
     public static function run($type, $result = '')
     {
-        if (empty(getenv('USE_SCKEY'))) {
+        if (getenv('USE_SCKEY') == "") {
             return;
         }
 

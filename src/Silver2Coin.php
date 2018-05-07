@@ -20,7 +20,7 @@ class Silver2Coin
 
     public static function run()
     {
-        if (self::$lock > time()) {
+        if (self::$lock > time() || getenv('USE_SILVER2COIN') == 'false') {
             return;
         }
         if (self::appSilver2coin() && self::pcSilver2coin()) {
