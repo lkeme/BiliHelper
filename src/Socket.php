@@ -108,7 +108,7 @@ class Socket
     protected static function start()
     {
         if (is_null(self::$socket_connection)) {
-            $room_id = empty(getenv('SOCKET_ROOM_ID')) ? Live::getUserRecommend() : Live::getRealRoomID(getenv('SOCKET_ROOM_ID'));
+            $room_id = empty(getenv('SOCKET_ROOM_ID')) ? Live::getUserRecommend() : intval(Live::getRealRoomID(getenv('SOCKET_ROOM_ID')));
             $room_id = intval($room_id);
             if ($room_id) {
                 self::getSocketServer($room_id);
