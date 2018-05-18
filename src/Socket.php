@@ -129,14 +129,25 @@ class Socket
     // SOCKET CONNECT
     protected static function connectServer($room_id, $ip, $port)
     {
-        $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-        socket_connect($socket, $ip, $port);
-        $str = self::packMsg($room_id);
-        socket_write($socket, $str, strlen($str));
-        self::$socket_connection = $socket;
-        // TODO
-        Log::info('连接直播间[' . $room_id . ']弹幕服务器成功!');
-        return;
+        $falg = 10;
+        while ($falg) {
+            try {
+                $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+                socket_connect($socket, $ip, $port);
+                $str = self::packMsg($room_id);
+                socket_write($socket, $str, strlen($str));
+                self::$socket_connection = $socket;
+                // TODO
+                Log::info('连接直播间[' . $room_id . ']弹幕服务器成功!');
+                return;
+            } catch (\Exception $e) {
+                Log::info('连接直播间[' . $room_id . ']弹幕服务器失败!');
+                Log::warning($e);
+                $falg -= 1;
+            }
+        }
+        Log::info('连接弹幕服务器错误次数过多，检查网络!');
+        exit();
     }
 
     // PACK DATA
