@@ -3,18 +3,11 @@
 /**
  *  Website: https://mudew.com/
  *  Author: Lkeme
- *  Version: 0.0.2
  *  License: The MIT License
- *  Updated: 20180425 18:47:50
+ *  Updated: 2018
  */
 
 namespace lkeme\BiliHelper;
-
-use lkeme\BiliHelper\Curl;
-use lkeme\BiliHelper\Sign;
-use lkeme\BiliHelper\Log;
-use lkeme\BiliHelper\Live;
-use lkeme\BiliHelper\Notice;
 
 class SmallTV
 {
@@ -99,7 +92,7 @@ class SmallTV
         ];
         $raw = Curl::get('https://api.live.bilibili.com/AppSmallTV/join', Sign::api($payload));
         $de_raw = json_decode($raw, true);
-        Log::info('参与了房间[' . self::$room_id . ']的小电视[' . $raffle_id . ']抽奖,抽奖状态: ' . $de_raw['msg']);
+        Log::notice('参与了房间[' . self::$room_id . ']的小电视[' . $raffle_id . ']抽奖,抽奖状态: ' . $de_raw['msg']);
         if ($de_raw['code'] == 0) {
             self::$smalltv_lottery_list[] = [
                 'raffle_id' => $raffle_id,

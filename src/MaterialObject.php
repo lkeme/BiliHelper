@@ -3,16 +3,11 @@
 /**
  *  Website: https://mudew.com/
  *  Author: Lkeme
- *  Version: 0.0.2
  *  License: The MIT License
- *  Updated: 20180425 18:47:50
+ *  Updated: 2018
  */
 
 namespace lkeme\BiliHelper;
-
-use lkeme\BiliHelper\Curl;
-use lkeme\BiliHelper\Sign;
-use lkeme\BiliHelper\Log;
 
 class MaterialObject
 {
@@ -33,7 +28,7 @@ class MaterialObject
     protected static function drawLottery(): bool
     {
         $block_key_list = ['测试', '加密', 'test', 'TEST'];
-        for ($i = 70; $i < 90; $i++) {
+        for ($i = 72; $i < 90; $i++) {
             $payload = [
                 'aid' => $i,
             ];

@@ -3,18 +3,11 @@
 /**
  *  Website: https://mudew.com/
  *  Author: Lkeme
- *  Version: 0.0.2
  *  License: The MIT License
- *  Updated: 2018-4-26 19:25:08
+ *  Updated: 2018
  */
 
 namespace lkeme\BiliHelper;
-
-use lkeme\BiliHelper\Curl;
-use lkeme\BiliHelper\Sign;
-use lkeme\BiliHelper\Log;
-use lkeme\BiliHelper\Live;
-use lkeme\BiliHelper\File;
 
 class User
 {

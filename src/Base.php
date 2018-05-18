@@ -9,9 +9,37 @@
 
 namespace lkeme\BiliHelper;
 
-class Sign
+class Base
 {
-    public static function api($payload)
+    protected static $instance = [];
+    protected static $data = [];
+
+
+    public static function getInstance()
+    {
+        $calledClass = static::PLUGIN_NAME;
+        if (!isset(static::$instance[$calledClass])) {
+            static::$instance[$calledClass] = new static;
+        }
+        return static::$instance[$calledClass];
+    }
+
+    public static function run()
+    {
+        static::init();
+        static::work();
+    }
+
+    protected static function data($key, $value = null)
+    {
+        $calledClass = static::PLUGIN_NAME;
+        if (!is_null($value) || !isset(static::$data[$calledClass][$key])) {
+            static::$data[$calledClass][$key] = $value;
+        }
+        return static::$data[$calledClass][$key];
+    }
+
+    protected static function sign($payload)
     {
         # iOS 6680
         $appkey = '27eb53fc9058f8c3';

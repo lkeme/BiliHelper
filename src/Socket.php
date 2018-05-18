@@ -3,18 +3,11 @@
 /**
  *  Website: https://mudew.com/
  *  Author: Lkeme
- *  Version: 0.0.2
  *  License: The MIT License
- *  Updated: 20180425 18:47:50
+ *  Updated: 2018
  */
 
 namespace lkeme\BiliHelper;
-
-use lkeme\BiliHelper\Curl;
-use lkeme\BiliHelper\Sign;
-use lkeme\BiliHelper\Log;
-use lkeme\BiliHelper\Live;
-use lkeme\BiliHelper\DataTreating;
 
 class Socket
 {
@@ -125,7 +118,7 @@ class Socket
         if (self::$heart_lock > time()) {
             return;
         }
-        $action_heart_beat = getenv('ACTIONHEARTBEAT');
+        $action_heart_beat = intval(getenv('ACTIONHEARTBEAT'));
         $str = pack('NnnNN', 16, 16, 1, $action_heart_beat, 1);
         socket_write(self::$socket_connection, $str, strlen($str));
         Log::info('发送一次SOCKET心跳!');
@@ -149,7 +142,7 @@ class Socket
     // PACK DATA
     protected static function packMsg($room_id)
     {
-        $action_entry = getenv('ACTIONENTRY');
+        $action_entry = intval(getenv('ACTIONENTRY'));
         $data = sprintf("{\"uid\":%d%08d,\"roomid\":%d}",
             mt_rand(1000000, 2999999),
             mt_rand(0, 99999999),

@@ -9,6 +9,7 @@ APP_PASS=
 #  令牌(自动生成)
 ACCESS_TOKEN=
 REFRESH_TOKEN=
+COOKIE=
 
 #######################
 #       功能设置       #
@@ -18,7 +19,7 @@ REFRESH_TOKEN=
 USE_SCKEY=
 
 # 切换HTTPS,为真则使用https协议
-IS_HTTPS=false
+USE_HTTPS=true
 
 # 是否使用代理(前提保证有效代理)
 USE_PROXY=false
@@ -44,6 +45,10 @@ USE_STORM=true
 #       日志设置       #
 #######################
 
+# 写入日志|日志路径
+APP_WRITELOG=false
+APP_WRITELOGPATH=log
+
 # 调试模式
 APP_DEBUG=false
 
@@ -68,3 +73,13 @@ APP_CALLBACK="http://www.example.com/api.send?text={account}[{level}]: {message}
 #   ERROR   400
 #
 APP_CALLBACK_LEVEL=400
+
+#######################
+#       固定设置       #
+#######################
+
+# 用于打包请求
+ACTIONENTRY=7
+
+# 用于发送心跳
+ACTIONHEARTBEAT=2

@@ -60,6 +60,7 @@ class Index
             Winning::run();
             MaterialObject::run();
             Socket::run();
+            Danmu::run();
             // sleep(1);
             usleep(0.5 * 1000000);
         }
@@ -71,7 +72,6 @@ class Index
 
         if (is_file($file_path) && self::$conf_file != 'user.conf') {
             $load_files = [
-                'bili.conf',
                 self::$conf_file,
             ];
         } else {
@@ -81,7 +81,6 @@ class Index
             }
 
             $load_files = [
-                'bili.conf',
                 'user.conf',
             ];
         }

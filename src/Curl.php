@@ -3,15 +3,11 @@
 /**
  *  Website: https://mudew.com/
  *  Author: Lkeme
- *  Version: 0.0.2
  *  License: The MIT License
- *  Updated: 2018-4-29 10:53:00
+ *  Updated: 2018
  */
 
 namespace lkeme\BiliHelper;
-
-use lkeme\BiliHelper\Log;
-
 
 class Curl
 {
@@ -44,6 +40,9 @@ class Curl
         curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 10);
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
+        if (($cookie = getenv('COOKIE')) != "") {
+            curl_setopt($curl, CURLOPT_COOKIE, $cookie);
+        }
         if (getenv('USE_PROXY') == 'true') {
             curl_setopt($curl, CURLOPT_PROXY, getenv('PROXY_IP'));
             curl_setopt($curl, CURLOPT_PROXYPORT, getenv('PROXY_PORT'));
@@ -64,7 +63,7 @@ class Curl
 
     protected static function http2https($url)
     {
-        switch (getenv('IS_HTTPS')) {
+        switch (getenv('USE_HTTPS')) {
             case 'false':
                 if (strpos($url, 'ttps://')) {
                     $url = str_replace('https://', 'http://', $url);
@@ -80,6 +79,7 @@ class Curl
                 exit();
                 break;
         }
+
         return $url;
     }
 }

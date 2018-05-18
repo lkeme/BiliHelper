@@ -3,9 +3,8 @@
 /**
  *  Website: https://mudew.com/
  *  Author: Lkeme
- *  Version: 0.0.2
  *  License: The MIT License
- *  Updated: 20180425 18:47:50
+ *  Updated: 2018
  */
 
 namespace lkeme\BiliHelper;
@@ -19,11 +18,14 @@ use lkeme\BiliHelper\Storm;
 class DataTreating
 {
     // SMALLTV KEY
-    protected static $smalltv_keyword = '小电视';
+    protected static $smalltv_keywords = [
+        '小电视飞船',
+        '摩天大楼',
+    ];
     // STORM KEY
     protected static $storm_keyword = '节奏风暴';
     // ACTIVE KEY
-    protected static $active_keyword = [
+    protected static $active_keywords = [
         '漫天花雨',
         '怦然心动',
     ];
@@ -116,7 +118,7 @@ class DataTreating
                     ];
                 }
                 // TODO 活动抽奖 暂定每期修改
-                foreach (self::$active_keyword as $value) {
+                foreach (self::$active_keywords as $value) {
                     if (strpos($resp['msg'], $value) !== false) {
                         return [
                             'type' => 'active',
@@ -129,11 +131,15 @@ class DataTreating
                 /**
                  * 系统消息, 广播
                  */
-                if (strpos($resp['msg'], self::$smalltv_keyword) !== false) {
-                    return [
-                        'type' => 'smalltv',
-                        'room_id' => $resp['real_roomid'],
-                    ];
+                var_dump($resp);
+                // TODO 小电视 摩天大楼
+                foreach (self::$smalltv_keywords as $value) {
+                    if (strpos($resp['msg'], $value) !== false) {
+                        return [
+                            'type' => 'smalltv',
+                            'room_id' => $resp['real_roomid'],
+                        ];
+                    }
                 }
                 var_dump($resp);
                 break;
@@ -142,7 +148,7 @@ class DataTreating
                  * 特殊礼物消息 --节奏风暴
                  */
                 //暂时打印节奏风暴包
-                var_dump($resp);
+                //var_dump($resp);
                 if (array_key_exists('39', $resp['data'])) {
                     //TODO
                     if ($resp['data']['39']['action'] == 'start') {

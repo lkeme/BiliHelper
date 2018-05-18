@@ -1,20 +1,13 @@
 <?php
 
-/*!
- * metowolf BilibiliHelper
- * https://i-meto.com/
- * Version 18.04.25 (0.7.3)
- *
- * Copyright 2018, metowolf
- * Released under the MIT license
+/**
+ *  Website: https://mudew.com/
+ *  Author: Lkeme
+ *  License: The MIT License
+ *  Updated: 2018
  */
 
 namespace lkeme\BiliHelper;
-
-use lkeme\BiliHelper\Curl;
-use lkeme\BiliHelper\Sign;
-use lkeme\BiliHelper\Log;
-use lkeme\BiliHelper\File;
 
 class Login
 {
@@ -137,6 +130,7 @@ class Login
             Log::error('登录失败', ['msg' => $data['message']]);
             die();
         }
+        self::saveCookie($data);
         Log::info('令牌获取成功!');
         $access_token = $data['data']['token_info']['access_token'];
         File::writeNewEnvironmentFileWith('ACCESS_TOKEN', $access_token);
@@ -145,6 +139,20 @@ class Login
         File::writeNewEnvironmentFileWith('REFRESH_TOKEN', $refresh_token);
         Log::info(' > refresh token: ' . $refresh_token);
 
+        return;
+    }
+
+    private static function saveCookie($data)
+    {
+        Log::info('COOKIE获取成功!');
+        //临时保存cookie
+        $temp = '';
+        $cookies = $data['data']['cookie_info']['cookies'];
+        foreach ($cookies as $cookie) {
+            $temp .= $cookie['name'] . '=' . $cookie['value'] . ';';
+        }
+        File::writeNewEnvironmentFileWith('COOKIE', $temp);
+        Log::info(' > auth cookie: ' . $temp);
         return;
     }
 

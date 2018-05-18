@@ -1,20 +1,13 @@
 <?php
 
-/*!
- * metowolf BilibiliHelper
- * https://i-meto.com/
- * Version 18.04.25 (0.7.3)
- *
- * Copyright 2018, metowolf
- * Released under the MIT license
+/**
+ *  Website: https://mudew.com/
+ *  Author: Lkeme
+ *  License: The MIT License
+ *  Updated: 2018
  */
 
 namespace lkeme\BiliHelper;
-
-use lkeme\BiliHelper\Curl;
-use lkeme\BiliHelper\Sign;
-use lkeme\BiliHelper\Log;
-use lkeme\BiliHelper\Notice;
 
 class Task
 {
