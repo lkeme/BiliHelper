@@ -29,7 +29,7 @@ class Danmu
             return;
         }
 
-        self::$lock = time() + 10;
+        self::$lock = time() + 15;
     }
 
     // 获取随机弹幕

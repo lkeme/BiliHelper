@@ -19,6 +19,9 @@ class Winning
         // 小电视
         SmallTV::smallTvResult();
 
+        // 摩天搭楼
+        Skyscraper::result();
+
         // 实物
         self::winningRecords();
     }

@@ -18,10 +18,9 @@ use lkeme\BiliHelper\Storm;
 class DataTreating
 {
     // SMALLTV KEY
-    protected static $smalltv_keywords = [
-        '小电视飞船',
-        '摩天大楼',
-    ];
+    protected static $smalltv_keyword = '小电视飞船';
+    // Skyscraper KEY
+    protected static $skyscraper_keyword = '摩天大楼';
     // STORM KEY
     protected static $storm_keyword = '节奏风暴';
     // ACTIVE KEY
@@ -43,6 +42,9 @@ class DataTreating
                 SmallTV::run($data['room_id']);
                 break;
             case 'unkown':
+                break;
+            case 'skyscraper':
+                Skyscraper::run($data['room_id']);
                 break;
             default:
                 break;
@@ -131,16 +133,21 @@ class DataTreating
                 /**
                  * 系统消息, 广播
                  */
-                var_dump($resp);
-                // TODO 小电视 摩天大楼
-                foreach (self::$smalltv_keywords as $value) {
-                    if (strpos($resp['msg'], $value) !== false) {
-                        return [
-                            'type' => 'smalltv',
-                            'room_id' => $resp['real_roomid'],
-                        ];
-                    }
+                // TODO 小电视
+                if (strpos($resp['msg'], self::$smalltv_keyword) !== false) {
+                    return [
+                        'type' => 'smalltv',
+                        'room_id' => $resp['real_roomid'],
+                    ];
                 }
+                // TODO 摩天大楼
+                if (strpos($resp['msg'], self::$skyscraper_keyword) !== false) {
+                    return [
+                        'type' => 'skyscraper',
+                        'room_id' => $resp['real_roomid'],
+                    ];
+                }
+
                 var_dump($resp);
                 break;
             case 'SPECIAL_GIFT':

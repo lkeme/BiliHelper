@@ -76,7 +76,7 @@ class Curl
                 break;
             default:
                 Log::warning('当前协议设置不正确,请检查配置文件!');
-                exit();
+                die();
                 break;
         }
 
