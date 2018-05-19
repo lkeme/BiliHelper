@@ -137,14 +137,6 @@ class Skyscraper
             $raw = Curl::get('https://api.live.bilibili.com/gift/v3/smalltv/notice', Sign::api($payload));
             $de_raw = json_decode($raw, true);
 
-            if (isset($de_raw['msg']) && $de_raw['msg'] != 'ok') {
-                Log::error("摩天大楼 #{$raffle_id} 抽奖失败");
-                // 删除id
-                unset(self::$lottery_list[$i]);
-                self::$lottery_list = array_values(self::$lottery_list);
-                continue;
-            }
-
             switch ($de_raw['data']['status']) {
                 case 3:
                     break;

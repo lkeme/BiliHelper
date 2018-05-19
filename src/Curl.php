@@ -23,6 +23,7 @@ class Curl
     public static function post($url, $payload = null)
     {
         $url = self::http2https($url);
+        Log::debug($url);
         $header = array_map(function ($k, $v) {
             return $k . ': ' . $v;
         }, array_keys(self::$header), self::$header);
