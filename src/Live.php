@@ -30,21 +30,20 @@ class Live
     public static function getUserRecommend()
     {
         while (1) {
-            $page = rand(1, 10);
-            $raw = Curl::get('https://api.live.bilibili.com/area/liveList?area=all&order=online&page=' . $page);
+            $raw = Curl::get('https://api.live.bilibili.com/area/liveList?area=all&order=online&page=' . mt_rand(0, 5));
             $de_raw = json_decode($raw, true);
             if ($de_raw['code'] != '0') {
                 continue;
             }
             break;
         }
-        $rand_num = rand(1, 29);
+        $rand_num = mt_rand(1, 29);
+        
         return $de_raw['data'][$rand_num]['roomid'];
-
     }
 
     // GET REALROOM_ID
-    public static function getRealRoomID(int $room_id): int
+    public static function getRealRoomID($room_id)
     {
         $raw = Curl::get('https://api.live.bilibili.com/room/v1/Room/room_init?id=' . $room_id);
         $de_raw = json_decode($raw, true);

@@ -124,7 +124,7 @@ class Skyscraper
             self::$lock = time() + 30;
             return;
         }
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             if (!isset(self::$lottery_list[$i])) {
                 break;
             }

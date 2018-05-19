@@ -58,8 +58,8 @@ class Socket
         unset($errormsg);
         unset($errorcode);
         self::killConnection();
-        Log::warning('SOCKET连接断开,5秒后重新连接...');
-        sleep(5);
+//        Log::warning('SOCKET连接断开,5秒后重新连接...');
+//        sleep(5);
         self::start();
         return;
     }
@@ -101,7 +101,7 @@ class Socket
     protected static function start()
     {
         if (is_null(self::$socket_connection)) {
-            $room_id = empty(getenv('SOCKET_ROOM_ID')) ? Live::getUserRecommend() : intval(Live::getRealRoomID(getenv('SOCKET_ROOM_ID')));
+            $room_id = empty(getenv('SOCKET_ROOM_ID')) ? Live::getUserRecommend() : Live::getRealRoomID(getenv('SOCKET_ROOM_ID'));
             $room_id = intval($room_id);
             if ($room_id) {
                 self::getSocketServer($room_id);

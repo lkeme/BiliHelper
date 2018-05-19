@@ -22,7 +22,7 @@ class SmallTV
     // RUN
     public static function run($room_id)
     {
-        if (getenv('USE_SMALLTV') == 'false'){
+        if (getenv('USE_SMALLTV') == 'false') {
             return;
         }
         self::$room_id = $room_id;
@@ -113,7 +113,7 @@ class SmallTV
             self::$lock = time() + 30;
             return;
         }
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             if (!isset(self::$smalltv_lottery_list[$i])) {
                 break;
             }
