@@ -60,10 +60,8 @@ class Log
 
     public static function debug($message, array $context = [])
     {
-        $message = self::prefix() . $message;
         self::writeLog('DEBUG', $message);
         self::getLogger()->addDebug($message, $context);
-        self::callback(Logger::DEBUG, 'DEBUG', $message);
     }
 
     public static function info($message, array $context = [])
@@ -100,7 +98,7 @@ class Log
 
     public static function callback($levelId, $level, $message)
     {
-        $callback_level = (getenv('APP_CALLBACK_LEVEL') === false) ? (Logger::ERROR) : intval(getenv('APP_CALLBACK_LEVEL'));
+        $callback_level = (('APP_CALLBACK_LEVEL') == '') ? (Logger::ERROR) : intval(getenv('APP_CALLBACK_LEVEL'));
         if ($levelId >= $callback_level) {
             $url = str_replace('{account}', self::prefix(), getenv('APP_CALLBACK'));
             $url = str_replace('{level}', $level, $url);
