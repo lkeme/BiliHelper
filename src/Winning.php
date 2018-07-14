@@ -22,6 +22,9 @@ class Winning
         // 摩天搭楼
         Skyscraper::result();
 
+        // 活动
+        Active::result();
+
         // 实物
         self::winningRecords();
     }

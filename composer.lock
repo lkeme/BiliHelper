@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "48a9d21de674674d5c4712c3583c8aff",
+    "content-hash": "bb2cec6716b2b4aa16343da9973b2c64",
     "packages": [
         {
             "name": "bramus/ansi-php",
@@ -262,6 +262,69 @@
                 "environment"
             ],
             "time": "2016-09-01T10:05:43+00:00"
+        },
+        {
+            "name": "wrench/wrench",
+            "version": "v2.0.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/varspool/Wrench.git",
+                "reference": "92fb5d1c5d7a6f65884ade658b6271de93edafc2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://files.phpcomposer.com/files/varspool/Wrench/92fb5d1c5d7a6f65884ade658b6271de93edafc2.zip",
+                "reference": "92fb5d1c5d7a6f65884ade658b6271de93edafc2",
+                "shasum": ""
+            },
+            "require": {
+                "ext-sockets": "*",
+                "php": ">=5.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.5",
+                "squizlabs/php_codesniffer": "*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Wrench": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "WTFPL"
+            ],
+            "authors": [
+                {
+                    "name": "Dominic Scheirlinck",
+                    "email": "dominic@varspool.com",
+                    "homepage": "http://www.somethingemporium.com/"
+                },
+                {
+                    "name": "Simon Samtleben",
+                    "email": "web@lemmingzshadow.net",
+                    "homepage": "http://lemmingzshadow.net/"
+                },
+                {
+                    "name": "Nico Kaiser",
+                    "email": "nico@kaiser.me",
+                    "homepage": "http://siriux.net/"
+                }
+            ],
+            "description": "PHP WebSocket client/server library",
+            "homepage": "http://github.com/varspool/Wrench",
+            "keywords": [
+                "WebSockets",
+                "hybi",
+                "websocket"
+            ],
+            "time": "2017-02-12T02:08:51+00:00"
         }
     ],
     "packages-dev": [],

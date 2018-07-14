@@ -28,7 +28,7 @@ class MaterialObject
     protected static function drawLottery(): bool
     {
         $block_key_list = ['测试', '加密', 'test', 'TEST'];
-        for ($i = 72; $i < 90; $i++) {
+        for ($i = 87; $i < 97; $i++) {
             $payload = [
                 'aid' => $i,
             ];

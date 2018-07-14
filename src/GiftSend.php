@@ -89,15 +89,15 @@ class GiftSend
     protected static function send($value)
     {
         $payload = [
-            'coin_type'        => 'silver',
-            'gift_id'          => $value['gift_id'],
-            'ruid'             => self::$ruid,
-            'uid'              => self::$uid,
-            'biz_id'           => self::$roomid,
-            'gift_num'         => $value['gift_num'],
-            'data_source_id'   => '',
+            'coin_type' => 'silver',
+            'gift_id' => $value['gift_id'],
+            'ruid' => self::$ruid,
+            'uid' => self::$uid,
+            'biz_id' => self::$roomid,
+            'gift_num' => $value['gift_num'],
+            'data_source_id' => '',
             'data_behavior_id' => '',
-            'bag_id'           => $value['bag_id']
+            'bag_id' => $value['bag_id']
         ];
 
         $data = Curl::post('https://api.live.bilibili.com/gift/v2/live/bag_send', Sign::api($payload));
@@ -106,7 +106,7 @@ class GiftSend
         if (isset($data['code']) && $data['code']) {
             Log::warning('送礼失败!', ['msg' => $data['message']]);
         } else {
-            Log::info("成功向 {$payload['biz_id']} 投喂了 {$value['gift_num']} 个{$value['gift_name']}");
+            Log::notice("成功向 {$payload['biz_id']} 投喂了 {$value['gift_num']} 个{$value['gift_name']}");
         }
     }
 }

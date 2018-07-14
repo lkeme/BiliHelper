@@ -27,6 +27,7 @@ class DataTreating
     protected static $active_keywords = [
         '漫天花雨',
         '怦然心动',
+        'C位光环',
     ];
 
     // PARSE ARRAY
@@ -37,6 +38,7 @@ class DataTreating
                 Storm::run($data);
                 break;
             case 'active':
+                Active::run($data['room_id']);
                 break;
             case 'smalltv':
                 SmallTV::run($data['room_id']);
@@ -147,7 +149,15 @@ class DataTreating
                         'room_id' => $resp['real_roomid'],
                     ];
                 }
-
+                // TODO 活动抽奖 暂定每期修改
+                foreach (self::$active_keywords as $value) {
+                    if (strpos($resp['msg'], $value) !== false) {
+                        return [
+                            'type' => 'active',
+                            'room_id' => $resp['real_roomid'],
+                        ];
+                    }
+                }
                 var_dump($resp);
                 break;
             case 'SPECIAL_GIFT':

@@ -1,6 +1,18 @@
 # Release Notes
 # 本项目Log
 
+## v0.0.3(2018-07-14)
+
+### Added
+- 添加最新活动“C位光环”
+
+### Changed
+- 修改实物抽奖Flag
+
+### Fixed
+- 
+
+
 ## v0.0.3(2018-06-05)
 
 ### Added
