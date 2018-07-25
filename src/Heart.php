@@ -38,9 +38,9 @@ class Heart
         $data = json_decode($data, true);
 
         if (isset($data['code']) && $data['code']) {
-            Log::warning('WEB 端的直播间心跳停止惹～', ['msg' => $data['message']]);
+            Log::warning('WEB端 直播间心跳停止惹～', ['msg' => $data['message']]);
         } else {
-            Log::info('WEB 心跳正常');
+            Log::info('WEB端 发送心跳正常!');
         }
     }
 
@@ -53,9 +53,9 @@ class Heart
         $data = json_decode($data, true);
 
         if (isset($data['code']) && $data['code']) {
-            Log::warning('APP 端的直播间心跳停止惹～', ['msg' => $data['message']]);
+            Log::warning('APP端 直播间心跳停止惹～', ['msg' => $data['message']]);
         } else {
-            Log::info('APP 心跳正常');
+            Log::info('APP端 发送心跳正常!');
         }
     }
 }

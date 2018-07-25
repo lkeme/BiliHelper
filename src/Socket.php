@@ -121,7 +121,7 @@ class Socket
         $action_heart_beat = intval(getenv('ACTIONHEARTBEAT'));
         $str = pack('NnnNN', 16, 16, 1, $action_heart_beat, 1);
         socket_write(self::$socket_connection, $str, strlen($str));
-        Log::info('发送一次SOCKET心跳!');
+        Log::info('发送心跳包到弹幕服务器!');
         self::$heart_lock = time() + 30;
         return;
     }
@@ -138,15 +138,15 @@ class Socket
                 socket_write($socket, $str, strlen($str));
                 self::$socket_connection = $socket;
                 // TODO
-                Log::info('连接直播间[' . $room_id . ']弹幕服务器成功!');
+                Log::info("连接到弹幕服务器[{$room_id}]成功!");
                 return;
             } catch (\Exception $e) {
-                Log::info('连接直播间[' . $room_id . ']弹幕服务器失败!');
+                Log::info("连接到弹幕服务器[{$room_id}]失败!");
                 Log::warning($e);
                 $falg -= 1;
             }
         }
-        Log::info('连接弹幕服务器错误次数过多，检查网络!');
+        Log::info("连接弹幕服务器[{$room_id}]错误次数过多，检查网络!");
         exit();
     }
 
@@ -183,7 +183,7 @@ class Socket
 
                 break;
             } catch (\Exception $e) {
-                Log::warning('获取SOCKET服务器出错!', $e);
+                Log::warning("获取弹幕服务器出错，错误信息[{$e}]!");
                 continue;
             }
         }

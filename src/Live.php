@@ -75,7 +75,7 @@ class Live
     }
 
     // RANDOM DELAY
-    public static function randFloat($min = 3, $max = 5): bool
+    public static function randFloat($min = 0, $max = 3): bool
     {
         $rand = $min + mt_rand() / mt_getrandmax() * ($max - $min);
         sleep($rand);

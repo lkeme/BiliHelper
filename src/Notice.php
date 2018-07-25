@@ -38,10 +38,10 @@ class Notice
         $nowtime = date('Y-m-d H:i:s');
 
         switch (self::$type) {
-            case 'smallTv':
+            case 'raffle':
                 $info = [
-                    'title' => '小电视中奖结果',
-                    'content' => '[' . $nowtime . ']' . ' 用户: ' . self::$uname . ' 在小电视抽奖中获得: ' . self::$result,
+                    'title' => '活动抽奖结果',
+                    'content' => '[' . $nowtime . ']' . ' 用户: ' . self::$uname . ' 在活动抽奖中获得: ' . self::$result,
                 ];
                 break;
             case 'storm':

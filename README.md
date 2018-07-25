@@ -2,7 +2,7 @@
 <p align="center"><img width="300px" src="https://i.loli.net/2018/04/20/5ad97bd395912.jpeg"></p>
 
 <p align="center">
-<img src="https://img.shields.io/badge/version-0.0.3-green.svg?longCache=true&style=for-the-badge">
+<img src="https://img.shields.io/badge/version-0.0.4-green.svg?longCache=true&style=for-the-badge">
 <img src="https://img.shields.io/badge/license-mit-blue.svg?longCache=true&style=for-the-badge">
 </p>
 
@@ -21,18 +21,22 @@ B 站直播实用脚本
 |--------------------|--------------------|--------------------|
 |Daily               |18.04.21            |每日背包奖励         |
 |GiftSend            |18.04.21            |自动清空过期礼物     |
-|Heart               |18.04.21            |双端直播间心跳       |
+|Heart               |18.07.21            |双端直播间心跳       |
 |Login               |18.04.25            |帐号登录组件         |
-|Silver              |18.04.21            |自动领宝箱           |
-|Task                |18.04.21            |每日任务             |
-|SmallTV             |18.04.26            |小电视*摩天大樓      |
+|Silver              |18.07.21            |自动领宝箱           |
+|Task                |18.07.21            |每日任务             |
 |GiftHeart           |18.04.25            |心跳礼物             |
-|Silver2Coin         |18.04.25            |双端银瓜子换硬币     |
-|MaterialObject      |18.04.25            |实物抽奖             |
+|Silver2Coin         |18.07.25            |双端银瓜子换硬币     |
+|MaterialObject      |18.07.25            |实物抽奖             |
 |GroupSignIn         |18.04.25            |应援团签到           |
 |Storm               |18.04.26            |节奏风暴             |
-|Notice              |18.04.27            |Server酱             |
-|Active              |18.07.14            |C位光环             |
+|Notice              |18.07.27            |Server酱             |
+|RaffleHandler       |18.07.25            |C位光环             |
+|RaffleHandler       |18.07.25            |小电视飞船            |
+|RaffleHandler       |18.07.25            |C位光环             |
+|RaffleHandler       |18.07.25            |摩天大樓             |
+|RaffleHandler       |18.07.25            |盛夏么么茶           |
+
 
 ## 未完成功能
 

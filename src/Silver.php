@@ -38,24 +38,24 @@ class Silver
 
         if ($data['code'] == -800) {
             self::$lock = time() + 12 * 60 * 60;
-            Log::warning($data['message'] . '|领取宝箱失败！');
+            Log::warning("领取宝箱失败，{$data['message']}!");
             return;
         }
 
         if ($data['code'] == -903) {
-            Log::warning($data['message'] . '|领取宝箱失败！');
+            Log::warning("领取宝箱失败，{$data['message']}!");
             self::$task = [];
             self::$lock = time() + 60;
             return;
         }
 
         if (isset($data['code']) && $data['code']) {
-            Log::warning($data['message'] . '|领取宝箱失败！');
+            Log::warning("领取宝箱失败，{$data['message']}!");
             self::$lock = time() + 60;
             return;
         }
 
-        Log::info("好耶，领取成功，silver: {$data['data']['silver']}(+{$data['data']['awardSilver']})");
+        Log::info("领取宝箱成功，Silver: {$data['data']['silver']}(+{$data['data']['awardSilver']})");
 
         self::$task = [];
         self::$lock = time() + 10;
@@ -74,7 +74,7 @@ class Silver
         }
 
         if (isset($data['code']) && $data['code']) {
-            Log::error('check freeSilverCurrentTask failed! Error message: ' . $data['message']);
+            Log::error("check freeSilverCurrentTask failed! Error message: {$data['message']}");
             die();
         }
 

@@ -11,58 +11,95 @@ namespace lkeme\BiliHelper;
 
 class MaterialObject
 {
+    // 时间锁
     public static $lock = 0;
+    // 丢弃列表
+    private static $discard_aid_list = [];
+    // 起始 和 结束
+    private static $start_aid = 0;
+    private static $end_aid = 0;
 
-    // RUN
+    /**
+     * @use RUN
+     * @throws \Exception
+     */
     public static function run()
     {
         if (self::$lock > time()) {
             return;
         }
-        self::drawLottery();
+        // 计算AID TODO 待优化
+        // self::calculateAid(110, 500);
 
-        self::$lock = time() + 5 * 60;
+
+        self::drawLottery();
+        self::$lock = time() + random_int(5, 10) * 60;
     }
 
-    // DRAW LOTTERY
+    /**
+     * @use 实物抽奖
+     * @return bool
+     */
     protected static function drawLottery(): bool
     {
-        $block_key_list = ['测试', '加密', 'test', 'TEST'];
-        for ($i = 87; $i < 97; $i++) {
-            $payload = [
-                'aid' => $i,
-            ];
-            $raw = Curl::get('https://api.live.bilibili.com/lottery/v1/box/getStatus', Sign::api($payload));
-            $de_raw = json_decode($raw, true);
-
-            if ($de_raw['code'] != '0') {
+        $block_key_list = ['测试', '加密', 'test', 'TEST', '钓鱼', '炸鱼'];
+        $flag = 5;
+        for ($i = 100; $i <= 150; $i++) {
+            if (!$flag) {
+                break;
+            }
+            // 在丢弃列表里 跳过
+            if (in_array($i, self::$discard_aid_list)) {
                 continue;
             }
 
+            $payload = [
+                'aid' => $i,
+            ];
+            $url = 'https://api.live.bilibili.com/lottery/v1/box/getStatus';
+            // 请求 && 解码
+            $raw = Curl::get($url, Sign::api($payload));
+            $de_raw = json_decode($raw, true);
+            // -403 没有抽奖
+            if ($de_raw['code'] != '0') {
+                $flag--;
+                continue;
+            }
+            // 如果最后一个结束时间已过 加入丢弃
+            $lotterys = $de_raw['data']['typeB'];
+            $total = count($lotterys);
+            if ($lotterys[$total - 1]['join_end_time'] < time()) {
+                array_push(self::$discard_aid_list, $i);
+                continue;
+            }
+
+            // 如果存在敏感词 加入丢弃
             $title = $de_raw['data']['title'];
             foreach ($block_key_list as $block_key) {
                 if (strpos($title, $block_key) !== false) {
+                    array_push(self::$discard_aid_list, $i);
                     continue;
                 }
             }
-            $lotterys = $de_raw['data']['typeB'];
+
             $num = 1;
             foreach ($lotterys as $lottery) {
                 $join_end_time = $lottery['join_end_time'];
                 $join_start_time = $lottery['join_start_time'];
+
                 if ($join_end_time > time() && time() > $join_start_time) {
                     switch ($lottery['status']) {
                         case 3:
-                            Log::info('实物抽奖: 当前轮次已经结束!');
+                            Log::info("实物[{$i}]抽奖: 当前轮次已经结束!");
                             break;
                         case 1:
-                            Log::info('实物抽奖: 当前轮次已经抽过了!');
+                            Log::info("实物[{$i}]抽奖: 当前轮次已经抽过了!");
                             break;
                         case -1:
-                            Log::info('实物抽奖: 当前轮次暂未开启!');
+                            Log::info("实物[{$i}]抽奖: 当前轮次暂未开启!");
                             break;
                         case 0:
-                            Log::info('实物抽奖: 当前轮次正在抽奖中!');
+                            Log::info("实物[{$i}]抽奖: 当前轮次正在抽奖中!");
 
                             $payload = [
                                 'aid' => $i,
@@ -72,19 +109,87 @@ class MaterialObject
                             $de_raw = json_decode($raw, true);
 
                             if ($de_raw['code'] == 0) {
-                                Log::info('实物抽奖: 成功!');
-
+                                Log::notice("实物[{$i}]抽奖: 成功!");
                             }
                             $num++;
                             break;
 
                         default:
-                            Log::info('实物抽奖: 当前轮次状态码[' . $lottery['status'] . ']未知!');
+                            Log::info("实物[{$i}]抽奖: 当前轮次状态码[{$lottery['status'] }]未知!");
                             break;
                     }
                 }
             }
         }
+        return true;
+    }
+
+    /**
+     * @use 计算 开始结束的AID
+     * @param $min
+     * @param $max
+     * @return bool
+     */
+    private static function calculateAid($min, $max): bool
+    {
+        if (self::$end_aid != 0 && self::$start_aid != 0) {
+            return false;
+        }
+        $temp_bak = 0;
+        $temp_aid_min = $min;
+        $temp_aid_max = $max;
+        $temp_aid = mt_rand($temp_aid_min, $temp_aid_max);
+        while (true) {
+            if (self::aidPost($temp_aid)) {
+                $temp_aid_max = $temp_aid;
+            } else {
+                if ($temp_bak == 0) {
+                    $temp_bak = $temp_aid;
+                } else {
+                    if ($temp_bak < $temp_aid) {
+                        $temp_bak = $temp_aid;
+                    }
+                }
+
+                $temp_aid_min = $temp_aid;
+            }
+
+            if (($temp_aid_max - $temp_aid_min) < 2) {
+                break;
+            }
+            while (true) {
+                $temp_aid = mt_rand($temp_aid_min, $temp_aid_max);
+                if ($temp_aid_min != $temp_aid && $temp_aid_max != $temp_aid && $temp_aid > $temp_bak) {
+                    if (self::aidPost($temp_aid + 1)) {
+                        break;
+                    }
+                }
+            }
+        }
+        self::$start_aid = $temp_aid_min - 5;
+        self::$end_aid = $temp_aid_min + 15;
+        Log::info("实物抽奖起始值[" . self::$start_aid . "]，结束值[" . self::$end_aid . "]");
+        return true;
+    }
+
+    /**
+     * @use Aid 请求
+     * @param $aid
+     * @return bool
+     */
+    private static function aidPost($aid): bool
+    {
+        $payload = [
+            'aid' => $aid,
+        ];
+        $raw = Curl::get('https://api.live.bilibili.com/lottery/v1/box/getStatus', Sign::api($payload));
+        $de_raw = json_decode($raw, true);
+
+        // 等于0是有抽奖返回false
+        if ($de_raw['code'] == 0) {
+            return false;
+        }
+        // 没有抽奖
         return true;
     }
 }

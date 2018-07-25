@@ -89,7 +89,7 @@ class Task
         $data = json_decode($data, true);
 
         if (isset($data['code']) && $data['code']) {
-            Log::warning('「双端观看直播」任务奖励领取失败!', ['msg' => $data['message']]);
+            Log::warning("「双端观看直播」任务奖励领取失败，{$data['message']}!");
         } else {
             Log::info('奖励领取成功!');
             foreach ($info['awards'] as $vo) {

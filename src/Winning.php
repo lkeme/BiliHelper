@@ -16,14 +16,8 @@ class Winning
     // RUN
     public static function run()
     {
-        // 小电视
-        SmallTV::smallTvResult();
-
-        // 摩天搭楼
-        Skyscraper::result();
-
-        // 活动
-        Active::result();
+        // 活动统一
+        RaffleHandler::resultWeb();
 
         // 实物
         self::winningRecords();

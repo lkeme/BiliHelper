@@ -32,11 +32,8 @@ ROOM_ID=9522051
 # 弹幕监控房间(为空则随机)
 SOCKET_ROOM_ID=3
 
-# 小电视
-USE_SMALLTV=true
-
-# 摩天大楼
-USE_SKYSCRAPER=true
+# 统一活动抽奖
+USE_ACTIVE=true
 
 # 银瓜子兑换硬币
 USE_SILVER2COIN=true

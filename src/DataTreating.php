@@ -12,22 +12,18 @@ namespace lkeme\BiliHelper;
 use lkeme\BiliHelper\Curl;
 use lkeme\BiliHelper\Sign;
 use lkeme\BiliHelper\Log;
-use lkeme\BiliHelper\SmallTV;
 use lkeme\BiliHelper\Storm;
 
 class DataTreating
 {
-    // SMALLTV KEY
-    protected static $smalltv_keyword = '小电视飞船';
-    // Skyscraper KEY
-    protected static $skyscraper_keyword = '摩天大楼';
     // STORM KEY
     protected static $storm_keyword = '节奏风暴';
     // ACTIVE KEY
     protected static $active_keywords = [
-        '漫天花雨',
-        '怦然心动',
+        '摩天大楼',
         'C位光环',
+        '小电视飞船',
+        '盛夏么么茶',
     ];
 
     // PARSE ARRAY
@@ -38,15 +34,9 @@ class DataTreating
                 Storm::run($data);
                 break;
             case 'active':
-                Active::run($data['room_id']);
-                break;
-            case 'smalltv':
-                SmallTV::run($data['room_id']);
+                RaffleHandler::run($data['room_id'], 'USE_ACTIVE', $data['title']);
                 break;
             case 'unkown':
-                break;
-            case 'skyscraper':
-                Skyscraper::run($data['room_id']);
                 break;
             default:
                 break;
@@ -54,13 +44,12 @@ class DataTreating
         return;
     }
 
-
     // PARSE JSON
     public static function socketJsonToArray($resp)
     {
         if (strlen($resp) == 4) {
             $num = unpack('N', $resp)[1];
-            Log::info('当前直播间有' . $num . '人在线!');
+            Log::info("当前直播间现有[{$num}]人聚众搞基!");
             return false;
         }
 
@@ -121,12 +110,14 @@ class DataTreating
                         'room_id' => $resp['roomid'],
                     ];
                 }
+
                 // TODO 活动抽奖 暂定每期修改
                 foreach (self::$active_keywords as $value) {
                     if (strpos($resp['msg'], $value) !== false) {
                         return [
                             'type' => 'active',
-                            'room_id' => $resp['real_roomid'],
+                            'title' => $value,
+                            'room_id' => $resp['real_roomid']
                         ];
                     }
                 }
@@ -135,26 +126,13 @@ class DataTreating
                 /**
                  * 系统消息, 广播
                  */
-                // TODO 小电视
-                if (strpos($resp['msg'], self::$smalltv_keyword) !== false) {
-                    return [
-                        'type' => 'smalltv',
-                        'room_id' => $resp['real_roomid'],
-                    ];
-                }
-                // TODO 摩天大楼
-                if (strpos($resp['msg'], self::$skyscraper_keyword) !== false) {
-                    return [
-                        'type' => 'skyscraper',
-                        'room_id' => $resp['real_roomid'],
-                    ];
-                }
-                // TODO 活动抽奖 暂定每期修改
+                // TODO 小电视|摩天大楼|C位光环|盛夏么么茶统一
                 foreach (self::$active_keywords as $value) {
                     if (strpos($resp['msg'], $value) !== false) {
                         return [
                             'type' => 'active',
-                            'room_id' => $resp['real_roomid'],
+                            'title' => $value,
+                            'room_id' => $resp['real_roomid']
                         ];
                     }
                 }
