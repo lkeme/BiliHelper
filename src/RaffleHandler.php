@@ -145,7 +145,7 @@ class RaffleHandler
         // 计数 && 跳出
         $total = count($de_raw['data']['list']);
         if (!$total) {
-            Log::warning("网页端直播间 [" . self::$room_id . "] 抽奖列表为空，丢弃本次抽奖!");
+            Log::info("网页端直播间 [" . self::$room_id . "] 抽奖列表为空，丢弃本次抽奖!");
             return false;
         }
         // 临时数组返回
@@ -199,7 +199,7 @@ class RaffleHandler
         // 计数 && 跳出
         $total = count($de_raw['data']['lotteryInfo']);
         if (!$total) {
-            Log::warning("移动端直播间 [" . self::$room_id . "] 抽奖列表为空，丢弃本次抽奖!");
+            Log::info("移动端直播间 [" . self::$room_id . "] 抽奖列表为空，丢弃本次抽奖!");
             return false;
         }
         // 临时数组返回
@@ -327,7 +327,7 @@ class RaffleHandler
         $de_raw = json_decode($raw, true);
         // 抽奖判断
         if (array_key_exists('code', $de_raw) && $de_raw['code'] != 0) {
-            Log::warning("移动端参与{$data['title']}[{$data['raffle_id']}]抽奖加入失败，状态: {$de_raw['message']}!");
+            Log::info("移动端参与{$data['title']}[{$data['raffle_id']}]抽奖加入失败，状态: {$de_raw['message']}!");
         } elseif (array_key_exists('code', $de_raw) && $de_raw['code'] == 0) {
             Log::notice("移动端参与了房间[{$data['room_id']}]的{$data['title']}[{$data['raffle_id']}]抽奖, 状态: {$de_raw['data']['gift_desc']}!");
         } else {
