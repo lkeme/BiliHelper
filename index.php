@@ -61,8 +61,8 @@ class Index
             MaterialObject::run();
             Socket::run();
             Danmu::run();
-            // sleep(1);
-            usleep(0.5 * 1000000);
+            sleep(1);
+            // usleep(0.5 * 1000000);
         }
     }
 

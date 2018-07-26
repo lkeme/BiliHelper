@@ -29,8 +29,7 @@ class MaterialObject
             return;
         }
         // 计算AID TODO 待优化
-        // self::calculateAid(110, 500);
-
+        self::calculateAid(110, 500);
 
         self::drawLottery();
         self::$lock = time() + random_int(5, 10) * 60;
@@ -44,7 +43,7 @@ class MaterialObject
     {
         $block_key_list = ['测试', '加密', 'test', 'TEST', '钓鱼', '炸鱼'];
         $flag = 5;
-        for ($i = 100; $i <= 150; $i++) {
+        for ($i = self::$start_aid; $i < self::$end_aid; $i++) {
             if (!$flag) {
                 break;
             }
@@ -135,39 +134,25 @@ class MaterialObject
         if (self::$end_aid != 0 && self::$start_aid != 0) {
             return false;
         }
-        $temp_bak = 0;
-        $temp_aid_min = $min;
-        $temp_aid_max = $max;
-        $temp_aid = mt_rand($temp_aid_min, $temp_aid_max);
-        while (true) {
-            if (self::aidPost($temp_aid)) {
-                $temp_aid_max = $temp_aid;
-            } else {
-                if ($temp_bak == 0) {
-                    $temp_bak = $temp_aid;
+
+        while (1) {
+            $middle = round(($min + $max) / 2);
+            if (self::aidPost($middle)) {
+                if (self::aidPost($middle + mt_rand(0, 3))) {
+                    $max = $middle;
                 } else {
-                    if ($temp_bak < $temp_aid) {
-                        $temp_bak = $temp_aid;
-                    }
+                    $min = $middle;
                 }
-
-                $temp_aid_min = $temp_aid;
+            } else {
+                $min = $middle;
             }
-
-            if (($temp_aid_max - $temp_aid_min) < 2) {
+            if ($max - $min == 1) {
                 break;
             }
-            while (true) {
-                $temp_aid = mt_rand($temp_aid_min, $temp_aid_max);
-                if ($temp_aid_min != $temp_aid && $temp_aid_max != $temp_aid && $temp_aid > $temp_bak) {
-                    if (self::aidPost($temp_aid + 1)) {
-                        break;
-                    }
-                }
-            }
         }
-        self::$start_aid = $temp_aid_min - 5;
-        self::$end_aid = $temp_aid_min + 15;
+
+        self::$start_aid = $min - 40;
+        self::$end_aid = $min + 40;
         Log::info("实物抽奖起始值[" . self::$start_aid . "]，结束值[" . self::$end_aid . "]");
         return true;
     }

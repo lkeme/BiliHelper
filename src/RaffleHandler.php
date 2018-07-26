@@ -199,7 +199,7 @@ class RaffleHandler
         // 计数 && 跳出
         $total = count($de_raw['data']['lotteryInfo']);
         if (!$total) {
-            Log::info("移动端直播间 [" . self::$room_id . "] 抽奖列表为空，丢弃本次抽奖!");
+            // Log::info("移动端直播间 [" . self::$room_id . "] 抽奖列表为空，丢弃本次抽奖!");
             return false;
         }
         // 临时数组返回
@@ -243,14 +243,6 @@ class RaffleHandler
         // Live::randFloat();
 
         foreach ($datas as $data) {
-            if ($total < 10) {
-                usleep(0.3 * 1000000);
-            }
-
-            if ($total > 10 && $total < 100) {
-                usleep(0.1 * 1000000);
-            }
-
             self::lotteryWeb($data);
         }
         return true;

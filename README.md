@@ -30,12 +30,11 @@ B 站直播实用脚本
 |MaterialObject      |18.07.25            |实物抽奖             |
 |GroupSignIn         |18.04.25            |应援团签到           |
 |Storm               |18.04.26            |节奏风暴             |
-|Notice              |18.07.27            |Server酱             |
-|RaffleHandler       |18.07.25            |C位光环             |
-|RaffleHandler       |18.07.25            |小电视飞船            |
-|RaffleHandler       |18.07.25            |C位光环             |
-|RaffleHandler       |18.07.25            |摩天大樓             |
-|RaffleHandler       |18.07.25            |盛夏么么茶           |
+|Notice              |18.07.25            |Server酱             |          |
+|RaffleHandler       |18.07.26            |小电视飞船            |
+|RaffleHandler       |18.07.26            |C位光环             |
+|RaffleHandler       |18.07.26            |摩天大樓             |
+|RaffleHandler       |18.07.26            |盛夏么么茶           |
 
 
 ## 未完成功能
