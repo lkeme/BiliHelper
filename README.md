@@ -92,7 +92,10 @@ $ php index.php
 
   1. 安装好[Docker](https://yeasy.gitbooks.io/docker_practice/content/install/)
   2. 直接命令行拉取镜像后运行
-  `docker run -itd --rm -e USER_NAME=你的B站登陆账号 -e USER_PASSWORD=你的B站密码 zsnmwy/bilihelper`
+
+```
+  docker run -itd --rm -e USER_NAME=你的B站登陆账号 -e USER_PASSWORD=你的B站密码 zsnmwy/bilihelper`
+```
 
   ```
 相关参数
