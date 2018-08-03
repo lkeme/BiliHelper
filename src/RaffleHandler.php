@@ -37,31 +37,28 @@ class RaffleHandler
             return;
         }
         // 赋值
-        self::$room_id = $room_id;
         self::$title = $title;
-        // 钓鱼行为检测
-        if (!Live::fishingDetection(self::$room_id)) {
-            Log::warning('当前直播间[' . self::$room_id . ']存在敏感行为!');
-            return;
+        if ($room_id != self::$room_id) {
+            // 钓鱼行为检测
+            if (!Live::fishingDetection($room_id)) {
+                Log::warning("当前直播间[{$room_id}]存在敏感行为!");
+                return;
+            }
+            self::$room_id = $room_id;
+            // 抽奖前访问直播间
+            Live::goToRoom($room_id);
         }
 
         // APP 检查房间是否有抽奖列表,没有则跳出
-        if (!($datas = self::checkApp())) {
-            // TODO
-            Log::info('移动端抽奖检测异常!');
-            // return;
-        } else {
+        if ($datas = self::checkApp()) {
             self::joinApp($datas);
         }
 
-        // 抽奖前访问直播间
-        Live::goToRoom(self::$room_id);
-
         // WEB检查房间是否有抽奖列表,没有则跳出
-        if (!($datas = self::checkWeb())) {
-            return;
+        if ($datas = self::checkWeb()) {
+            self::joinWeb($datas);
         }
-        self::joinWeb($datas);
+        return;
     }
 
 
@@ -145,7 +142,7 @@ class RaffleHandler
         // 计数 && 跳出
         $total = count($de_raw['data']['list']);
         if (!$total) {
-            Log::info("网页端直播间 [" . self::$room_id . "] 抽奖列表为空，丢弃本次抽奖!");
+            // Log::info("网页端直播间 [" . self::$room_id . "] 待抽奖列表为空，放弃本次抽奖!");
             return false;
         }
         // 临时数组返回
@@ -163,7 +160,7 @@ class RaffleHandler
                 'room_id' => self::$room_id,
             ];
             // 重复抽奖检测
-            if (in_array($data['raffle_id'], self::$lottery_list_web)) {
+            if (in_array($data['raffle_id'], array_column(self::$lottery_list_web, 'raffle_id'))) {
                 continue;
             }
             // 添加到待抽奖 && 临时
@@ -212,7 +209,7 @@ class RaffleHandler
                 'room_id' => self::$room_id
             ];
             // 重复抽奖检测
-            if (in_array($data['raffle_id'], self::$lottery_list_app)) {
+            if (in_array($data['raffle_id'], array_column(self::$lottery_list_app, 'raffle_id'))) {
                 continue;
             }
             // 添加到待抽奖 && 临时
@@ -273,12 +270,11 @@ class RaffleHandler
      */
     private static function lotteryWeb(array $data)
     {
-        // 重复判断
-        foreach (self::$winning_list_web as $winning_web) {
-            if ($data['raffle_id'] == $winning_web['raffle_id']) {
-                return;
-            }
+        // 重复抽奖检测
+        if (in_array($data['raffle_id'], array_column(self::$winning_list_web, 'raffle_id'))) {
+            return;
         }
+
         // 参数
         $payload = [
             'raffleId' => $data['raffle_id'],
@@ -291,7 +287,7 @@ class RaffleHandler
         $de_raw = json_decode($raw, true);
         // 抽奖判断
         if (isset($de_raw['code']) && $de_raw['code']) {
-            Log::warning("网页端参与{$data['title']}[{$data['raffle_id']}]抽奖加入失败，状态: {$de_raw['message']}!");
+            Log::warning("网页端参与{$data['title']}[{$data['raffle_id']}]抽奖，状态: {$de_raw['message']}!");
             print_r($de_raw);
         } else {
             Log::notice("网页端参与了房间[{$data['room_id']}]的{$data['title']}[{$data['raffle_id']}]抽奖, 状态: {$de_raw['msg']}!");
@@ -308,6 +304,8 @@ class RaffleHandler
     private static function lotteryApp(array $data)
     {
         // 参数
+        // flower_rain-
+        // lover_2018
         $payload = [
             'event_type' => $data['raffle_id'],
             'room_id' => self::$room_id,
@@ -319,11 +317,11 @@ class RaffleHandler
         $de_raw = json_decode($raw, true);
         // 抽奖判断
         if (array_key_exists('code', $de_raw) && $de_raw['code'] != 0) {
-            Log::info("移动端参与{$data['title']}[{$data['raffle_id']}]抽奖加入失败，状态: {$de_raw['message']}!");
+            Log::info("移动端参与{$data['title']}[{$data['raffle_id']}]抽奖，状态: {$de_raw['message']}!");
         } elseif (array_key_exists('code', $de_raw) && $de_raw['code'] == 0) {
             Log::notice("移动端参与了房间[{$data['room_id']}]的{$data['title']}[{$data['raffle_id']}]抽奖, 状态: {$de_raw['data']['gift_desc']}!");
         } else {
-            Log::error("移动端参与{$data['title']}[{$data['raffle_id']}]抽奖加入失败，状态: {$de_raw['message']}!");
+            Log::error("移动端参与{$data['title']}[{$data['raffle_id']}]抽奖，状态: {$de_raw['message']}!");
             print_r($de_raw);
         }
         return;

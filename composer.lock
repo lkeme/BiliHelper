@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "48a9d21de674674d5c4712c3583c8aff",
+    "content-hash": "1185123e620ad64dd020072e87188fbf",
     "packages": [
         {
             "name": "bramus/ansi-php",
@@ -239,16 +239,16 @@
         },
         {
             "name": "vlucas/phpdotenv",
-            "version": "v2.5.0",
+            "version": "v2.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/vlucas/phpdotenv.git",
-                "reference": "6ae3e2e6494bb5e58c2decadafc3de7f1453f70a"
+                "reference": "8abb4f9aa89ddea9d52112c65bbe8d0125e2fa8e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vlucas/phpdotenv/zipball/6ae3e2e6494bb5e58c2decadafc3de7f1453f70a",
-                "reference": "6ae3e2e6494bb5e58c2decadafc3de7f1453f70a",
+                "url": "https://api.github.com/repos/vlucas/phpdotenv/zipball/8abb4f9aa89ddea9d52112c65bbe8d0125e2fa8e",
+                "reference": "8abb4f9aa89ddea9d52112c65bbe8d0125e2fa8e",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -291,7 +291,76 @@
                 "env",
                 "environment"
             ],
-            "time": "2018-07-01T10:25:50+00:00"
+            "time": "2018-07-29T20:33:41+00:00"
+        },
+        {
+            "name": "wrench/wrench",
+            "version": "v2.0.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/varspool/Wrench.git",
+                "reference": "92fb5d1c5d7a6f65884ade658b6271de93edafc2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/varspool/Wrench/zipball/92fb5d1c5d7a6f65884ade658b6271de93edafc2",
+                "reference": "92fb5d1c5d7a6f65884ade658b6271de93edafc2",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://dl.laravel-china.org/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "ext-sockets": "*",
+                "php": ">=5.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.5",
+                "squizlabs/php_codesniffer": "*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Wrench": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "WTFPL"
+            ],
+            "authors": [
+                {
+                    "name": "Dominic Scheirlinck",
+                    "email": "dominic@varspool.com",
+                    "homepage": "http://www.somethingemporium.com/"
+                },
+                {
+                    "name": "Simon Samtleben",
+                    "email": "web@lemmingzshadow.net",
+                    "homepage": "http://lemmingzshadow.net/"
+                },
+                {
+                    "name": "Nico Kaiser",
+                    "email": "nico@kaiser.me",
+                    "homepage": "http://siriux.net/"
+                }
+            ],
+            "description": "PHP WebSocket client/server library",
+            "homepage": "http://github.com/varspool/Wrench",
+            "keywords": [
+                "WebSockets",
+                "hybi",
+                "websocket"
+            ],
+            "time": "2017-02-12T02:08:51+00:00"
         }
     ],
     "packages-dev": [],
@@ -304,7 +373,8 @@
         "php": ">=7.0.0",
         "ext-curl": "*",
         "ext-openssl": "*",
-        "ext-sockets": "*"
+        "ext-sockets": "*",
+        "ext-json": "*"
     },
     "platform-dev": []
 }

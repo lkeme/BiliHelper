@@ -1,6 +1,21 @@
 # Release Notes
 # 本项目Log
 
+
+## v0.0.4(2018-08-03)
+
+### Added
+- WebSocket
+-
+
+### Changed
+- 替换Socket为WebSocket
+-
+
+### Fixed
+- 重复抽奖 
+- 
+
 ## v0.0.4(2018-07-26)
 
 ### Added

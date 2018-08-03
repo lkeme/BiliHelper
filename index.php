@@ -28,6 +28,7 @@ use lkeme\BiliHelper\GroupSignIn;
 use lkeme\BiliHelper\Live;
 use lkeme\BiliHelper\Winning;
 use lkeme\BiliHelper\Socket;
+use lkeme\BiliHelper\Websocket;
 
 
 set_time_limit(0);
@@ -59,10 +60,8 @@ class Index
             GiftHeart::run();
             Winning::run();
             MaterialObject::run();
-            Socket::run();
-            Danmu::run();
-            sleep(1);
-            // usleep(0.5 * 1000000);
+            Websocket::run();
+            usleep(0.5 * 1000000);
         }
     }
 

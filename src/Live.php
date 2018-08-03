@@ -38,7 +38,7 @@ class Live
             break;
         }
         $rand_num = mt_rand(1, 29);
-        
+
         return $de_raw['data'][$rand_num]['roomid'];
     }
 
@@ -152,7 +152,7 @@ class Live
 
         \lkeme\BiliHelper\Silver::$lock = $second;
         \lkeme\BiliHelper\MaterialObject::$lock = $second;
-        \lkeme\BiliHelper\Socket::$lock = $second;
+        \lkeme\BiliHelper\Websocket::$lock = $second;
         \lkeme\BiliHelper\GiftHeart::$lock = $second;
 
         return;

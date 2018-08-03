@@ -186,6 +186,11 @@ class DataTreating
                  * 小电视抽奖结束
                  */
                 break;
+            case 'ENTRY_EFFECT':
+                /**
+                 *  进入房间提示
+                 */
+                break;
             case 'EVENT_CMD':
                 /**
                  * 活动相关
@@ -206,6 +211,10 @@ class DataTreating
                  * 房间屏蔽
                  */
                 break;
+            case 'COMBO_END':
+                /**
+                 * COMBO结束
+                 */
             case 'ROOM_BLOCK_MSG':
                 /**
                  * 房间封禁消息
