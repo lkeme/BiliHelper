@@ -50,7 +50,10 @@ class Silver2Coin
     {
         sleep(1);
         $payload = [];
-        $raw = Curl::get('https://api.live.bilibili.com/exchange/silver2coin', Sign::api($payload));
+        $url = "https://api.live.bilibili.com/pay/v1/Exchange/silver2coin";
+        $url1 = "https://api.live.bilibili.com/exchange/silver2coin";
+
+        $raw = Curl::get($url, Sign::api($payload));
         $de_raw = json_decode($raw, true);
         if ($de_raw['code'] == -403) {
             return false;
