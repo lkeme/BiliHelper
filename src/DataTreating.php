@@ -113,7 +113,7 @@ class DataTreating
                 }
 
                 // TODO 活动抽奖 暂定每期修改
-                foreach (self::$active_keywords as $value) {
+                foreach ($active_keywords as $value) {
                     if (strpos($resp['msg'], $value) !== false) {
                         return [
                             'type' => 'active',
@@ -128,7 +128,7 @@ class DataTreating
                  * 系统消息, 广播
                  */
                 // TODO 小电视|摩天大楼|C位光环|盛夏么么茶统一
-                foreach (self::$active_keywords as $value) {
+                foreach ($active_keywords as $value) {
                     if (strpos($resp['msg'], $value) !== false) {
                         return [
                             'type' => 'active',
