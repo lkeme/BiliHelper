@@ -21,9 +21,8 @@ class DataTreating
     // ACTIVE KEY
     protected static $active_keywords = [
         '摩天大楼',
-        'C位光环',
         '小电视飞船',
-        '盛夏么么茶',
+        '小金人',
     ];
 
     // PARSE ARRAY
