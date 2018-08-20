@@ -18,12 +18,6 @@ class DataTreating
 {
     // STORM KEY
     protected static $storm_keyword = '节奏风暴';
-    // ACTIVE KEY
-    protected static $active_keywords = [
-        '摩天大楼',
-        '小电视飞船',
-        '小金人',
-    ];
 
     // PARSE ARRAY
     public static function socketArrayToDispose(array $data)
@@ -53,6 +47,14 @@ class DataTreating
         }
 
         $resp = json_decode($resp, true);
+
+        if (empty(getenv('ACTIVE_KEYWORDS'))) {
+            Log::error('未设置ACTIVE_KEYWORDS! 请参考新版配置文件');
+            die();
+        }
+
+        // ACTIVE KEY
+        $active_keywords = explode('|', getenv('ACTIVE_KEYWORDS'));
 
         switch ($resp['cmd']) {
             case 'DANMU_MSG':
