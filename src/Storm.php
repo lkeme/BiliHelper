@@ -16,7 +16,7 @@ class Storm
     // RUN
     public static function run(array $data)
     {
-        if (getenv('USE_STORM') == 'false'){
+        if (getenv('USE_STORM') == 'false') {
             return;
         }
         if (!self::$realname_check) {
@@ -75,7 +75,7 @@ class Storm
             Log::notice('节奏风暴已结束!');
             return false;
         }
-        if ($de_raw['msg' == '已经领取']) {
+        if ($de_raw['msg'] == '已经领取') {
             Log::notice('节奏风暴已经领取!');
             return false;
         }
