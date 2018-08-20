@@ -60,6 +60,7 @@ class Index
             GiftHeart::run();
             Winning::run();
             MaterialObject::run();
+            DataTreating::run();
             Websocket::run();
             usleep(0.5 * 1000000);
         }

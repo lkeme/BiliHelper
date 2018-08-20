@@ -16,14 +16,42 @@ use lkeme\BiliHelper\Storm;
 
 class DataTreating
 {
-    // STORM KEY
-    protected static $storm_keyword = '节奏风暴';
-    // ACTIVE KEY
-    protected static $active_keywords = [
-        '摩天大楼',
-        '小电视飞船',
-        '小金人',
-    ];
+    // 节奏风暴关键字
+    protected static $storm_keys = [];
+    // 活动关键字
+    protected static $active_keys = [];
+
+    /**
+     * @use RUN
+     */
+    public static function run()
+    {
+        if (empty(self::$storm_keys) && empty(self::$active_keys)) {
+            self::reacKeys();
+        }
+
+    }
+
+    // 读取关键字
+    private static function reacKeys()
+    {
+        $temp = getenv('STORM_KEYS');
+        $keys = explode('|', $temp);
+        foreach ($keys as $key) {
+            if ($key != '') {
+                array_push(self::$storm_keys, $key);
+            }
+        }
+
+        $temp = getenv('ACTIVE_KEYS');
+        $keys = explode('|', $temp);
+        foreach ($keys as $key) {
+            if ($key != '') {
+                array_push(self::$active_keys, $key);
+            }
+        }
+
+    }
 
     // PARSE ARRAY
     public static function socketArrayToDispose(array $data)
@@ -101,21 +129,23 @@ class DataTreating
                  * 系统礼物消息, 广播
                  */
                 // TODO 节奏风暴暂时搁置
-                // 20倍 节奏风暴
-                if (strpos($resp['msg'], self::$storm_keyword) !== false) {
-                    return [
-                        'type' => 'storm',
-                        'num' => 20,
-                        'room_id' => $resp['roomid'],
-                    ];
+                // 20倍 风暴
+                foreach (self::$storm_keys as $key) {
+                    if (strpos($resp['msg'], $key) !== false) {
+                        return [
+                            'type' => 'storm',
+                            'num' => 20,
+                            'room_id' => $resp['roomid'],
+                        ];
+                    }
                 }
 
                 // TODO 活动抽奖 暂定每期修改
-                foreach (self::$active_keywords as $value) {
-                    if (strpos($resp['msg'], $value) !== false) {
+                foreach (self::$active_keys as $key) {
+                    if (strpos($resp['msg'], $key) !== false) {
                         return [
                             'type' => 'active',
-                            'title' => $value,
+                            'title' => $key,
                             'room_id' => $resp['real_roomid']
                         ];
                     }
@@ -126,11 +156,11 @@ class DataTreating
                  * 系统消息, 广播
                  */
                 // TODO 小电视|摩天大楼|C位光环|盛夏么么茶统一
-                foreach (self::$active_keywords as $value) {
-                    if (strpos($resp['msg'], $value) !== false) {
+                foreach (self::$active_keys as $key) {
+                    if (strpos($resp['msg'], $key) !== false) {
                         return [
                             'type' => 'active',
-                            'title' => $value,
+                            'title' => $key,
                             'room_id' => $resp['real_roomid']
                         ];
                     }

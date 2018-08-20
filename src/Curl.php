@@ -60,7 +60,7 @@ class Curl
                     throw new \Exception(curl_error($curl));
                 }
 
-                if ($raw === false) {
+                if ($raw === false || strpos($raw, 'timeout') !== false) {
                     Log::warning('重试，获取的资源无效!');
                     $ret_count--;
                     continue;
