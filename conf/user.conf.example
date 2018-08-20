@@ -35,6 +35,9 @@ SOCKET_ROOM_ID=3
 # 统一活动抽奖
 USE_ACTIVE=true
 
+# 启用的抽奖功能(使用|分隔)
+ACTIVE_KEYWORDS=摩天大楼|小电视飞船|小金人
+
 # 银瓜子兑换硬币
 USE_SILVER2COIN=true
 
