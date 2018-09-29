@@ -11,7 +11,7 @@ namespace lkeme\BiliHelper;
 
 class Curl
 {
-    public static $header = array(
+    public static $headers = array(
         'Accept' => '*/*',
         'Accept-Encoding' => 'gzip',
         'Accept-Language' => 'zh-cn',
@@ -20,16 +20,21 @@ class Curl
         'User-Agent' => 'User-Agent: bili-universal/6670 CFNetwork/897.15 Darwin/17.5.0',
     );
 
-    public static function post($url, $payload = null, $timeout = 30)
+    private static function getHeaders($headers)
+    {
+        return array_map(function ($k, $v) {
+            return $k . ': ' . $v;
+        }, array_keys($headers), $headers);
+    }
+
+    public static function post($url, $payload = null, $headers = null, $timeout = 30)
     {
         $url = self::http2https($url);
         Log::debug($url);
-        $header = array_map(function ($k, $v) {
-            return $k . ': ' . $v;
-        }, array_keys(self::$header), self::$header);
+        $header = is_null($headers) ? self::getHeaders(self::$headers) : self::getHeaders($headers);
 
         // 重试次数
-        $ret_count = 5;
+        $ret_count = 10;
         while ($ret_count) {
             try {
                 $curl = curl_init();
@@ -80,12 +85,12 @@ class Curl
     }
 
 
-    public static function get($url, $payload = null)
+    public static function get($url, $payload = null, $headers = null)
     {
         if (!is_null($payload)) {
             $url .= '?' . http_build_query($payload);
         }
-        return self::post($url, null);
+        return self::post($url, null, $headers);
     }
 
     protected static function http2https($url)

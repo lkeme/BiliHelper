@@ -2,7 +2,7 @@
 <p align="center"><img width="300px" src="https://i.loli.net/2018/04/20/5ad97bd395912.jpeg"></p>
 
 <p align="center">
-<img src="https://img.shields.io/badge/version-0.0.4-green.svg?longCache=true&style=for-the-badge">
+<img src="https://img.shields.io/badge/version-0.0.5-green.svg?longCache=true&style=for-the-badge">
 <img src="https://img.shields.io/badge/license-mit-blue.svg?longCache=true&style=for-the-badge">
 </p>
 
@@ -28,10 +28,11 @@ B 站直播实用脚本
 |MaterialObject      |18.07.25            |实物抽奖             |
 |GroupSignIn         |18.04.25            |应援团签到           |
 |Storm               |18.04.26            |节奏风暴             |
-|Notice              |18.07.25            |Server酱             |          |
+|Notice              |18.07.25            |Server酱             |          
 |RaffleHandler       |18.07.26            |小电视飞船            |
 |RaffleHandler       |18.07.26            |摩天大樓             |
 |RaffleHandler       |18.08.21            |小金人               |
+|MasterSite          |18.09.29            |主站任务(观看、分享)  |
 
 ## 广告
 

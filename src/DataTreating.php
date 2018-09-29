@@ -155,7 +155,11 @@ class DataTreating
                 /**
                  * 系统消息, 广播
                  */
-                // TODO 小电视|摩天大楼|C位光环|盛夏么么茶统一
+                // 关键词屏蔽
+                if ((strpos($resp['msg'], '系统公告') !== false)) {
+                    break;
+                }
+                // TODO 小电视|摩天大楼|高能活动统一检测
                 foreach (self::$active_keys as $key) {
                     if (strpos($resp['msg'], $key) !== false) {
                         return [
@@ -267,6 +271,16 @@ class DataTreating
             case 'CUT_OFF':
                 /**
                  * 直播强制切断
+                 */
+                break;
+            case  'ROOM_RANK':
+                /**
+                 * 周星榜
+                 */
+                break;
+            case 'NOTICE_MSG':
+                /**
+                 * 分区通知
                  */
                 break;
             default:

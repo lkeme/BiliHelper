@@ -143,7 +143,7 @@ class Live
         $second = time() + ceil($unblock_time - $block_time) + 5 * 60;
         $hour = floor(($second - time()) / 60 / 60);
 
-        if ($arg == ' ban') {
+        if ($arg == 'ban') {
             // 推送被ban信息
             Notice::run('banned', $hour);
         }

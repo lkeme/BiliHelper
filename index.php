@@ -29,6 +29,7 @@ use lkeme\BiliHelper\Live;
 use lkeme\BiliHelper\Winning;
 use lkeme\BiliHelper\Socket;
 use lkeme\BiliHelper\Websocket;
+use lkeme\BiliHelper\MasterSite;
 
 
 set_time_limit(0);
@@ -50,6 +51,7 @@ class Index
                 self::$dotenv->overload();
             }
             Daily::run();
+            MasterSite::run();
             GiftSend::run();
             Heart::run();
             Silver::run();

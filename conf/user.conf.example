@@ -15,6 +15,9 @@ COOKIE=
 #       功能设置       #
 #######################
 
+# 主站助手
+USE_MASTER_SITE=true
+
 # SERVER酱,用于推送消息
 USE_SCKEY=
 
