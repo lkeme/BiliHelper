@@ -17,11 +17,57 @@ class MasterSite
         if (self::$lock > time() || getenv('USE_MASTER_SITE') == 'false') {
             return;
         }
-        if (self::watchAid() && self::shareAid()) {
+        if (self::watchAid() && self::shareAid() && self::coinAdd()) {
             self::$lock = time() + 24 * 60 * 60;
             return;
         }
         self::$lock = time() + 3600;
+    }
+
+    // 投币
+    private static function reward($aid): bool
+    {
+        $user_info = User::parseCookies();
+        $url = "https://api.bilibili.com/x/web-interface/coin/add";
+        $payload = [
+            "aid" => $aid,
+            "multiply" => "1",
+            "cross_domain" => "true",
+            "csrf" => $user_info['token']
+        ];
+        $headers = [
+            'Host' => "api.bilibili.com",
+            'Origin' => "https://www.bilibili.com",
+            'Referer' => "https://www.bilibili.com/video/av{$aid}",
+            'User-Agent' => "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.81 Safari/537.36",
+        ];
+        $raw = Curl::post($url, Sign::api($payload), $headers);
+        $de_raw = json_decode($raw, true);
+        if ($de_raw['code'] == 0) {
+            Log::info("主站任务: av{$aid}投币成功!");
+            return true;
+        } else {
+            Log::info("主站任务: av{$aid}投币失败!");
+            return false;
+        }
+    }
+
+    // 投币操作
+    protected static function coinAdd(): bool
+    {
+        switch (getenv('USE_ADD_COIN')) {
+            case 'false':
+                break;
+            case 'true':
+                $aid = !empty(getenv('ADD_COIN_AV')) ? getenv('ADD_COIN_AV') : self::getRandomAid();
+                self::reward($aid);
+                break;
+            default:
+                Log::warning('当前视频投币设置不正确,请检查配置文件!');
+                die();
+                break;
+        }
+        return true;
     }
 
     // 获取随机AID
@@ -41,30 +87,13 @@ class MasterSite
     }
 
 
-    //转换信息
-    private static function parseCookies(): array
-    {
-        $cookies = getenv('COOKIE');
-        preg_match('/bili_jct=(.{32})/', $cookies, $token);
-        $token = isset($token[1]) ? $token[1] : '';
-        preg_match('/DedeUserID=(\d+)/', $cookies, $uid);
-        $uid = isset($uid[1]) ? $uid[1] : '';
-        preg_match('/DedeUserID__ckMd5=(.{16})/', $cookies, $sid);
-        $sid = isset($sid[1]) ? $sid[1] : '';
-        return [
-            'token' => $token,
-            'uid' => $uid,
-            'sid' => $sid,
-        ];
-    }
-
     // 分享视频
     private static function shareAid(): bool
     {
         # aid = 稿件av号
         $url = "https://api.bilibili.com/x/web-interface/share/add";
         $av_info = self::parseAid();
-        $user_info = self::parseCookies();
+        $user_info = User::parseCookies();
         $payload = [
             'aid' => $av_info['aid'],
             'jsonp' => "jsonp",
@@ -92,7 +121,7 @@ class MasterSite
     {
         $url = "https://api.bilibili.com/x/report/click/h5";
         $av_info = self::parseAid();
-        $user_info = self::parseCookies();
+        $user_info = User::parseCookies();
         $payload = [
             'aid' => $av_info['aid'],
             'cid' => $av_info['cid'],

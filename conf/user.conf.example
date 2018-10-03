@@ -15,8 +15,15 @@ COOKIE=
 #       功能设置       #
 #######################
 
+# 舰长亲密度
+USE_GUARD=true
+
 # 主站助手
 USE_MASTER_SITE=true
+
+# 视频投币|如果av号为空则随机av号投币
+USE_ADD_COIN=false
+ADD_COIN_AV=
 
 # SERVER酱,用于推送消息
 USE_SCKEY=
@@ -38,7 +45,7 @@ SOCKET_ROOM_ID=3
 # 统一活动
 USE_ACTIVE=true
 # 活动关键字,自由修改,注意最后的分隔符
-ACTIVE_KEYS=摩天大楼|小电视飞船|小金人|
+ACTIVE_KEYS=摩天大楼|小电视飞船|小金人|月色真美|
 
 # 银瓜子兑换硬币
 USE_SILVER2COIN=true

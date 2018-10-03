@@ -34,7 +34,7 @@ class Curl
         $header = is_null($headers) ? self::getHeaders(self::$headers) : self::getHeaders($headers);
 
         // 重试次数
-        $ret_count = 10;
+        $ret_count = 30;
         while ($ret_count) {
             try {
                 $curl = curl_init();
@@ -53,6 +53,63 @@ class Curl
                 curl_setopt($curl, CURLOPT_TIMEOUT, $timeout);
                 curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, $timeout);
                 if (($cookie = getenv('COOKIE')) != "") {
+                    curl_setopt($curl, CURLOPT_COOKIE, $cookie);
+                }
+                if (getenv('USE_PROXY') == 'true') {
+                    curl_setopt($curl, CURLOPT_PROXY, getenv('PROXY_IP'));
+                    curl_setopt($curl, CURLOPT_PROXYPORT, getenv('PROXY_PORT'));
+                }
+                $raw = curl_exec($curl);
+
+                if ($err_no = curl_errno($curl)) {
+                    throw new \Exception(curl_error($curl));
+                }
+
+                if ($raw === false || strpos($raw, 'timeout') !== false) {
+                    Log::warning('重试，获取的资源无效!');
+                    $ret_count--;
+                    continue;
+                }
+
+                Log::debug($raw);
+                curl_close($curl);
+                return $raw;
+
+            } catch (\Exception $e) {
+                Log::warning("重试,Curl请求出错,{$e->getMessage()}!");
+                $ret_count--;
+                continue;
+            }
+        }
+        exit('重试次数过多，请检查代码，退出!');
+    }
+
+    public static function other($url, $payload = null, $headers = null, $cookie = null, $timeout = 30)
+    {
+        Log::debug($url);
+        $header = is_null($headers) ? self::getHeaders(self::$headers) : self::getHeaders($headers);
+
+        // 重试次数
+        $ret_count = 30;
+        while ($ret_count) {
+            try {
+                $curl = curl_init();
+                if (!is_null($payload)) {
+                    curl_setopt($curl, CURLOPT_POST, 1);
+                    curl_setopt($curl, CURLOPT_POSTFIELDS, is_array($payload) ? http_build_query($payload) : $payload);
+                }
+                curl_setopt($curl, CURLOPT_URL, $url);
+                curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
+                curl_setopt($curl, CURLOPT_HEADER, 0);
+                curl_setopt($curl, CURLOPT_ENCODING, 'gzip');
+                curl_setopt($curl, CURLOPT_IPRESOLVE, 1);
+                curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+                curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
+                // 超时 重要
+                curl_setopt($curl, CURLOPT_TIMEOUT, $timeout);
+                curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, $timeout);
+                // 认证
+                if (!is_null($cookie)) {
                     curl_setopt($curl, CURLOPT_COOKIE, $cookie);
                 }
                 if (getenv('USE_PROXY') == 'true') {

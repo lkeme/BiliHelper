@@ -58,6 +58,7 @@ class Index
             Task::run();
             Silver2Coin::run();
             GroupSignIn::run();
+            Guard::run();
             Live::run();
             GiftHeart::run();
             Winning::run();

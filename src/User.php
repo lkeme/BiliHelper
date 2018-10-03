@@ -63,4 +63,21 @@ class User
         }
         return false;
     }
+
+    //转换信息
+    public static function parseCookies(): array
+    {
+        $cookies = getenv('COOKIE');
+        preg_match('/bili_jct=(.{32})/', $cookies, $token);
+        $token = isset($token[1]) ? $token[1] : '';
+        preg_match('/DedeUserID=(\d+)/', $cookies, $uid);
+        $uid = isset($uid[1]) ? $uid[1] : '';
+        preg_match('/DedeUserID__ckMd5=(.{16})/', $cookies, $sid);
+        $sid = isset($sid[1]) ? $sid[1] : '';
+        return [
+            'token' => $token,
+            'uid' => $uid,
+            'sid' => $sid,
+        ];
+    }
 }

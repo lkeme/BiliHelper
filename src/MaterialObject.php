@@ -29,9 +29,9 @@ class MaterialObject
             return;
         }
         // 计算AID TODO 待优化
-        self::calculateAid(110, 500);
-
+        self::calculateAid(150, 550);
         self::drawLottery();
+
         self::$lock = time() + random_int(5, 10) * 60;
     }
 
@@ -41,8 +41,9 @@ class MaterialObject
      */
     protected static function drawLottery(): bool
     {
-        $block_key_list = ['测试', '加密', 'test', 'TEST', '钓鱼', '炸鱼'];
+        $block_key_list = ['测试', '加密', 'test', 'TEST', '钓鱼', '炸鱼', '调试'];
         $flag = 5;
+        
         for ($i = self::$start_aid; $i < self::$end_aid; $i++) {
             if (!$flag) {
                 break;
@@ -151,8 +152,8 @@ class MaterialObject
             }
         }
 
-        self::$start_aid = $min - 40;
-        self::$end_aid = $min + 40;
+        self::$start_aid = $min - mt_rand(30, 40);
+        self::$end_aid = $min + mt_rand(30, 40);
         Log::info("实物抽奖起始值[" . self::$start_aid . "]，结束值[" . self::$end_aid . "]");
         return true;
     }

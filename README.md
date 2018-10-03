@@ -2,7 +2,7 @@
 <p align="center"><img width="300px" src="https://i.loli.net/2018/04/20/5ad97bd395912.jpeg"></p>
 
 <p align="center">
-<img src="https://img.shields.io/badge/version-0.0.5-green.svg?longCache=true&style=for-the-badge">
+<img src="https://img.shields.io/badge/version-0.0.6-green.svg?longCache=true&style=for-the-badge">
 <img src="https://img.shields.io/badge/license-mit-blue.svg?longCache=true&style=for-the-badge">
 </p>
 
@@ -11,7 +11,7 @@
 
 B 站直播实用脚本
 
-> 群`55308141`:只作用于反馈BUG,别来问怎么使用之类问题
+> [企鹅群](https://jq.qq.com/?_wv=1027&k=5AIDaJg) (只作用于反馈BUG)
 
 ## 功能组件
 
@@ -32,7 +32,8 @@ B 站直播实用脚本
 |RaffleHandler       |18.07.26            |小电视飞船            |
 |RaffleHandler       |18.07.26            |摩天大樓             |
 |RaffleHandler       |18.08.21            |小金人               |
-|MasterSite          |18.09.29            |主站任务(观看、分享)  |
+|MasterSite          |18.09.29            |主站(观看、分享、投币)|
+|Guard               |18.10.04            |舰长上船亲密度        |
 
 ## 广告
 
@@ -40,7 +41,7 @@ B 站直播实用脚本
 
 > 支付宝扫码领红包活动，扫一扫`领红包`，不会给你造成什么损失!
 ---
-> 需要代挂`节奏风暴`的可以滴滴我，看不惯请路过，不喜勿喷!
+> 需要挂`节奏风暴(亿圆)`的可以私信我，不喜请路过，看不惯勿喷!
 
 ## 未完成功能
 
@@ -63,13 +64,13 @@ B 站直播实用脚本
 
 通常使用 `composer` 工具会自动检测上述依赖问题。  
 
-* 项目 `composer.lock` 基于镜像生成 https://pkg.phpcomposer.com/
+* 项目 `composer.lock` 基于镜像生成 https://laravel-china.org/composer
 
-## 打赏
+## 打赏赞助
 
 ![](https://i.loli.net/2018/04/07/5ac79ff8c2900.png)
 
-> 有意的打赏个阔落，无意的可以无视.
+> 有意的打赏个阔落，无意的可以跳过.
 
 ## 使用指南
 
@@ -79,7 +80,7 @@ $ git clone https://github.com/lkeme/BiliHelper.git
 $ cd BiliHelper/conf
 $ cp user.conf.example user.conf
 ```
- 2. 使用 composer 工具进行安装。**如果不了解 composer 工具的使用，可以直接到 https://github.com/lkeme/BiliHelper/releases 下载完整代码包，解压后跳到第三步。**
+ 2. 使用 composer 工具进行安装
 ```
 $ composer install
 ```
@@ -88,7 +89,12 @@ $ composer install
 ```
 $ php index.php
 ```
-
+> 以下是`多开方案`，单个账户可以无视
+ 5. 复制一份example配置文件，修改账号密码即可
+ ```
+ $ php index.php example.conf
+ ```
+ 6. 请保证配置文件存在，否则默认加载`user.conf`配置文件
 
 <p align="center"><img width="680px" src="https://i.loli.net/2018/04/21/5adb497dc3ece.png"></p>
 
@@ -111,13 +117,6 @@ $ php index.php
 
 - 注意: Docker镜像已经包含了所有所需的运行环境，无需在本地环境弄composer。每次启动容器时，都会与项目进行同步以确保版本最新。
 
-## 多开方案
-
-复制一份example配置文件，修改账号密码即可
-```
-$ php index.php example.conf
-```
-要保证配置文件存在，否则默认加载`user.conf`
 
 ## 升级指南
 
