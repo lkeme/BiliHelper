@@ -34,7 +34,7 @@ class GroupSignIn
             self::signInGroup($group);
         }
 
-        self::$lock = time() + 24 * 60 * 60;
+        self::$lock = time() + 8 * 60 * 60;
     }
 
     //GROUP LIST

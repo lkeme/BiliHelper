@@ -53,16 +53,12 @@ class Guard
             $guard_id = $guard['GuardId'];
             $guard_roomid = $guard['OriginRoomId'];
             $data = self::guardLottery($guard_roomid, $guard_id);
-            switch ($data['code']) {
-                case 0:
-                    Log::notice("房间[{$guard_roomid}]编号[{$guard_id}]上船:{$data['data']['message']}");
-                    break;
-                case 400:
-                    // Log::info("房间[{$guard_roomid}]编号[{$guard_id}]的上船亲密度已领过");
-                    break;
-                default:
-                    Log::warning("房间[{$guard_roomid}]编号[{$guard_id}] 上船:{$data['data']['message']}");
-                    break;
+            if ($data['code'] == 0) {
+                Log::notice("房间[{$guard_roomid}]编号[{$guard_id}]上船:{$data['data']['message']}");
+            } elseif ($data['code'] == 400 && $data['msg'] == '你已经领取过啦') {
+                Log::info("房间[{$guard_roomid}]编号[{$guard_id}]上船:{$data['msg']}");
+            } else {
+                Log::warning("房间[{$guard_roomid}]编号[{$guard_id}]上船:{$data['msg']}");
             }
         }
         return true;

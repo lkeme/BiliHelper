@@ -36,7 +36,7 @@ class Daily
         if (isset($data['code']) && $data['code']) {
             Log::warning('每日礼包领取失败!', ['msg' => $data['message']]);
         } else {
-            Log::info('每日礼包领取成功');
+            Log::notice('每日礼包领取成功');
         }
     }
 

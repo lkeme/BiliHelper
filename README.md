@@ -26,22 +26,20 @@ B 站直播实用脚本
 |GiftHeart           |18.04.25            |心跳礼物             |
 |Silver2Coin         |18.07.25            |银瓜子换硬币         |
 |MaterialObject      |18.07.25            |实物抽奖             |
-|GroupSignIn         |18.04.25            |应援团签到           |
+|GroupSignIn         |18.10.10            |应援团签到           |
 |Storm               |18.04.26            |节奏风暴             |
 |Notice              |18.07.25            |Server酱             |          
 |RaffleHandler       |18.07.26            |小电视飞船            |
 |RaffleHandler       |18.07.26            |摩天大樓             |
 |RaffleHandler       |18.08.21            |小金人               |
-|MasterSite          |18.09.29            |主站(观看、分享、投币)|
-|Guard               |18.10.04            |舰长上船亲密度        |
+|MasterSite          |18.10.10            |主站(观看、分享、投币)|
+|Guard               |18.10.10            |舰长上船亲密度        |
 
 ## 广告
-
-![](https://i.loli.net/2018/08/21/5b7ae6513322d.jpg)
-
-> 支付宝扫码领红包活动，扫一扫`领红包`，不会给你造成什么损失!
----
 > 需要挂`节奏风暴(亿圆)`的可以私信我，不喜请路过，看不惯勿喷!
+---
+> 支付宝扫码领红包活动，扫一扫`领红包`，不会给你造成什么损失!
+![](https://i.loli.net/2018/08/21/5b7ae6513322d.jpg)
 
 ## 未完成功能
 
@@ -61,6 +59,7 @@ B 站直播实用脚本
 |php_curl            |
 |php_sockets         |
 |php_openssl         |
+|待添加              |
 
 通常使用 `composer` 工具会自动检测上述依赖问题。  
 
@@ -80,7 +79,7 @@ $ git clone https://github.com/lkeme/BiliHelper.git
 $ cd BiliHelper/conf
 $ cp user.conf.example user.conf
 ```
- 2. 使用 composer 工具进行安装
+ 2. 使用 [composer](https://getcomposer.org/download/) 工具进行安装
 ```
 $ composer install
 ```
@@ -218,9 +217,6 @@ http://live.bilibili.com/9522051
  > 基于父项目的架构开发，在此感谢父项目的开发
 
  > 保留父项目没必要修改的信息，另外欢迎重构(Haha)
-
-[BilibiliHelper](https://github.com/metowolf/BilibiliHelper)
-
 
 ## License 许可证
 

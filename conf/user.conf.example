@@ -21,9 +21,10 @@ USE_GUARD=true
 # 主站助手
 USE_MASTER_SITE=true
 
-# 视频投币|如果av号为空则随机av号投币
+# 视频投币|投币稿件数(每日任务最大5)|自定义稿件ID,空则随机(AV_NUM=1生效)
 USE_ADD_COIN=false
-ADD_COIN_AV=
+ADD_COIN_AV_NUM=1
+ADD_COIN_AV=33492180
 
 # SERVER酱,用于推送消息
 USE_SCKEY=
