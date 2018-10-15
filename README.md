@@ -32,7 +32,7 @@ B 站直播实用脚本
 |RaffleHandler       |18.07.26            |小电视飞船            |
 |RaffleHandler       |18.07.26            |摩天大樓             |
 |RaffleHandler       |18.08.21            |小金人               |
-|MasterSite          |18.10.10            |主站(观看、分享、投币)|
+|MasterSite          |18.10.16            |主站(观看、分享、投币)|
 |Guard               |18.10.10            |舰长上船亲密度        |
 
 ## 广告

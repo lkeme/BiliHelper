@@ -8,8 +8,6 @@
 
 namespace lkeme\BiliHelper;
 
-use function PHPSTORM_META\type;
-
 class MasterSite
 {
     public static $lock = 0;
@@ -33,7 +31,7 @@ class MasterSite
         $url = "https://api.bilibili.com/x/web-interface/coin/add";
         $payload = [
             "aid" => $aid,
-            "multiply" => "2",
+            "multiply" => "1",
             "cross_domain" => "true",
             "csrf" => $user_info['token']
         ];
@@ -54,6 +52,39 @@ class MasterSite
         }
     }
 
+    // 投币日志
+    protected static function coinLog(): int
+    {
+        $url = "https://api.bilibili.com/x/member/web/coin/log";
+        $payload = [];
+        $raw = Curl::get($url, Sign::api($payload));
+        $de_raw = json_decode($raw, true);
+
+        $logs = $de_raw['data']['list'];
+        $coins = 0;
+        foreach ($logs as $log) {
+            $log_ux = strtotime($log['time']);
+            $log_date = date('Y-m-d', $log_ux);
+            $now_date = date('Y-m-d');
+            if ($log_date != $now_date) {
+                break;
+            }
+            if (strpos($log['reason'], "打赏") !== false) {
+                switch ($log['delta']) {
+                    case -1:
+                        $coins += 1;
+                        break;
+                    case -2:
+                        $coins += 2;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        return $coins;
+    }
+
     // 投币操作
     protected static function coinAdd(): bool
     {
@@ -71,6 +102,11 @@ class MasterSite
                     $aid = !empty(getenv('ADD_COIN_AV')) ? getenv('ADD_COIN_AV') : self::getRandomAid();
                     self::reward($aid);
                 } else {
+                    $coins = $av_num - self::coinLog();
+                    if ($coins <= 0) {
+                        Log::info('今日投币上限已满!');
+                        break;
+                    }
                     $aids = self::getDayRankingAids($av_num);
                     foreach ($aids as $aid) {
                         self::reward($aid);
