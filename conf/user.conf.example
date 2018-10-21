@@ -46,7 +46,7 @@ SOCKET_ROOM_ID=3
 # 统一活动
 USE_ACTIVE=true
 # 活动关键字,自由修改,注意最后的分隔符
-ACTIVE_KEYS=摩天大楼|小电视飞船|小金人|月色真美|
+ACTIVE_KEYS=摩天大楼|小电视飞船|小金人|月色真美|充能炮|
 
 # 银瓜子兑换硬币
 USE_SILVER2COIN=true

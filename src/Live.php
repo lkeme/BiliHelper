@@ -150,10 +150,11 @@ class Live
 
         self::$lock = $second;
 
-        \lkeme\BiliHelper\Silver::$lock = $second;
-        \lkeme\BiliHelper\MaterialObject::$lock = $second;
-        \lkeme\BiliHelper\Websocket::$lock = $second;
-        \lkeme\BiliHelper\GiftHeart::$lock = $second;
+        Silver::$lock = $second;
+        MaterialObject::$lock = $second;
+        Websocket::$lock = $second;
+        GiftHeart::$lock = $second;
+        Guard::$lock = $second;
 
         return;
     }

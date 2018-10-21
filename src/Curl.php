@@ -17,7 +17,8 @@ class Curl
         'Accept-Language' => 'zh-cn',
         'Connection' => 'keep-alive',
         'Content-Type' => 'application/x-www-form-urlencoded',
-        'User-Agent' => 'User-Agent: bili-universal/6670 CFNetwork/897.15 Darwin/17.5.0',
+        'User-Agent' => 'bili-universal/8110 CFNetwork/974.2.1 Darwin/18.0.0',
+        // 'Referer' => 'https://live.bilibili.com/',
     );
 
     private static function getHeaders($headers)

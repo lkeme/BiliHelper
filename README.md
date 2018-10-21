@@ -2,7 +2,7 @@
 <p align="center"><img width="300px" src="https://i.loli.net/2018/04/20/5ad97bd395912.jpeg"></p>
 
 <p align="center">
-<img src="https://img.shields.io/badge/version-0.0.6-green.svg?longCache=true&style=for-the-badge">
+<img src="https://img.shields.io/badge/version-0.0.7-green.svg?longCache=true&style=for-the-badge">
 <img src="https://img.shields.io/badge/license-mit-blue.svg?longCache=true&style=for-the-badge">
 </p>
 
@@ -33,7 +33,7 @@ B 站直播实用脚本
 |RaffleHandler       |18.07.26            |摩天大樓             |
 |RaffleHandler       |18.08.21            |小金人               |
 |MasterSite          |18.10.16            |主站(观看、分享、投币)|
-|Guard               |18.10.10            |舰长上船亲密度        |
+|Guard               |18.10.21            |舰长上船亲密度        |
 
 ## 广告
 > 需要挂`节奏风暴(亿圆)`的可以私信我，不喜请路过，看不惯勿喷!
@@ -143,7 +143,7 @@ $ systemctl restart bilibili
 通常可以使用以下的方式
  - systemd (推荐)
  - Supervisor
- - screen
+ - screen (自用)
  - nohup
 
 ## systemd 脚本
