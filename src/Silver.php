@@ -64,7 +64,7 @@ class Silver
     protected static function pullTask()
     {
         $payload = [];
-        $data = Curl::get('https://api.live.bilibili.com/mobile/freeSilverCurrentTask', Sign::api($payload));
+        $data = Curl::get('https://api.live.bilibili.com/lottery/v1/SilverBox/getCurrentTask', Sign::api($payload));
         $data = json_decode($data, true);
 
         if (isset($data['code']) && $data['code'] == -10017) {

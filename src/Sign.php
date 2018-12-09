@@ -27,7 +27,7 @@ class Sign
             'access_key' => getenv('ACCESS_TOKEN'),
             'actionKey' => 'appkey',
             'appkey' => $appkey,
-            'build' => '8110',
+            'build' => '8230',
             'device' => 'phone',
             'mobi_app' => 'iphone',
             'platform' => 'ios',
