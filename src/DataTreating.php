@@ -16,6 +16,8 @@ use lkeme\BiliHelper\Storm;
 
 class DataTreating
 {
+    // 节奏风暴关键字
+    protected static $storm_keys = [];
     // 活动关键字
     protected static $active_keys = [];
 
@@ -24,7 +26,7 @@ class DataTreating
      */
     public static function run()
     {
-        if (empty(self::$active_keys)) {
+        if (empty(self::$storm_keys) && empty(self::$active_keys)) {
             self::reacKeys();
         }
 
@@ -33,6 +35,14 @@ class DataTreating
     // 读取关键字
     private static function reacKeys()
     {
+        $temp = getenv('STORM_KEYS');
+        $keys = explode('|', $temp);
+        foreach ($keys as $key) {
+            if ($key != '') {
+                array_push(self::$storm_keys, $key);
+            }
+        }
+
         $temp = getenv('ACTIVE_KEYS');
         $keys = explode('|', $temp);
         foreach ($keys as $key) {
@@ -118,45 +128,57 @@ class DataTreating
                 /**
                  * 系统礼物消息, 广播
                  */
-                if (getenv('AUTO_KEYS') == 'false') {
-                    foreach (self::$active_keys as $key) {
-                        if (strpos($resp['msg'], $key) !== false) {
-                            return [
-                                'type' => 'active',
-                                'title' => $key,
-                                'room_id' => $resp['real_roomid']
-                            ];
-                        }
+                // TODO 节奏风暴暂时搁置
+                // 20倍 风暴
+                foreach (self::$storm_keys as $key) {
+                    if (strpos($resp['msg'], $key) !== false) {
+                        return [
+                            'type' => 'storm',
+                            'num' => 20,
+                            'room_id' => $resp['roomid'],
+                        ];
                     }
                 }
 
+                // TODO 活动抽奖 暂定每期修改
+                foreach (self::$active_keys as $key) {
+                    if (strpos($resp['msg'], $key) !== false) {
+                        return [
+                            'type' => 'active',
+                            'title' => $key,
+                            'room_id' => $resp['real_roomid']
+                        ];
+                    }
+                }
                 break;
             case 'SYS_MSG':
                 /**
                  * 系统消息, 广播
                  */
-                // 屏蔽系统公告
+                // 关键词屏蔽
                 if ((strpos($resp['msg'], '系统公告') !== false)) {
                     break;
                 }
-                if (getenv('AUTO_KEYS') == 'false') {
-                    foreach (self::$active_keys as $key) {
-                        if (strpos($resp['msg'], $key) !== false) {
-                            return [
-                                'type' => 'active',
-                                'title' => $key,
-                                'room_id' => $resp['real_roomid']
-                            ];
-                        }
+                // TODO 小电视|摩天大楼|高能活动统一检测
+                foreach (self::$active_keys as $key) {
+                    if (strpos($resp['msg'], $key) !== false) {
+                        return [
+                            'type' => 'active',
+                            'title' => $key,
+                            'room_id' => $resp['real_roomid']
+                        ];
                     }
-                    var_dump($resp);
                 }
+                var_dump($resp);
                 break;
             case 'SPECIAL_GIFT':
                 /**
                  * 特殊礼物消息 --节奏风暴
                  */
+                //暂时打印节奏风暴包
+                //var_dump($resp);
                 if (array_key_exists('39', $resp['data'])) {
+                    //TODO
                     if ($resp['data']['39']['action'] == 'start') {
                         return [
                             'type' => 'storm',
@@ -259,48 +281,7 @@ class DataTreating
             case 'NOTICE_MSG':
                 /**
                  * 分区通知
-                 * 1 《第五人格》哔哩哔哩直播预选赛六强诞生！
-                 * 2 全区广播：<%user_name%>送给<%user_name%>1个嗨翻全城，快来抽奖吧
-                 * 3 <%user_name%> 在 <%user_name%> 的房间开通了总督并触发了抽奖，点击前往TA的房间去抽奖吧
-                 * 4 欢迎 <%总督 user_name%> 登船
-                 * 5 恭喜 <%user_name%> 获得大奖 <%23333x银瓜子%>, 感谢 <%user_name%> 的赠送
-                 * 6 <%user_name%> 在直播间 <%529%> 使用了 <%20%> 倍节奏风暴，大家快去跟风领取奖励吧！(只报20的)
                  */
-
-                $msg_type = $resp['msg_type'];
-                $real_roomid = $resp['real_roomid'];
-                $msg_common = str_replace(' ', '', $resp['msg_common']);
-
-                if ($msg_type == 2) {
-                    if (getenv('AUTO_KEYS') != 'true') {
-                        break;
-                    }
-                    $str_gift = explode('，', explode('%>', $msg_common)[2])[0];
-                    if (strpos($str_gift, '个') !== false) {
-                        $raffle_name = explode('个', $str_gift)[1];
-                    } elseif (strpos($str_gift, '了') !== false) {
-                        $raffle_name = explode('了', $str_gift)[1];
-                    } else {
-                        $raffle_name = $str_gift;
-                    }
-                    return [
-                        'type' => 'active',
-                        'title' => $raffle_name,
-                        'room_id' => $real_roomid
-                    ];
-
-                } elseif ($msg_type == 6) {
-                    if (strpos($msg_common, '节奏风暴') !== false) {
-                        return [
-                            'type' => 'storm',
-                            'num' => 20,
-                            'room_id' => $real_roomid,
-                        ];
-                    }
-                } else {
-                    break;
-                }
-
                 break;
             default:
                 // 新添加的消息类型

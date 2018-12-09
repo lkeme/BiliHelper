@@ -4,8 +4,9 @@
 /**
  *  Website: https://mudew.com/
  *  Author: Lkeme
+ *  Version: 0.0.2
  *  License: The MIT License
- *  Updated: 2018
+ *  Updated: 20180425 18:47:50
  */
 
 namespace lkeme\BiliHelper;
