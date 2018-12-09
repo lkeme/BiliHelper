@@ -45,15 +45,16 @@ SOCKET_ROOM_ID=3
 
 # 统一活动
 USE_ACTIVE=true
+# 自动获取活动关键字
+AUTO_KEYS=true
 # 活动关键字,自由修改,注意最后的分隔符
-ACTIVE_KEYS=摩天大楼|小电视飞船|小金人|月色真美|充能炮|
+ACTIVE_KEYS=摩天大楼|小电视飞船|小金人|月色真美|充能炮|嗨翻全城|
 
 # 银瓜子兑换硬币
 USE_SILVER2COIN=true
 
-# 节奏风暴|关键字
+# 节奏风暴
 USE_STORM=true
-STORM_KEYS=节奏风暴|
 
 #######################
 #       日志设置       #

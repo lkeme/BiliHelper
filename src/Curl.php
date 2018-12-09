@@ -17,7 +17,7 @@ class Curl
         'Accept-Language' => 'zh-cn',
         'Connection' => 'keep-alive',
         'Content-Type' => 'application/x-www-form-urlencoded',
-        'User-Agent' => 'bili-universal/8110 CFNetwork/974.2.1 Darwin/18.0.0',
+        'User-Agent' => 'bili-universal/8230 CFNetwork/975.0.3 Darwin/18.2.0',
         // 'Referer' => 'https://live.bilibili.com/',
     );
 
@@ -35,8 +35,12 @@ class Curl
         $header = is_null($headers) ? self::getHeaders(self::$headers) : self::getHeaders($headers);
 
         // 重试次数
-        $ret_count = 30;
+        $ret_count = 300;
         while ($ret_count) {
+            // 网络断开判断(延时连接网络)
+            if ($ret_count < ($ret_count - 20)) {
+                sleep(mt_rand(5, 10));
+            }
             try {
                 $curl = curl_init();
                 if (!is_null($payload)) {
