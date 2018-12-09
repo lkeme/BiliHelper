@@ -59,14 +59,14 @@ class Login
         $payload = [
             'access_token' => $access_token,
         ];
-        $data = Curl::get('https://passport.bilibili.com/api/v2/oauth2/info', Sign::api($payload));
+        $data = Curl::get('https://passport.bilibili.com/api/oauth2/info', Sign::api($payload));
         $data = json_decode($data, true);
         if (isset($data['code']) && $data['code']) {
             Log::error('检查令牌失败', ['msg' => $data['message']]);
             return false;
         }
         Log::info('令牌有效期: ' . date('Y-m-d H:i:s', $data['ts'] + $data['data']['expires_in']));
-        return $data['data']['expires_in'] > 14400;
+        return $data['data']['expires_in'] > 86400;
     }
 
     public static function refresh()
@@ -124,7 +124,7 @@ class Login
             'password' => base64_encode($crypt),
             'captcha' => '',
         ];
-        $data = Curl::post('https://passport.bilibili.com/api/v3/oauth2/login', Sign::api($payload));
+        $data = Curl::post('https://passport.bilibili.com/api/v2/oauth2/login', Sign::api($payload));
         $data = json_decode($data, true);
         if (isset($data['code']) && $data['code']) {
             Log::error('登录失败', ['msg' => $data['message']]);
