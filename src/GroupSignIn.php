@@ -64,6 +64,7 @@ class GroupSignIn
         if ($de_raw['code'] != '0') {
             Log::warning('在应援团{' . $groupInfo['group_name'] . '}中签到失败,原因待查');
             // TODO
+            return false;
         }
         if ($de_raw['data']['status'] == '0') {
             Log::info('在应援团{' . $groupInfo['group_name'] . '}中签到成功,增加{' . $de_raw['data']['add_num'] . '点}亲密度');
