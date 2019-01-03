@@ -9,10 +9,6 @@
 
 namespace lkeme\BiliHelper;
 
-use lkeme\BiliHelper\Curl;
-use lkeme\BiliHelper\Sign;
-use lkeme\BiliHelper\Log;
-
 class Daily
 {
     public static $lock = 0;

@@ -11,7 +11,7 @@
 
 B 站直播实用脚本
 
-> [企鹅群](https://jq.qq.com/?_wv=1027&k=5AIDaJg) (只作用于反馈BUG)
+> [企鹅群](https://jq.qq.com/?_wv=1027&k=5AIDaJg) (只作用于反馈BUG, 没事别加)
 
 ## 功能组件
 

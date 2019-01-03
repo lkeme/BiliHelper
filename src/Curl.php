@@ -36,13 +36,13 @@ class Curl
 
         // 重试次数
         $ret_count = 300;
-        $waring = 280;
+        $waring = 270;
 
         while ($ret_count) {
             // 网络断开判断 延时方便连接网络
             if ($ret_count < $waring) {
                 Log::warning("正常等待网络连接状态恢复正常...");
-                sleep(mt_rand(5, 10));
+                sleep(10);
             }
             try {
                 $curl = curl_init();

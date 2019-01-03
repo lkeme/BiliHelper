@@ -9,12 +9,6 @@
 
 namespace lkeme\BiliHelper;
 
-use lkeme\BiliHelper\Curl;
-use lkeme\BiliHelper\Sign;
-use lkeme\BiliHelper\Log;
-use lkeme\BiliHelper\User;
-use lkeme\BiliHelper\Notice;
-
 class Live
 {
     public static $lock = 0;
@@ -30,7 +24,7 @@ class Live
     public static function getUserRecommend()
     {
         while (1) {
-            $raw = Curl::get('https://api.live.bilibili.com/area/liveList?area=all&order=online&page=' . mt_rand(0, 5));
+            $raw = Curl::get('https://api.live.bilibili.com/room/v1/Area/getListByAreaID?areaId=all&sort=online&pageSize=30&page=' . mt_rand(0, 5));
             $de_raw = json_decode($raw, true);
             if ($de_raw['code'] != '0') {
                 continue;
