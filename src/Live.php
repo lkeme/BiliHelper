@@ -24,7 +24,7 @@ class Live
     public static function getUserRecommend()
     {
         while (1) {
-            $raw = Curl::get('https://api.live.bilibili.com/room/v1/Area/getListByAreaID?areaId=all&sort=online&pageSize=30&page=' . mt_rand(0, 5));
+            $raw = Curl::get('https://api.live.bilibili.com/room/v1/Area/getListByAreaID?areaId=0&sort=online&pageSize=30&page=' . mt_rand(0, 5));
             $de_raw = json_decode($raw, true);
             if ($de_raw['code'] != '0') {
                 continue;
