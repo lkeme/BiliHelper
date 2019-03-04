@@ -36,6 +36,7 @@ class Index
             }
             Daily::run();
             MasterSite::run();
+            Danmu::run();
             GiftSend::run();
             Heart::run();
             Silver::run();

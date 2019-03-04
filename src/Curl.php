@@ -92,7 +92,7 @@ class Curl
         exit('重试次数过多，请检查代码，退出!');
     }
 
-    public static function other($url, $payload = null, $headers = null, $cookie = null, $timeout = 30)
+    public static function other($url, $payload = null, $headers = null, $cookie = null, $filter_url = null, $timeout = 30)
     {
         Log::debug($url);
         $header = is_null($headers) ? self::getHeaders(self::$headers) : self::getHeaders($headers);
@@ -141,6 +141,11 @@ class Curl
                 return $raw;
 
             } catch (\Exception $e) {
+                if (!is_null($filter_url)) {
+                    Log::warning("Curl请求出错,{$e->getMessage()}!");
+                    Log::warning("该请求 {$filter_url} 为过滤url,不进行重试!");
+                    return null;
+                }
                 Log::warning("重试,Curl请求出错,{$e->getMessage()}!");
                 $ret_count--;
                 continue;

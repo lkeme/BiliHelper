@@ -93,7 +93,7 @@ class Login
         return true;
     }
 
-    protected static function login()
+    protected static function login($captcha = '', $headers = [])
     {
         $user = getenv('APP_USER');
         $pass = getenv('APP_PASS');
@@ -101,6 +101,7 @@ class Login
             Log::error('空白的帐号和口令!');
             die();
         }
+
         // get PublicKey
         Log::info('正在载入安全模块...');
         $payload = [];
@@ -115,17 +116,26 @@ class Login
         $public_key = $data['data']['key'];
         $hash = $data['data']['hash'];
         openssl_public_encrypt($hash . $pass, $crypt, $public_key);
-        // login
-        Log::info('正在获取令牌...');
-        $payload = [
-            'subid' => 1,
-            'permission' => 'ALL',
-            'username' => $user,
-            'password' => base64_encode($crypt),
-            'captcha' => '',
-        ];
-        $data = Curl::post('https://passport.bilibili.com/api/v3/oauth2/login', Sign::api($payload));
-        $data = json_decode($data, true);
+        for ($i = 0; $i < 30; $i++) {
+            // login
+            Log::info('正在获取令牌...');
+            $payload = [
+                'subid' => 1,
+                'permission' => 'ALL',
+                'username' => $user,
+                'password' => base64_encode($crypt),
+                'captcha' => $captcha,
+            ];
+            $data = Curl::post('https://passport.bilibili.com/api/v2/oauth2/login', Sign::api($payload), $headers);
+            $data = json_decode($data, true);
+            if (isset($data['code']) && $data['code'] == -105) {
+                $captcha_data = static::loginWithCaptcha();
+                $captcha = $captcha_data['captcha'];
+                $headers = $captcha_data['headers'];
+                continue;
+            }
+            break;
+        }
         if (isset($data['code']) && $data['code']) {
             Log::error('登录失败', ['msg' => $data['message']]);
             die();
@@ -140,6 +150,41 @@ class Login
         Log::info(' > refresh token: ' . $refresh_token);
 
         return;
+    }
+
+
+    protected static function loginWithCaptcha()
+    {
+        Log::info('登陆需要验证 ,启动验证码登陆!');
+        $headers = [
+            'Accept' => 'application/json, text/plain, */*',
+            'User-Agent' => 'bili-universal/8230 CFNetwork/975.0.3 Darwin/18.2.0',
+            'Host' => 'passport.bilibili.com',
+            'Cookie' => 'sid=blhelper'
+        ];
+        $data = Curl::other('https://passport.bilibili.com/captcha', null, $headers);
+        $data = base64_encode($data);
+        $captcha = static::ocrCaptcha($data);
+        return [
+            'captcha' => $captcha,
+            'headers' => $headers,
+        ];
+    }
+
+
+    private static function ocrCaptcha($captcha_img)
+    {
+        $payload = [
+            'image' => (string)$captcha_img
+        ];
+        $headers = [
+            'Content-Type' => 'application/json',
+        ];
+        $data = Curl::other('http://115.159.205.242:19951/captcha/v1', json_encode($payload), $headers);
+        $de_raw = json_decode($data, true);
+        Log::info("验证码识别结果 {$de_raw['message']}");
+
+        return $de_raw['message'];
     }
 
     private static function saveCookie($data)

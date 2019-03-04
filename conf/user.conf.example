@@ -21,7 +21,12 @@ USE_GUARD=true
 # 主站助手
 USE_MASTER_SITE=true
 
-# 视频投币|投币稿件数(每日任务最大5)|自定义稿件ID,空则随机(AV_NUM=1生效)
+# 活跃弹幕(false,true)|弹幕房间(为空则随机)|弹幕内容(为空则随机)
+USE_DANMU=false
+DANMU_ROOMID=9522051
+DANMU_CONTENT=
+
+# 视频投币(false,true)|稿件数(0<n<5)|自定义稿件ID,空则随机(AV_NUM=1生效)
 USE_ADD_COIN=false
 ADD_COIN_AV_NUM=1
 ADD_COIN_AV=33492180
@@ -34,8 +39,8 @@ USE_HTTPS=true
 
 # 是否使用代理(前提保证有效代理)
 USE_PROXY=false
-PROXY_IP=
-PROXY_PORT=
+PROXY_IP=127.0.0.1
+PROXY_PORT=8888
 
 # 直播间ID，用于礼物赠送
 ROOM_ID=9522051

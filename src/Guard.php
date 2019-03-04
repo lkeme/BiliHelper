@@ -98,7 +98,10 @@ class Guard
         $headers = [
             'User-Agent' => "bilibili-live-tools/" . mt_rand(1000000, 99999999),
         ];
-        $raw = Curl::other("http://118.25.108.153:8080/guard", null, $headers);
+        $raw = Curl::other("http://118.25.108.153:8080/guard", null, $headers, null, '118.25.108.153:8080');
+        if (is_null($raw)) {
+            return true;
+        }
         $de_raw = json_decode($raw, true);
         static::$lottery_list_start = array_merge(static::$lottery_list_start, $de_raw);
         $guard_num = count(static::$lottery_list_start);
