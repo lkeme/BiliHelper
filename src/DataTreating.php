@@ -260,6 +260,7 @@ class DataTreating
                  * 4 欢迎 <%总督 user_name%> 登船
                  * 5 恭喜 <%user_name%> 获得大奖 <%23333x银瓜子%>, 感谢 <%user_name%> 的赠送
                  * 6 <%user_name%> 在直播间 <%529%> 使用了 <%20%> 倍节奏风暴，大家快去跟风领取奖励吧！(只报20的)
+                 * 8 全区广播：主播<%user_name%>开启了“任意门”，点击前往TA的房间去抽奖吧！
                  */
 
                 $msg_type = $resp['msg_type'];
@@ -292,6 +293,17 @@ class DataTreating
                             'room_id' => $real_roomid,
                         ];
                     }
+                } elseif ($msg_type == 8) {
+                    if (getenv('AUTO_KEYS') != 'true') {
+                        break;
+                    }
+                    $raffle_name=explode('”', explode('“', $msg_common)[1])[0];
+                    return [
+                        'type' => 'active',
+                        'title' => $raffle_name,
+                        'room_id' => $real_roomid
+                    ];
+
                 } else {
                     break;
                 }
