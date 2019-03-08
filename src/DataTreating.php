@@ -217,10 +217,16 @@ class DataTreating
                  * 房间屏蔽
                  */
                 break;
+            case 'COMBO_SEND':
+                /**
+                 * COMBO赠送
+                 */
+                break;
             case 'COMBO_END':
                 /**
                  * COMBO结束
                  */
+                break;
             case 'ROOM_BLOCK_MSG':
                 /**
                  * 房间封禁消息
@@ -234,6 +240,11 @@ class DataTreating
             case 'CHANGE_ROOM_INFO':
                 /**
                  * 房间设置变更
+                 */
+                break;
+            case 'ROOM_SKIN_MSG':
+                /**
+                 * 房间皮肤消息
                  */
                 break;
             case 'WISH_BOTTLE':
