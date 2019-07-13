@@ -143,11 +143,11 @@ class Websocket
     protected static function split($bin)
     {
         if (strlen($bin)) {
-            $head = unpack('N*', substr($bin, 0, 16));
+            $head = unpack('Npacklen/nheadlen/nver/Nop/Nseq', substr($bin, 0, 16));
             $bin = substr($bin, 16);
 
-            $length = isset($head[1]) ? $head[1] : 16;
-            $type = isset($head[3]) ? $head[3] : 0x0000;
+            $length = isset($head['packlen']) ? $head['packlen'] : 16;
+            $type = isset($head['op']) ? $head['op'] : 0x0000;
             $body = substr($bin, 0, $length - 16);
 
             Log::debug(static::type($type) . " (len=$length)");
@@ -164,6 +164,13 @@ class Websocket
             }
 
             if ($type == 0x0005 || $type == 0x0003) {
+                if ($head['ver'] == 2) {
+                    $body = gzuncompress($body);
+                    if(substr($body, 0, 1) != '{'){
+                        static::split($bin);
+                        return;
+                    }
+                }
                 $data = DataTreating::socketJsonToArray($body);
                 if (!$data) {
                     return;
