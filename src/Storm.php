@@ -75,7 +75,7 @@ class Storm
             Log::notice('节奏风暴已结束!');
             return false;
         }
-        if ($de_raw['msg'] == '已经领取') {
+        if ($de_raw['msg'] == '已经领取奖励') {
             Log::notice('节奏风暴已经领取!');
             return false;
         }
