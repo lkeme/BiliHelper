@@ -262,6 +262,11 @@ class DataTreating
                  * 周星榜
                  */
                 break;
+            case 'ROOM_REAL_TIME_MESSAGE_UPDATE':
+                /*
+                 * 房间时间更新
+                 */
+                break;
             case 'NOTICE_MSG':
                 /**
                  * 分区通知

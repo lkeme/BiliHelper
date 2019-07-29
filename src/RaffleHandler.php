@@ -91,7 +91,7 @@ class RaffleHandler
                 'raffleId' => $winning_web['raffle_id']
             ];
             // Web V3 Notice
-            $url = 'https://api.live.bilibili.com/gift/v3/smalltv/notice';
+            $url = 'https://api.live.bilibili.com/xlive/lottery-interface/v3/smalltv/Notice';
             // 请求 && 解码
             $raw = Curl::get($url, Sign::api($payload));
             $de_raw = json_decode($raw, true);
@@ -135,7 +135,7 @@ class RaffleHandler
             'roomid' => self::$room_id,
         ];
         // Web V3接口
-        $url = 'https://api.live.bilibili.com/gift/v3/smalltv/check';
+        $url = 'https://api.live.bilibili.com/xlive/lottery-interface/v3/smalltv/Check';
         // 请求 && 解码
         $raw = Curl::get($url, Sign::api($payload));
         $de_raw = json_decode($raw, true);
@@ -274,16 +274,20 @@ class RaffleHandler
         if (in_array($data['raffle_id'], array_column(self::$winning_list_web, 'raffle_id'))) {
             return;
         }
-
+        $user_info = User::parseCookies();
         // 参数
         $payload = [
             'raffleId' => $data['raffle_id'],
-            'roomid' => self::$room_id,
+            'roomid' => $data['room_id'],
+            'type' => $data['type'],
+            'csrf_token' => $user_info['token'],
+            'csrf' => $user_info['token'],
+            'visit_id' => null,
         ];
-        // Web V3
-        $url = 'https://api.live.bilibili.com/gift/v3/smalltv/join';
+        // v3 api
+        $url = 'https://api.live.bilibili.com/xlive/lottery-interface/v3/smalltv/Join';
         // 请求 && 解码
-        $raw = Curl::get($url, Sign::api($payload));
+        $raw = Curl::post($url, Sign::api($payload));
         $de_raw = json_decode($raw, true);
         // 抽奖判断
         if (isset($de_raw['code']) && $de_raw['code']) {

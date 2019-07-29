@@ -1,6 +1,18 @@
 # Release Notes
 # 本项目Log
 
+## v0.0.9.190730(2019-07-30)
+
+### Added
+-
+
+### Changed
+- 更新 raffle api
+-
+
+### Fixed
+-
+
 ## v0.0.9.190713(2019-07-13)
 
 ### Added
