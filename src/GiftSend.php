@@ -63,7 +63,7 @@ class GiftSend
         }
 
         $payload = [];
-        $data = Curl::get('https://api.live.bilibili.com/xlive/web-room/v1/gift/bag_list', Sign::api($payload));
+        $data = Curl::get('https://api.live.bilibili.com/gift/v2/gift/bag_list', Sign::api($payload));
         $data = json_decode($data, true);
 
         if (isset($data['code']) && $data['code']) {
