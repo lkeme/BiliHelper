@@ -31,7 +31,7 @@ class GiftSend
             return;
         }
 
-        self::$uid = $data['mid'];
+        self::$uid = $data['data']['uid'];
 
         $payload = [
             'id' => getenv('ROOM_ID'),
