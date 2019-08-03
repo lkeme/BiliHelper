@@ -80,12 +80,14 @@ class Guard
     protected static function guardLottery($guard_roomid, $guard_id): array
     {
         $user_info = User::parseCookies();
-        $url = "https://api.live.bilibili.com/lottery/v2/lottery/join";
+        $url = "https://api.live.bilibili.com/lottery/v2/Lottery/join";
         $payload = [
             "roomid" => $guard_roomid,
             "id" => $guard_id,
             "type" => "guard",
-            "csrf_token" => $user_info['token']
+            "csrf_token" => $user_info['token'],
+            'csrf' => $user_info['token'],
+            'visit_id' => null,
         ];
         $raw = Curl::post($url, Sign::api($payload));
         $de_raw = json_decode($raw, true);
