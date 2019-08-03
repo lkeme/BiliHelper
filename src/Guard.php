@@ -52,9 +52,9 @@ class Guard
             if (is_null($guard)) {
                 break;
             }
-            if (!$guard['Status']) {
-                continue;
-            }
+//            if (!$guard['Status']) {
+//                continue;
+//            }
             $guard_id = $guard['GuardId'];
             if (in_array($guard_id, static::$lottery_list_end)) {
                 continue;
