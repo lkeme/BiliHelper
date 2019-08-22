@@ -5,6 +5,10 @@ B 站直播实用脚本
 
 无
 
+## 交流
+
+Group: [55308141](https://jq.qq.com/?_wv=1027&k=5AIDaJg)
+
 ## 文档
 * [使用文档 / DOC.md](./DOC.md)
 * [更新日志 / CHANGELOG.md](./CHANGELOG.md)
