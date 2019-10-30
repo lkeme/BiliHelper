@@ -5,7 +5,7 @@
  *  Author: Lkeme
  *  License: The MIT License
  *  Email: Useri@live.cn
- *  Updated: 2018
+ *  Updated: 2019
  */
 
 namespace lkeme\BiliHelper;
@@ -38,42 +38,52 @@ class Danmu
     // 获取随机弹幕
     private static function getMsgInfo()
     {
+        /**
+         *  整理一部分API，收集于网络，侵权麻烦联系我删除.
+         *  如果设置项不能用可以选择，只保证代码发布时正常.
+         *  格式全部为TEXT，可以自己替换.
+         */
+        $punctuations = ['，', ',', '。', '!', '.', ';', '——'];
+        $apis = [
+            'https://api.lwl12.com/hitokoto/v1?encode=realjso',
+            'https://api.ly522.com/yan.php?format=text',
+            'https://v1.hitokoto.cn/?encode=text',
+            'https://api.jysafe.cn/yy/',
+            'https://m.mom1.cn/api/yan/api.php',
+            'https://api.ooopn.com/yan/api.php?type=text',
+            'https://api.imjad.cn/hitokoto/',
+            'https://www.ly522.com/hitokoto/',
+            'https://www.tddiao.online/word/',
+            'https://api.guoch.xyz/',
+            'http://www.ooomg.cn/dutang/',
+            'https://api.gushi.ci/rensheng.txt',
+            'https://api.itswincer.com/hitokoto/v2/',
+            'http://api.dsecret.com/yiyan/',
+            'https://api.xygeng.cn/dailywd/api/api.php',
+        ];
+        shuffle($apis);
         try {
-            $data = Curl::get('https://api.lwl12.com/hitokoto/v1?encode=realjso');
-
-            if (strpos($data, '，')) {
-                $newdata = explode('，', $data);
-            } elseif (strpos($data, ',')) {
-                $newdata = explode(',', $data);
-            } elseif (strpos($data, '。')) {
-                $newdata = explode('。', $data);
-            } elseif (strpos($data, '!')) {
-                $newdata = explode('!', $data);
-            } elseif (strpos($data, '.')) {
-                $newdata = explode('.', $data);
-            } elseif (strpos($data, ';')) {
-                $newdata = explode(';', $data);
-            } else {
-                $newdata = explode('——', $data);
+            foreach ($apis as $url) {
+                $data = Curl::singleRequest('get', $url);
+                if (is_null($data)) continue;
+                foreach ($punctuations as $punctuation) {
+                    if (strpos($data, $punctuation)) {
+                        $data = explode($punctuation, $data)[0];
+                        break;
+                    }
+                }
+                return $data;
             }
-            return $newdata[0];
-
         } catch (\Exception $e) {
             return $e;
         }
     }
 
-    //转换信息
-    private static function convertInfo()
-    {
-        preg_match('/bili_jct=(.{32})/', getenv('COOKIE'), $token);
-        $token = isset($token[1]) ? $token[1] : '';
-        return $token;
-    }
 
     //发送弹幕通用模块
     private static function sendMsg($info)
     {
+        $user_info = User::parseCookies();
         $raw = Curl::get('https://api.live.bilibili.com/room/v1/Room/room_init?id=' . $info['roomid']);
         $de_raw = json_decode($raw, true);
 
@@ -84,8 +94,8 @@ class Danmu
             'msg' => $info['content'],
             'rnd' => 0,
             'roomid' => $de_raw['data']['room_id'],
-            'csrf' => self::convertInfo(),
-            'csrf_token' => self::convertInfo(),
+            'csrf' => $user_info['token'],
+            'csrf_token' => $user_info['token'],
         ];
 
         return Curl::post('https://api.live.bilibili.com/msg/send', Sign::api($payload));

@@ -3,7 +3,8 @@
  *  Website: https://mudew.com/
  *  Author: Lkeme
  *  License: The MIT License
- *  Updated: 2018
+ *  Email: Useri@live.cn
+ *  Updated: 2019
  */
 
 namespace lkeme\BiliHelper;
@@ -124,16 +125,16 @@ class MasterSite
     // 获取随机AID
     private static function getRandomAid(): string
     {
-        $page = mt_rand(1, 100000);
-        $payload = [];
-        $url = "https://api.bilibili.com/x/web-interface/newlist?&pn={$page}&ps=1";
-        $raw = Curl::get($url, Sign::api($payload));
-        $de_raw = json_decode($raw, true);
+        do {
+            $page = mt_rand(1, 1000);
+            $payload = [];
+            $url = "https://api.bilibili.com/x/web-interface/newlist?&pn={$page}&ps=1";
+            $raw = Curl::get($url, Sign::api($payload));
+            $de_raw = json_decode($raw, true);
+            // echo "getRandomAid " . count($de_raw['data']['archives']) . PHP_EOL;
+            // $aid = array_rand($de_raw['data']['archives'])['aid'];
+        } while (count($de_raw['data']['archives']) == 0);
         $aid = $de_raw['data']['archives'][0]['aid'];
-
-        if (is_null($aid) || empty($aid) || $aid == '') {
-            $aid = mt_rand(10000000, 30000000);
-        }
         return (string)$aid;
     }
 

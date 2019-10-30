@@ -4,7 +4,8 @@
  *  Website: https://mudew.com/
  *  Author: Lkeme
  *  License: The MIT License
- *  Updated: 2018
+ *  Email: Useri@live.cn
+ *  Updated: 2019
  */
 
 namespace lkeme\BiliHelper;
@@ -50,9 +51,9 @@ class RaffleHandler
         }
 
         // APP 检查房间是否有抽奖列表,没有则跳出
-        if ($datas = self::checkApp()) {
-            self::joinApp($datas);
-        }
+        // if ($datas = self::checkApp()) {
+        //     self::joinApp($datas);
+        // }
 
         // WEB检查房间是否有抽奖列表,没有则跳出
         if ($datas = self::checkWeb()) {
@@ -97,8 +98,8 @@ class RaffleHandler
             $de_raw = json_decode($raw, true);
             // 判断
             switch ($de_raw['data']['status']) {
-                case 3:
-                    break;
+                // case 3:
+                //     break;
                 case 2:
                     // 提示信息
                     $info = "网页端在直播间[{$winning_web['room_id']}]{$winning_web['title']}[{$winning_web['raffle_id']}]获得";
@@ -145,8 +146,6 @@ class RaffleHandler
             // Log::info("网页端直播间 [" . self::$room_id . "] 待抽奖列表为空，放弃本次抽奖!");
             return false;
         }
-        // 临时数组返回
-        $temp_list = [];
         for ($i = 0; $i < $total; $i++) {
             /**
              * raffleId    :    88995
@@ -157,6 +156,7 @@ class RaffleHandler
                 'raffle_id' => $de_raw['data']['list'][$i]['raffleId'],
                 'title' => $de_raw['data']['list'][$i]['title'],
                 'type' => $de_raw['data']['list'][$i]['type'],
+                'wait' => $de_raw['data']['list'][$i]['time_wait'] + strtotime(date("Y-m-d H:i:s")),
                 'room_id' => self::$room_id,
             ];
             // 重复抽奖检测
@@ -165,13 +165,9 @@ class RaffleHandler
             }
             // 添加到待抽奖 && 临时
             array_push(self::$lottery_list_web, $data);
-            array_push($temp_list, $data);
         }
-        // 判断空值 && 返回数组
-        if (!count($temp_list)) {
-            return false;
-        }
-        return $temp_list;
+
+        return true;
     }
 
     /**
@@ -229,21 +225,27 @@ class RaffleHandler
      * @param array $datas
      * @return bool
      */
-    private static function joinWeb(array $datas)
+    private static function joinWeb()
     {
-        // 统计抽奖个数 && 判断空
-        $total = count($datas);
-        if (!$total) {
+        $max_num = mt_rand(10, 20);
+        if (count(self::$lottery_list_web) == 0) {
             return false;
         }
-        // Web端随机延迟 TODO 暂停使用
-        // Live::randFloat();
-
-        foreach ($datas as $data) {
-            self::lotteryWeb($data);
+        self::$lottery_list_web = self::arrKeySort(self::$lottery_list_web, 'wait');
+        for ($i = 0; $i <= $max_num; $i++) {
+            $raffle = array_shift(self::$lottery_list_web);
+            if (is_null($raffle)) {
+                break;
+            }
+            if ($raffle['wait'] > strtotime(date("Y-m-d H:i:s"))) {
+                array_push(self::$lottery_list_web, $raffle);
+                continue;
+            }
+            self::lotteryWeb($raffle);
         }
         return true;
     }
+
 
     /**
      * @use APP加入抽奖
@@ -284,8 +286,10 @@ class RaffleHandler
             'csrf' => $user_info['token'],
             'visit_id' => null,
         ];
-        // v3 api
-        $url = 'https://api.live.bilibili.com/xlive/lottery-interface/v3/smalltv/Join';
+        // v3 api 暂做保留处理
+        // $url = 'https://api.live.bilibili.com/gift/v3/smalltv/join';
+        // $url = 'https://api.live.bilibili.com/xlive/lottery-interface/v5/smalltv/join';
+        $url = 'https://api.live.bilibili.com/gift/v4/smalltv/getAward';
         // 请求 && 解码
         $raw = Curl::post($url, Sign::api($payload));
         $de_raw = json_decode($raw, true);
@@ -329,5 +333,26 @@ class RaffleHandler
             print_r($de_raw);
         }
         return;
+    }
+
+    /**
+     * @use 二维数组按key排序
+     * @param $arr
+     * @param $key
+     * @param string $type
+     * @return array
+     */
+    private static function arrKeySort($arr, $key, $type = 'asc')
+    {
+        switch ($type) {
+            case 'desc':
+                array_multisort(array_column($arr, $key), SORT_DESC, $arr);
+                return $arr;
+            case 'asc':
+                array_multisort(array_column($arr, $key), SORT_ASC, $arr);
+                return $arr;
+            default:
+                return $arr;
+        }
     }
 }
