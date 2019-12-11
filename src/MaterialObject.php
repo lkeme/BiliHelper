@@ -42,9 +42,10 @@ class MaterialObject
      */
     protected static function drawLottery(): bool
     {
-        $block_key_list = ['测试', '加密', 'test', 'TEST', '钓鱼', '炸鱼', '调试'];
+        $block_key_list = ['测试', '加密', 'test', 'TEST', '钓鱼', '炸鱼', '调试', "123", "1111", "测试", "測試", "测一测", "ce-shi", "test", "T-E-S-T", "lala", "我是抽奖标题", # 已经出现
+            "測一測", "TEST", "Test", "t-e-s-t"];
         $flag = 5;
-        
+
         for ($i = self::$start_aid; $i < self::$end_aid; $i++) {
             if (!$flag) {
                 break;

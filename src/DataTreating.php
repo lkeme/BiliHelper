@@ -10,6 +10,8 @@
 
 namespace lkeme\BiliHelper;
 
+use Mockery\Exception;
+
 class DataTreating
 {
     // 活动关键字
@@ -268,6 +270,11 @@ class DataTreating
                  * 房间时间更新
                  */
                 break;
+            case 'ACTIVITY_BANNER_UPDATE_BLS':
+                /*
+                 * BLS活动
+                 */
+                break;
             case 'NOTICE_MSG':
                 /**
                  * 分区通知
@@ -284,21 +291,13 @@ class DataTreating
                 $real_roomid = $resp['real_roomid'];
                 $msg_common = str_replace(' ', '', $resp['msg_common']);
 
-                if ($msg_type == 2) {
+                if (in_array($msg_type, [2, 8])) {
                     if (getenv('AUTO_KEYS') != 'true') {
                         break;
                     }
-                    $str_gift = explode('，', explode('%>', $msg_common)[2])[0];
-                    if (strpos($str_gift, '个') !== false) {
-                        $raffle_name = explode('个', $str_gift)[1];
-                    } elseif (strpos($str_gift, '了') !== false) {
-                        $raffle_name = explode('了', $str_gift)[1];
-                    } else {
-                        $raffle_name = $str_gift;
-                    }
                     return [
                         'type' => 'active',
-                        'title' => $raffle_name,
+                        'title' => "统一活动",
                         'room_id' => $real_roomid
                     ];
 
@@ -310,17 +309,6 @@ class DataTreating
                             'room_id' => $real_roomid,
                         ];
                     }
-                } elseif ($msg_type == 8) {
-                    if (getenv('AUTO_KEYS') != 'true') {
-                        break;
-                    }
-                    $raffle_name=explode('”', explode('“', $msg_common)[1])[0];
-                    return [
-                        'type' => 'active',
-                        'title' => $raffle_name,
-                        'room_id' => $real_roomid
-                    ];
-
                 } else {
                     break;
                 }
@@ -328,9 +316,9 @@ class DataTreating
                 break;
             default:
                 // 新添加的消息类型
-                if (!is_null($resp)) {
-                    var_dump($resp);
-                }
+//                if (!is_null($resp)) {
+//                    var_dump($resp);
+//                }
                 return [
                     'type' => 'unkown',
                     'raw' => $resp['cmd'],

@@ -2,7 +2,7 @@
 <p align="center"><img width="300px" src="https://i.loli.net/2018/04/20/5ad97bd395912.jpeg"></p>
 
 <p align="center">
-<img src="https://img.shields.io/badge/version-0.0.8-green.svg?longCache=true&style=for-the-badge">
+<img src="https://img.shields.io/badge/version-0.0.10-green.svg?longCache=true&style=for-the-badge">
 <img src="https://img.shields.io/badge/license-mit-blue.svg?longCache=true&style=for-the-badge">
 </p>
 
@@ -20,26 +20,31 @@ B 站直播实用脚本
 |Daily               |18.04.21            |每日背包奖励         |
 |GiftSend            |18.04.21            |自动清空过期礼物     |
 |Heart               |18.07.21            |双端直播间心跳       |
-|Login               |19.03.04            |帐号登录组件         |
+|Login               |19.12.10            |帐号登录组件         |
 |Silver              |18.12.10            |自动领宝箱           |
-|Task                |18.07.21            |每日任务             |
+|Task                |19.12.10            |每日任务             |
 |GiftHeart           |18.04.25            |心跳礼物             |
 |Silver2Coin         |18.07.25            |银瓜子换硬币         |
-|MaterialObject      |18.07.25            |实物抽奖             |
+|MaterialObject      |19.12.10            |实物抽奖             |
 |GroupSignIn         |18.10.10            |应援团签到           |
 |Storm               |18.04.26            |节奏风暴             |
 |Notice              |18.07.25            |Server酱             |          
-|RaffleHandler       |18.07.26            |小电视飞船            |
-|RaffleHandler       |18.07.26            |摩天大樓             |
-|RaffleHandler       |18.08.21            |小金人               |
+|RaffleHandler       |19.12.10            |小电视飞船            |
+|RaffleHandler       |19.12.10            |摩天大樓             |
+|RaffleHandler       |19.12.10            |小金人               |
 |MasterSite          |18.10.16            |主站(观看、分享、投币)|
-|Guard               |19.03.04            |舰长上船亲密度        |
+|Guard               |19.12.10            |舰长上船亲密度        |
+|PK                  |19.12.10            |PK大乱斗              |
+
+
+## 打赏赞助
+
+![](https://i.loli.net/2019/07/13/5d2963e5cc1eb22973.png)
+
+> 有意的打赏个阔落，无意的可以跳过.
 
 ## 广告
-> 需要挂`节奏风暴(亿圆)`的可以私信我，不喜请路过，看不惯勿喷!
----
-> 支付宝扫码领红包活动，扫一扫`领红包`，不会给你造成什么损失!
-![](https://i.loli.net/2018/08/21/5b7ae6513322d.jpg)
+> 暂无.
 
 ## 未完成功能
 
@@ -65,11 +70,6 @@ B 站直播实用脚本
 
 * 项目 `composer.lock` 基于镜像生成 https://laravel-china.org/composer
 
-## 打赏赞助
-
-![](https://i.loli.net/2018/04/07/5ac79ff8c2900.png)
-
-> 有意的打赏个阔落，无意的可以跳过.
 
 ## 使用指南
 

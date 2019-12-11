@@ -295,10 +295,12 @@ class RaffleHandler
         $de_raw = json_decode($raw, true);
         // 抽奖判断
         if (isset($de_raw['code']) && $de_raw['code']) {
-            Log::warning("网页端参与{$data['title']}[{$data['raffle_id']}]抽奖，状态: {$de_raw['message']}!");
-            print_r($de_raw);
+            if ($de_raw['code'] != -405) {
+                Log::warning("网页端参与{$data['title']}[{$data['raffle_id']}]抽奖，状态: {$de_raw['message']}!");
+                print_r($de_raw);
+            }
         } else {
-            Log::notice("网页端参与了房间[{$data['room_id']}]的{$data['title']}[{$data['raffle_id']}]抽奖, 状态: {$de_raw['msg']}!");
+            Log::notice("网页端参与了房间[{$data['room_id']}]的{$data['title']}[{$data['raffle_id']}]抽奖, 状态: " . "{$de_raw['data']['gift_name']}x{$de_raw['data']['gift_num']}");
             array_push(self::$winning_list_web, $data);
         }
         return;

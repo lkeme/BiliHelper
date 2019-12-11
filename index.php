@@ -46,6 +46,7 @@ class Index
             GroupSignIn::run();
             Live::run();
             Guard::run();
+            Pk::run();
             GiftHeart::run();
             Winning::run();
             MaterialObject::run();

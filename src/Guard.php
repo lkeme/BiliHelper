@@ -56,20 +56,22 @@ class Guard
 //            if (!$guard['Status']) {
 //                continue;
 //            }
-            $guard_id = $guard['GuardId'];
-            if (in_array($guard_id, static::$lottery_list_end)) {
+            $guard_id = $guard['Id'];
+            $guard_time = $guard['EndTime'];
+
+            if (in_array($guard_id, static::$lottery_list_end) || $guard_id == 0 || $guard_time < time()) {
                 continue;
             }
-            $guard_roomid = $guard['OriginRoomId'];
+            $guard_roomid = $guard['RoomId'];
             Live::goToRoom($guard_roomid);
             $data = self::guardLottery($guard_roomid, $guard_id);
 
             if ($data['code'] == 0) {
-                Log::notice("房间[{$guard_roomid}]编号[{$guard_id}]上船:{$data['data']['message']}");
+                Log::notice("房间[{$guard_roomid}]编号[{$guard_id}]上船:" . (!empty($data['data']['award_text']) ? $data['data']['award_text'] : "{$data['data']['award_name']}x{$data['data']['award_num']}"));
             } elseif ($data['code'] == 400 && $data['msg'] == '你已经领取过啦') {
-                Log::info("房间[{$guard_roomid}]编号[{$guard_id}]上船:{$data['msg']}");
+                Log::info("房间[{$guard_roomid}]编号[{$guard_id}]上船:{$data['message']}");
             } else {
-                Log::warning("房间[{$guard_roomid}]编号[{$guard_id}]上船:{$data['msg']}");
+                Log::warning("房间[{$guard_roomid}]编号[{$guard_id}]上船:{$data['message']}");
             }
             static::endLottery($guard_id);
             $flag--;
@@ -81,7 +83,7 @@ class Guard
     protected static function guardLottery($guard_roomid, $guard_id): array
     {
         $user_info = User::parseCookies();
-        $url = "https://api.live.bilibili.com/lottery/v2/Lottery/join";
+        $url = "https://api.live.bilibili.com/xlive/lottery-interface/v3/guard/join";
         $payload = [
             "roomid" => $guard_roomid,
             "id" => $guard_id,
@@ -102,10 +104,11 @@ class Guard
             'User-Agent' => "bilibili-live-tools/" . mt_rand(1000000, 99999999),
         ];
         $raw = Curl::other("http://118.25.108.153:8080/guard", null, $headers, null, '118.25.108.153:8080');
-        if (is_null($raw)) {
+        $de_raw = Common::analyJson($raw, true);
+        if (!$de_raw) {
+            Log::info("舰长服务器返回为空或暂时宕机");
             return false;
         }
-        $de_raw = json_decode($raw, true);
         static::$lottery_list_start = array_merge(static::$lottery_list_start, $de_raw);
         $guard_num = count(static::$lottery_list_start);
         Log::info("当前队列中共有{$guard_num}个舰长待抽奖");

@@ -137,9 +137,11 @@ class Websocket
         return isset($option[$id]) ? $option[$id] : "WS_OP_UNKNOW($id)";
     }
 
+
     /**
      * @use 解包
      * @param $bin
+     * @throws \Exception
      */
     protected static function split($bin)
     {
@@ -167,7 +169,7 @@ class Websocket
             if ($type == 0x0005 || $type == 0x0003) {
                 if ($head['ver'] == 2) {
                     $body = gzuncompress($body);
-                    if(substr($body, 0, 1) != '{'){
+                    if (substr($body, 0, 1) != '{') {
                         static::split($bin);
                         return;
                     }
@@ -193,6 +195,7 @@ class Websocket
      * @param $value
      * @param $option
      * @return string
+     * @throws \Exception
      */
     protected static function packMsg($value, $option)
     {

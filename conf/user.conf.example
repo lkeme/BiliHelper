@@ -18,6 +18,9 @@ COOKIE=
 # 舰长亲密度
 USE_GUARD=true
 
+# PK大乱斗
+USE_PK=true
+
 # 主站助手
 USE_MASTER_SITE=true
 

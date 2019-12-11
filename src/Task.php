@@ -65,7 +65,7 @@ class Task
         } else {
             Log::info('签到成功');
             // 推送签到信息
-            Notice::run('todaySign', $data['msg']);
+            Notice::run('todaySign', $data['message']);
         }
     }
 
