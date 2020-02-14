@@ -81,7 +81,7 @@ APP_UNAME=
 # 多账号区别输出
 APP_MULTIPLE=false
 
-# 账号别名，如果为空则默认使用登陆账号作为标示
+# 账号别名，如果为空则默认使用登录账号作为标示
 APP_USER_IDENTITY=
 
 # 日志回调地址

@@ -156,7 +156,7 @@ class Login
 
     protected static function loginWithCaptcha()
     {
-        Log::info('登陆需要验证 ,启动验证码登陆!');
+        Log::info('登录需要验证 ,启动验证码登录!');
         $headers = [
             'Accept' => 'application/json, text/plain, */*',
             'User-Agent' => 'bili-universal/8230 CFNetwork/975.0.3 Darwin/18.2.0',

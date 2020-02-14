@@ -3,7 +3,9 @@ B 站直播实用脚本
 
 ## 公告
 
-无
+> 当前版本仓库已不再更新，仅作为存档保留。
+
+> 新版本仓库地址 [lkeme/BiliHelper-personal](https://github.com/lkeme/BiliHelper-personal)
 
 ## 交流
 
